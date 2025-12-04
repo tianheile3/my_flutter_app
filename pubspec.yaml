@@ -1,0 +1,38 @@
+name: flutter_study
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  fluttertoast: ^9.0.0 #toast
+  logger: ^2.6.0 #日志
+  retrofit: 4.1.0 #网络框架
+  dio: 5.7.0 #网络框架
+  json_annotation: ^4.9.0 #JSON 序列化与反序列化
+  shared_preferences: ^2.5.3 #本地存储
+  crypto: ^3.0.7 #加密
+  device_info_plus: ^12.2.0 # 用于获取设备信息
+  uuid: ^4.5.2 # 用于生成 UUID
+  encrypt: ^5.0.3 #加密
+  carousel_slider: ^5.1.1 #轮播图
+  intl: ^0.18.1 #日期、时间、数字、货币等的格式化
+  cached_network_image: ^3.3.0 #图片缓存，类似glide
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: 2.4.10
+  retrofit_generator: 8.1.0
+  json_serializable: 6.8.0
+
+
+flutter:
+  uses-material-design: true
