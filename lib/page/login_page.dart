@@ -3,7 +3,7 @@ import 'package:flutter_study/api/service/auth_service.dart';
 import 'package:flutter_study/base/base_state.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'home_page.dart';
+import 'main_home_page.dart';
 
 class LoginPage extends BaseStatelessWidget {
   LoginPage({super.key});
@@ -34,7 +34,7 @@ class LoginPage extends BaseStatelessWidget {
       // 检查当前widget是否仍然挂载
       if (!context.mounted) return;
       await Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => MainHomePage()),
         (route) => false,
       );
     }

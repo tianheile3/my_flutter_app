@@ -18,14 +18,14 @@ import '../api/network_manager.dart';
 import '../api/response/user_second_recom_thread_entity.dart';
 import '../models/banner.dart';
 
-class HomePage extends BaseStatefulWidget {
-  const HomePage({super.key});
+class HomeTabPage extends BaseStatefulWidget {
+  const HomeTabPage({super.key});
 
   @override
   BaseState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends BaseState<HomePage> {
+class _MyHomePageState extends BaseState<HomeTabPage> {
   final api = NetworkManager().getApiClient();
   final String sId = "home6";
   int page = 1;

@@ -1,8 +1,8 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/network_manager.dart';
-import 'package:flutter_study/page/home_page.dart';
 import 'package:flutter_study/page/login_page.dart';
+import 'package:flutter_study/page/main_home_page.dart';
 import 'package:flutter_study/utils/global_state.dart';
 
 void main() async {
@@ -64,7 +64,7 @@ class _MyLoadingPageState extends State<LoadingPage> {
       final isLogin = GlobalState.instance.userId > 0;
       await Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => isLogin ? HomePage() : LoginPage(),
+          builder: (context) => isLogin ? MainHomePage() : LoginPage(),
         ),
         (route) => false, // 移除所有之前的路由);
       );
