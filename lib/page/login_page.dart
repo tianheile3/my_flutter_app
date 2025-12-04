@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/service/auth_service.dart';
-import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/base/base_state.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'home_page.dart';
 
-class LoginPage extends StatelessWidget with LoggerMixin {
+class LoginPage extends BaseStatelessWidget {
   LoginPage({super.key});
 
   final TextEditingController _username = TextEditingController(

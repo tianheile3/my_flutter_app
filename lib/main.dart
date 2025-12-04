@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/page/home_page.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_study/utils/global_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  EasyRefresh.defaultHeaderBuilder = () => MaterialHeader();
+  EasyRefresh.defaultFooterBuilder = () => ClassicFooter();
   runApp(const MyApp());
 }
 

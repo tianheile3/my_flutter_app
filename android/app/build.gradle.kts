@@ -13,16 +13,6 @@ val keystorePropertiesFile = rootProject.file("key.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-    println("✅ key.properties loaded!")
-    println("keyAlias: ${keystoreProperties["keyAlias"]}")
-    println("storeFile path: ${keystoreProperties["storeFile"]}")
-    println(
-        "storeFile exists: ${
-            rootProject.file(keystoreProperties["storeFile"]?.toString() ?: "").exists()
-        }"
-    )
-} else {
-    println("❌ key.properties NOT FOUND at: ${keystorePropertiesFile.absolutePath}")
 }
 
 android {
@@ -58,8 +48,6 @@ android {
             storePassword = props.getProperty("storePassword")
             storeFile = props.getProperty("storeFile")?.let { rootProject.file(it) }
 
-            // 调试：打印最终值
-            println("Signing config - alias: $keyAlias, file: $storeFile")
         }
     }
 
