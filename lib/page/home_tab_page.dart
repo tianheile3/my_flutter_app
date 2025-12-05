@@ -18,24 +18,52 @@ import '../api/network_manager.dart';
 import '../api/response/user_second_recom_thread_entity.dart';
 import '../models/banner.dart';
 
+const int maxImageCount = 9;
+const double imageGridSpacing = 10;
+
 class HomeTabPage extends BaseStatefulWidget {
   const HomeTabPage({super.key});
 
   @override
-  BaseState createState() => _MyHomePageState();
+  BaseState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends BaseState<HomeTabPage> {
+class _HomePageState extends BaseState<HomeTabPage> {
   final api = NetworkManager().getApiClient();
   final String sId = "home6";
   int page = 1;
-  bool loadComplete = false;
   List<HomeListItem> items = [];
+
+  // 添加加载状态标识
+  bool _isRefreshing = false;
+  bool _isLoadingMore = false;
+  bool _loadComplete = false;
+
+  // 缓存屏幕宽度，避免重复计算
+  late double _screenWidth;
 
   @override
   void initState() {
     super.initState();
     _initData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 初始化屏幕宽度
+    _screenWidth = MediaQuery.of(context).size.width;
+  }
+
+  // 显示错误提示Toast
+  void _showErrorToast(String message) {
+    if (mounted) {
+      Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
   }
 
   Future<void> _initData() async {
@@ -49,18 +77,14 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
     });
   }
 
-  // 添加加载状态标识
-  bool _isRefreshing = false;
-
   Future<void> _refresh() async {
-    logger.d("_refresh");
     if (_isRefreshing) {
       return;
     }
     setState(() {
       _isRefreshing = true;
       page = 1;
-      loadComplete = false;
+      _loadComplete = false;
       // 清空现有数据
       items.clear();
     });
@@ -68,12 +92,7 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
       await _initData();
     } catch (e) {
       logger.e('刷新数据失败: $e');
-      // 可以添加错误提示
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('刷新失败，请重试')));
-      }
+      _showErrorToast('刷新失败，请重试');
     } finally {
       if (mounted) {
         setState(() {
@@ -84,14 +103,25 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
   }
 
   Future<void> _onLoad() async {
-    logger.d("_onLoad");
-    if (loadComplete) {
+    if (_loadComplete || _isLoadingMore) {
       return;
     }
-    final list = await _initThread();
     setState(() {
-      items.addAll(list);
+      _isLoadingMore = true;
     });
+    try {
+      final list = await _initThread();
+      setState(() {
+        items.addAll(list);
+      });
+    } catch (e) {
+      logger.e('加载更多失败: $e');
+      _showErrorToast('加载更多失败');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingMore = false);
+      }
+    }
   }
 
   Future<List<HomeListItem>> _initConfig() async {
@@ -100,6 +130,7 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
       "https://att3.citysbs.com/appstatic/${sId}_second.json?secondid=$sId&ts=${DateTime.now().millisecondsSinceEpoch}",
     );
     if (response.data == null) {
+      _showErrorToast('加载失败，请重试');
       return [];
     }
     final parsedData = jsonDecode(response.data);
@@ -135,7 +166,7 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
 
     final res = await api.getUserSecondRecomThread(industryId: sId, page: page);
     if (res == null) {
-      Fluttertoast.showToast(msg: "加载失败，请重试");
+      _showErrorToast('加载失败，请重试');
       return threadList;
     }
     if (res.recomThreadList.isNotEmpty) {
@@ -156,18 +187,16 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
         threadList.add(item);
       }
     }
-    loadComplete = page >= int.parse(res.maxPage);
+    _loadComplete = page >= int.parse(res.maxPage);
     page++;
     return threadList;
   }
 
   //行业入口布局
-  Widget _buildDiscoveryItem(
-    SecondConfigConfigInfoAppPortalInfo item,
-    double width,
-  ) {
+  Widget _buildDiscoveryItem(SecondConfigConfigInfoAppPortalInfo item) {
+    final itemWidth = _screenWidth / 5;
     return SizedBox(
-      width: width,
+      width: itemWidth,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -178,6 +207,8 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
             fit: BoxFit.fill,
             placeholder: (context, url) => Icon(Icons.image, size: 25),
             errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
+            memCacheWidth: 100,
+            memCacheHeight: 100,
           ),
           SizedBox(height: 8),
           Text(
@@ -208,6 +239,8 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
             fit: BoxFit.cover,
             placeholder: (context, url) => Icon(Icons.image, size: 25),
             errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
+            memCacheWidth: 60,
+            memCacheHeight: 60,
           ),
         ),
         SizedBox(width: 8),
@@ -270,8 +303,8 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
   }
 
   Widget _buildImageGrid(List<String> images) {
-    if (images.length > 9) {
-      images = images.sublist(0, 9);
+    if (images.length > maxImageCount) {
+      images = images.sublist(0, maxImageCount);
     }
     return GridView.builder(
       shrinkWrap: true,
@@ -279,8 +312,8 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
       itemCount: images.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
+        mainAxisSpacing: imageGridSpacing,
+        crossAxisSpacing: imageGridSpacing,
         childAspectRatio: 1,
       ),
       itemBuilder: (context, index) {
@@ -291,6 +324,11 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
             fit: BoxFit.cover,
             placeholder: (context, url) => Icon(Icons.image, size: 25),
             errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
+            // 根据网格大小设置缓存尺寸
+            memCacheWidth: ((_screenWidth - 40 - imageGridSpacing * 2) / 3)
+                .toInt(),
+            memCacheHeight: ((_screenWidth - 40 - imageGridSpacing * 2) / 3)
+                .toInt(),
           ),
         );
       },
@@ -329,6 +367,8 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
                                 Icon(Icons.image, size: double.infinity),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.image, size: double.infinity),
+                            memCacheWidth: (_screenWidth * 2).toInt(),
+                            memCacheHeight: 400,
                           ),
                           Positioned(
                             bottom: 0,
@@ -396,10 +436,7 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
                     child: Row(
                       children: [
                         for (var item in discover.discoveryList)
-                          _buildDiscoveryItem(
-                            item,
-                            (MediaQuery.of(context).size.width) / 5,
-                          ),
+                          _buildDiscoveryItem(item),
                       ],
                     ),
                   ),
@@ -469,6 +506,8 @@ class _MyHomePageState extends BaseState<HomeTabPage> {
                                   Icon(Icons.image, size: 112),
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.image, size: 73),
+                              memCacheWidth: 224,
+                              memCacheHeight: 146,
                             ),
                           ),
                         ],

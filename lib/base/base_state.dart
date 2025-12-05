@@ -23,6 +23,11 @@ abstract class BaseState<T extends BaseStatefulWidget> extends State<T>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     throw UnimplementedError('子类必须实现build方法');
   }

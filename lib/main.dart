@@ -7,9 +7,32 @@ import 'package:flutter_study/utils/global_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  EasyRefresh.defaultHeaderBuilder = () => MaterialHeader();
-  EasyRefresh.defaultFooterBuilder = () => ClassicFooter();
+  initEasyRefresh();
   runApp(const MyApp());
+}
+
+void initEasyRefresh() {
+  // EasyRefresh.defaultHeaderBuilder = () => ClassicHeader(
+  //   dragText: "下拉刷新",
+  //   armedText: "释放刷新",
+  //   readyText: "正在刷新...",
+  //   processingText: "正在刷新...",
+  //   processedText: "刷新成功",
+  //   noMoreText: "没有更多数据了",
+  //   failedText: "刷新失败",
+  //   messageText: "上次更新于 %T",
+  // );
+  EasyRefresh.defaultHeaderBuilder = () => MaterialHeader();
+  EasyRefresh.defaultFooterBuilder = () => ClassicFooter(
+    dragText: "上拉加载",
+    armedText: "释放加载",
+    readyText: "正在加载...",
+    processingText: "正在加载...",
+    processedText: "加载成功",
+    noMoreText: "没有更多数据了",
+    failedText: "加载失败",
+    messageText: "上次更新于 %T",
+  );
 }
 
 class MyApp extends StatelessWidget {
