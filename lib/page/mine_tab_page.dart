@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../api/network_manager.dart';
+import '../api/response/current_user_info_entity.dart';
 import '../base/base_state.dart';
 
 const expandedHeight = 290.0;
@@ -15,9 +17,24 @@ class MineTabPage extends BaseStatefulWidget {
 }
 
 class _MinePageState extends BaseState<MineTabPage> {
+  final api = NetworkManager().getApiClient();
+  CurrentUserInfoUser? user;
+
   @override
   void initState() {
     super.initState();
+    _getUserInfo();
+  }
+
+  Future<void> _getUserInfo() async {
+    final res = await api.getCurrentUserInfo(
+      withFavs: true,
+      withCommentNum: true,
+      withPosts: true,
+    );
+    if (res != null && res.code == "1") {
+      user = res.user;
+    }
   }
 
   @override
@@ -55,7 +72,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
                             maxHeight: expandedHeight,
-                            minHeight: expandedHeight
+                            minHeight: expandedHeight,
                           ),
                           child: SingleChildScrollView(
                             // 允许内容在高度不足时滚动
@@ -109,9 +126,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                         opacity: 1 - progress,
                         child: Container(
                           color: Colors.lightBlue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Row(
                             children: [
                               const CircleAvatar(
@@ -150,9 +165,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                                   Icons.more_vert,
                                   color: Colors.white,
                                 ),
-                                onPressed: () {
-
-                                },
+                                onPressed: () {},
                                 constraints: BoxConstraints.tight(Size(40, 40)),
                               ),
                             ],
