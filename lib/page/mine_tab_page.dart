@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../api/network_manager.dart';
 import '../api/response/current_user_info_entity.dart';
+import '../api/service/user_repository.dart';
 import '../base/base_state.dart';
 
 const expandedHeight = 300.0;
@@ -24,9 +24,12 @@ class _MinePageState extends BaseState<MineTabPage> {
   late double _screenWidth;
   late double _statusBarHeight;
 
-  final api = NetworkManager().getApiClient();
-  late CurrentUserInfoUser user;
+  // 替换原有的api调用，改为使用仓库类
+  final userRepo = UserRepository();
+
+  late CurrentUserInfoUser userInfo;
   String bgUrl = "";
+  List<MineTabItem> tabList = [];
 
   bool _isLoading = true;
 
@@ -50,33 +53,18 @@ class _MinePageState extends BaseState<MineTabPage> {
     setState(() {
       _isLoading = true;
     });
-    final info = await api.getCurrentUserInfo(
-      withFavs: true,
-      withCommentNum: true,
-      withPosts: true,
-    );
-    if (info == null || info.code != "1") {
+    final userInfo = await userRepo.getUserInfo();
+    if (userInfo == null) {
       showErrorToast('加载失败，请重试');
       return;
     }
-    final res = await api.getMobileBgUrl(uid: info.user.uid);
-    if (res != null) {
-      setState(() {
-        user = info.user;
-        bgUrl = res.bgUrl;
-        _isLoading = false;
-      });
-    }
-  }
-
-  Color getSexColor() {
-    if (user.genderPrivate == "1") {
-      return CustomColors.sexOther;
-    } else if (user.gender == "male") {
-      return CustomColors.male;
-    } else {
-      return CustomColors.female;
-    }
+    final bgUrl = await userRepo.getMobileBgUrl(userInfo.uid);
+    setState(() {
+      this.userInfo = userInfo;
+      this.bgUrl = bgUrl;
+      tabList = userRepo.getTabList(userInfo);
+      _isLoading = false;
+    });
   }
 
   @override
@@ -104,7 +92,10 @@ class _MinePageState extends BaseState<MineTabPage> {
           ),
           SliverPersistentHeader(
             pinned: true,
-            delegate: MiddleHeaderDelegate(height: appBarHeight),
+            delegate: MiddleHeaderDelegate(
+              height: appBarHeight,
+              tabList: tabList,
+            ),
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
@@ -169,10 +160,10 @@ class _MinePageState extends BaseState<MineTabPage> {
   }
 
   Widget _buildExpandedContent() {
-    final String sexImage = user.gender == "male"
+    final String sexImage = userInfo.gender == "male"
         ? "assets/images/boy.png"
         : "assets/images/girl.png";
-    final String sex = user.gender == "male" ? "男" : "女";
+    final String sex = userInfo.gender == "male" ? "男" : "女";
     return Stack(
       children: [
         if (bgUrl.isNotEmpty)
@@ -213,7 +204,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                       ),
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: user.avatar,
+                          imageUrl: userInfo.avatar,
                           fit: BoxFit.cover,
                           width: 76,
                           height: 76,
@@ -228,7 +219,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user.userName,
+                          userInfo.userName,
                           style: TextStyle(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
@@ -236,11 +227,11 @@ class _MinePageState extends BaseState<MineTabPage> {
                           ),
                         ),
                         Text(
-                          "账号：${user.uid}",
+                          "账号：${userInfo.uid}",
                           style: TextStyle(fontSize: 13, color: Colors.white),
                         ),
                         Text(
-                          "IP归属地：${user.location}",
+                          "IP归属地：${userInfo.location}",
                           style: TextStyle(fontSize: 13, color: Colors.white),
                         ),
                       ],
@@ -249,7 +240,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                 ),
                 SizedBox(height: 9),
                 Text(
-                  user.sign,
+                  userInfo.sign,
                   style: TextStyle(fontSize: 13, color: Colors.white),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
@@ -266,12 +257,15 @@ class _MinePageState extends BaseState<MineTabPage> {
                     ),
                     SizedBox(width: 10),
                     Text(
-                      "V${user.group.rank}",
-                      style: TextStyle(fontSize: 13, color: getSexColor()),
+                      "V${userInfo.group.rank}",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: userRepo.getSexColor(userInfo),
+                      ),
                     ),
                     SizedBox(width: 3),
                     Text(
-                      user.group.name,
+                      userInfo.group.name,
                       style: TextStyle(fontSize: 13, color: Colors.white),
                     ),
                   ],
@@ -288,7 +282,7 @@ class _MinePageState extends BaseState<MineTabPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${user.attendCount}关注 · ${user.fansCount}粉丝",
+                      "${userInfo.attendCount}关注 · ${userInfo.fansCount}粉丝",
                       style: TextStyle(fontSize: 14, color: Colors.white),
                     ),
                     Row(
@@ -369,7 +363,7 @@ class _MinePageState extends BaseState<MineTabPage> {
             children: [
               ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: user.avatar,
+                  imageUrl: userInfo.avatar,
                   fit: BoxFit.cover,
                   width: 30,
                   height: 30,
@@ -379,7 +373,7 @@ class _MinePageState extends BaseState<MineTabPage> {
               ),
               const SizedBox(width: 10),
               Text(
-                user.userName,
+                userInfo.userName,
                 style: TextStyle(color: CustomColors.textDark, fontSize: 14),
               ),
             ],
@@ -413,8 +407,9 @@ class _MinePageState extends BaseState<MineTabPage> {
 // 自定义中间置顶布局的代理类
 class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double height; // 中间布局的固定高度
+  List<MineTabItem> tabList = [];
 
-  MiddleHeaderDelegate({required this.height});
+  MiddleHeaderDelegate({required this.height, required this.tabList});
 
   @override
   Widget build(
@@ -422,18 +417,9 @@ class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    // 这里可以自定义任意布局（按钮、Tab、文本等）
-    return Container(
-      color: Colors.orange,
-      alignment: Alignment.center,
-      child: const Text(
-        '中间置顶布局（上滑不隐藏）',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+    return DefaultTabController(
+      length: tabList.length, // Tab 数量
+      child: Column(),
     );
   }
 

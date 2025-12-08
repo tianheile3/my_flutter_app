@@ -113,7 +113,7 @@ CurrentUserInfoUser $CurrentUserInfoUserFromJson(Map<String, dynamic> json) {
   if (birthday != null) {
     currentUserInfoUser.birthday = birthday;
   }
-  final String? threads = jsonConvert.convert<String>(json['threads']);
+  final int? threads = jsonConvert.convert<int>(json['threads']);
   if (threads != null) {
     currentUserInfoUser.threads = threads;
   }
@@ -121,7 +121,7 @@ CurrentUserInfoUser $CurrentUserInfoUserFromJson(Map<String, dynamic> json) {
   if (posts != null) {
     currentUserInfoUser.posts = posts;
   }
-  final String? comments = jsonConvert.convert<String>(json['comments']);
+  final int? comments = jsonConvert.convert<int>(json['comments']);
   if (comments != null) {
     currentUserInfoUser.comments = comments;
   }
@@ -133,7 +133,7 @@ CurrentUserInfoUser $CurrentUserInfoUserFromJson(Map<String, dynamic> json) {
   if (louNewsNum != null) {
     currentUserInfoUser.louNewsNum = louNewsNum;
   }
-  final String? favCount = jsonConvert.convert<String>(json['fav_count']);
+  final int? favCount = jsonConvert.convert<int>(json['fav_count']);
   if (favCount != null) {
     currentUserInfoUser.favCount = favCount;
   }
@@ -158,7 +158,7 @@ CurrentUserInfoUser $CurrentUserInfoUserFromJson(Map<String, dynamic> json) {
   if (zanNum != null) {
     currentUserInfoUser.zanNum = zanNum;
   }
-  final String? rateNum = jsonConvert.convert<String>(json['rate_num']);
+  final int? rateNum = jsonConvert.convert<int>(json['rate_num']);
   if (rateNum != null) {
     currentUserInfoUser.rateNum = rateNum;
   }
@@ -385,18 +385,18 @@ extension CurrentUserInfoUserExtension on CurrentUserInfoUser {
     String? sign,
     String? address,
     String? birthday,
-    String? threads,
+    int? threads,
     String? posts,
-    String? comments,
+    int? comments,
     String? gatherNum,
     String? louNewsNum,
-    String? favCount,
+    int? favCount,
     String? attendCount,
     String? fansCount,
     String? todayfansCount,
     String? boardCount,
     String? zanNum,
-    String? rateNum,
+    int? rateNum,
     String? medalNum,
     String? color,
     String? gold,

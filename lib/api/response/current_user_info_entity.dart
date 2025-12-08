@@ -48,15 +48,15 @@ class CurrentUserInfoUser {
 	late String sign;
 	late String address;
 	late String birthday;
-	late String threads;
+	late int threads;
 	late String posts;
-	late String comments;
+	late int comments;
 	@JSONField(name: 'gather_num')
 	late String gatherNum;
 	@JSONField(name: 'lou_news_num')
 	late String louNewsNum;
 	@JSONField(name: 'fav_count')
-	late String favCount;
+	late int favCount;
 	@JSONField(name: 'attend_count')
 	late String attendCount;
 	@JSONField(name: 'fans_count')
@@ -68,7 +68,7 @@ class CurrentUserInfoUser {
 	@JSONField(name: 'zan_num')
 	late String zanNum;
 	@JSONField(name: 'rate_num')
-	late String rateNum;
+	late int rateNum;
 	@JSONField(name: 'medal_num')
 	late String medalNum;
 	late String color;
