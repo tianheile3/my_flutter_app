@@ -155,6 +155,40 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<MobileBgUrlEntity?> getMobileBgUrl({
+    required int uid,
+    bool page = true,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'withMsgShieldStatus': page,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<MobileBgUrlEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/user/getMobileBgUrl',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : MobileBgUrlEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<TokenEntity?> login(FormData data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

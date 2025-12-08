@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/second_config_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
@@ -169,6 +170,10 @@ class JsonConvert {
       return data.map<EncryptKeyEntity>((Map<String, dynamic> e) =>
           EncryptKeyEntity.fromJson(e)).toList() as M;
     }
+    if (<MobileBgUrlEntity>[] is M) {
+      return data.map<MobileBgUrlEntity>((Map<String, dynamic> e) =>
+          MobileBgUrlEntity.fromJson(e)).toList() as M;
+    }
     if (<SecondConfigEntity>[] is M) {
       return data.map<SecondConfigEntity>((Map<String, dynamic> e) =>
           SecondConfigEntity.fromJson(e)).toList() as M;
@@ -290,6 +295,7 @@ class JsonConvertClassCollection {
     (CurrentUserInfoUserGroup).toString(): CurrentUserInfoUserGroup.fromJson,
     (CurrentUserInfoUserMedals).toString(): CurrentUserInfoUserMedals.fromJson,
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
+    (MobileBgUrlEntity).toString(): MobileBgUrlEntity.fromJson,
     (SecondConfigEntity).toString(): SecondConfigEntity.fromJson,
     (SecondConfigConfigInfo).toString(): SecondConfigConfigInfo.fromJson,
     (SecondConfigConfigInfoAppPortalInfo)

@@ -30,7 +30,7 @@ class HomeTabPage extends BaseStatefulWidget {
 
 class _HomePageState extends BaseState<HomeTabPage> {
   final api = NetworkManager().getApiClient();
-  final String sId = "home6";
+  final String sId = "marry22";
   int page = 1;
   List<HomeListItem> items = [];
 
@@ -53,17 +53,6 @@ class _HomePageState extends BaseState<HomeTabPage> {
     super.didChangeDependencies();
     // 初始化屏幕宽度
     _screenWidth = MediaQuery.of(context).size.width;
-  }
-
-  // 显示错误提示Toast
-  void _showErrorToast(String message) {
-    if (mounted) {
-      Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-      );
-    }
   }
 
   Future<void> _initData() async {
@@ -92,7 +81,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
       await _initData();
     } catch (e) {
       logger.e('刷新数据失败: $e');
-      _showErrorToast('刷新失败，请重试');
+      showErrorToast('刷新失败，请重试');
     } finally {
       if (mounted) {
         setState(() {
@@ -116,7 +105,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
       });
     } catch (e) {
       logger.e('加载更多失败: $e');
-      _showErrorToast('加载更多失败');
+      showErrorToast('加载更多失败');
     } finally {
       if (mounted) {
         setState(() => _isLoadingMore = false);
@@ -126,11 +115,13 @@ class _HomePageState extends BaseState<HomeTabPage> {
 
   Future<List<HomeListItem>> _initConfig() async {
     final dio = Dio();
-    final response = await dio.get(
-      "https://att3.citysbs.com/appstatic/${sId}_second.json?secondid=$sId&ts=${DateTime.now().millisecondsSinceEpoch}",
-    );
+    final String url =
+        "https://att3.citysbs.com/appstatic/${sId}_second.json?secondid=$sId&ts=${DateTime.now().millisecondsSinceEpoch}";
+    logger.e('config: $url');
+
+    final response = await dio.get(url);
     if (response.data == null) {
-      _showErrorToast('加载失败，请重试');
+      showErrorToast('加载失败，请重试');
       return [];
     }
     final parsedData = jsonDecode(response.data);
@@ -166,7 +157,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
 
     final res = await api.getUserSecondRecomThread(industryId: sId, page: page);
     if (res == null) {
-      _showErrorToast('加载失败，请重试');
+      showErrorToast('加载失败，请重试');
       return threadList;
     }
     if (res.recomThreadList.isNotEmpty) {
@@ -352,7 +343,6 @@ class _HomePageState extends BaseState<HomeTabPage> {
                 BannerItem banner = item as BannerItem;
                 return SizedBox(
                   width: double.infinity,
-                  height: 200,
                   child: CarouselSlider.builder(
                     itemCount: banner.bannerList.length,
                     itemBuilder: (context, index, realIndex) {
@@ -411,6 +401,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
                       );
                     },
                     options: CarouselOptions(
+                      aspectRatio: 5/2,
                       // 中间项放大
                       autoPlay: true,
                       // 自动播放

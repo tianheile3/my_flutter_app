@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 /// 基础有状态组件基类（已集成LoggerMixin）
 abstract class BaseStatefulWidget extends StatefulWidget with LoggerMixin {
@@ -30,6 +31,17 @@ abstract class BaseState<T extends BaseStatefulWidget> extends State<T>
   @override
   Widget build(BuildContext context) {
     throw UnimplementedError('子类必须实现build方法');
+  }
+
+  // 显示错误提示Toast
+  void showErrorToast(String message) {
+    if (mounted) {
+      Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
   }
 }
 

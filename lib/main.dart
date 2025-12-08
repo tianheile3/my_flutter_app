@@ -75,7 +75,7 @@ class _MyLoadingPageState extends State<LoadingPage> {
     try {
       await GlobalState.instance.getLocalStorage();
       if (GlobalState.instance.cityName == "") {
-        GlobalState.instance.cityName = "taizhou";
+        GlobalState.instance.cityName = "jiaxing";
       }
       if (!mounted) return; // 页面已销毁，直接退出
       final response = await NetworkManager().getApiClient().getSystemTime();

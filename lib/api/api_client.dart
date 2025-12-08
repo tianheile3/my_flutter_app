@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
 import 'package:flutter_study/api/response/user_second_recom_thread_entity.dart';
@@ -33,6 +34,12 @@ abstract class ApiClient {
     @Query("page") int page = 1,
     @Query("perPage") int perPage = 10,
     @Query("secInfoId") int secInfoId = 0,
+  });
+
+  @GET("/api/user/getMobileBgUrl")
+  Future<MobileBgUrlEntity?> getMobileBgUrl({
+    @Query("uid") required int uid,
+    @Query("withMsgShieldStatus") bool page = true,
   });
 
   //-----------------------------------以下post----------------------------------

@@ -6,7 +6,6 @@ version: 1.0.0+1
 environment:
   sdk: ^3.9.2
 
-
 dependencies:
   flutter:
     sdk: flutter
@@ -34,6 +33,7 @@ dev_dependencies:
   retrofit_generator: 8.1.0
   json_serializable: 6.8.0
 
-
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/

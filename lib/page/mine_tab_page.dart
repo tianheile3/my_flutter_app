@@ -1,11 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_study/utils/custom_colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/current_user_info_entity.dart';
 import '../base/base_state.dart';
 
-const expandedHeight = 290.0;
-const collapsedToolbarHeight = 70.0;
+const expandedHeight = 300.0;
+const collapsedToolbarHeight = 44.0;
 const appBarHeight = 44.0;
 
 /// 我的 Tab 页面
@@ -17,8 +20,15 @@ class MineTabPage extends BaseStatefulWidget {
 }
 
 class _MinePageState extends BaseState<MineTabPage> {
+  // 缓存屏幕宽度，避免重复计算
+  late double _screenWidth;
+  late double _statusBarHeight;
+
   final api = NetworkManager().getApiClient();
-  CurrentUserInfoUser? user;
+  late CurrentUserInfoUser user;
+  String bgUrl = "";
+
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -26,20 +36,59 @@ class _MinePageState extends BaseState<MineTabPage> {
     _getUserInfo();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 初始化屏幕宽度
+    _screenWidth = MediaQuery.of(context).size.width;
+    //状态栏高度
+    _statusBarHeight = MediaQuery.of(context).padding.top;
+  }
+
   Future<void> _getUserInfo() async {
-    final res = await api.getCurrentUserInfo(
+    // 开始加载
+    setState(() {
+      _isLoading = true;
+    });
+    final info = await api.getCurrentUserInfo(
       withFavs: true,
       withCommentNum: true,
       withPosts: true,
     );
-    if (res != null && res.code == "1") {
-      user = res.user;
+    if (info == null || info.code != "1") {
+      showErrorToast('加载失败，请重试');
+      return;
+    }
+    final res = await api.getMobileBgUrl(uid: info.user.uid);
+    if (res != null) {
+      setState(() {
+        user = info.user;
+        bgUrl = res.bgUrl;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Color getSexColor() {
+    if (user.genderPrivate == "1") {
+      return CustomColors.sexOther;
+    } else if (user.gender == "male") {
+      return CustomColors.male;
+    } else {
+      return CustomColors.female;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+    // 加载状态显示加载界面
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(), // 加载指示器
+        ),
+      );
+    }
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -48,135 +97,10 @@ class _MinePageState extends BaseState<MineTabPage> {
             toolbarHeight: collapsedToolbarHeight,
             pinned: true,
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.lightBlue,
             elevation: 0,
             title: const SizedBox.shrink(),
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraints) {
-                final currentHeight = constraints.maxHeight;
-                final progress =
-                    ((currentHeight -
-                                collapsedToolbarHeight -
-                                statusBarHeight) /
-                            (expandedHeight - collapsedToolbarHeight))
-                        .clamp(0.0, 1.0);
-                logger.d(progress);
-
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    //展开内容
-                    Positioned.fill(
-                      child: Opacity(
-                        opacity: progress,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxHeight: expandedHeight,
-                            minHeight: expandedHeight,
-                          ),
-                          child: SingleChildScrollView(
-                            // 允许内容在高度不足时滚动
-                            physics: const NeverScrollableScrollPhysics(),
-                            // 禁止内部滚动，跟随外部
-                            child: Container(
-                              color: Colors.lightBlue,
-                              height: expandedHeight,
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://picsum.photos/200/200',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    const Text(
-                                      '展开态标题',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Text(
-                                      '展开态副标题 - 上滑折叠后切换布局',
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // 折叠内容：固定在底部，随进度显示
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: statusBarHeight,
-                      height: collapsedToolbarHeight,
-                      child: Opacity(
-                        opacity: 1 - progress,
-                        child: Container(
-                          color: Colors.lightBlue,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage(
-                                  'https://picsum.photos/200/200',
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              const Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '用户名',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      '用户简介',
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.more_vert,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {},
-                                constraints: BoxConstraints.tight(Size(40, 40)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+            backgroundColor: Colors.white,
+            flexibleSpace: _buildFlexibleSpace(),
           ),
           SliverPersistentHeader(
             pinned: true,
@@ -190,6 +114,295 @@ class _MinePageState extends BaseState<MineTabPage> {
               ),
               childCount: 50,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFlexibleSpace() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final currentHeight = constraints.maxHeight;
+        final progress =
+            ((currentHeight - collapsedToolbarHeight - _statusBarHeight) /
+                    (expandedHeight - collapsedToolbarHeight))
+                .clamp(0.0, 1.0);
+
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            //展开内容
+            Positioned.fill(
+              child: Opacity(
+                opacity: progress,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: expandedHeight,
+                    minHeight: expandedHeight,
+                  ),
+                  child: SingleChildScrollView(
+                    // 允许内容在高度不足时滚动
+                    physics: const NeverScrollableScrollPhysics(),
+                    // 禁止内部滚动，跟随外部
+                    child: _buildExpandedContent(),
+                  ),
+                ),
+              ),
+            ),
+
+            // 折叠内容：固定在底部，随进度显示
+            Positioned(
+              left: 0,
+              right: 0,
+              top: _statusBarHeight,
+              height: collapsedToolbarHeight,
+              child: Opacity(
+                opacity: 1 - progress,
+                child: _buildCollapsedContent(),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildExpandedContent() {
+    final String sexImage = user.gender == "male"
+        ? "assets/images/boy.png"
+        : "assets/images/girl.png";
+    final String sex = user.gender == "male" ? "男" : "女";
+    return Stack(
+      children: [
+        if (bgUrl.isNotEmpty)
+          CachedNetworkImage(
+            imageUrl: bgUrl,
+            fit: BoxFit.cover,
+            width: _screenWidth,
+            height: expandedHeight + _statusBarHeight,
+            // 根据网格大小设置缓存尺寸
+            memCacheWidth: (_screenWidth * 2).toInt(),
+            memCacheHeight: (expandedHeight * 2).toInt(),
+          )
+        else
+          Container(
+            width: _screenWidth,
+            height: expandedHeight + _statusBarHeight,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/home_info_bg.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        Positioned.fill(
+          child: Container(
+            padding: EdgeInsets.all(18),
+            child: Column(
+              children: [
+                SizedBox(height: 80),
+                Row(
+                  children: [
+                    Container(
+                      width: 82,
+                      height: 82,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 3),
+                      ),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: user.avatar,
+                          fit: BoxFit.cover,
+                          width: 76,
+                          height: 76,
+                          // 根据网格大小设置缓存尺寸
+                          memCacheWidth: 152,
+                          memCacheHeight: 152,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.userName,
+                          style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "账号：${user.uid}",
+                          style: TextStyle(fontSize: 13, color: Colors.white),
+                        ),
+                        Text(
+                          "IP归属地：${user.location}",
+                          style: TextStyle(fontSize: 13, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 9),
+                Text(
+                  user.sign,
+                  style: TextStyle(fontSize: 13, color: Colors.white),
+                  maxLines: 5,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(sexImage, width: 15, height: 15),
+                    SizedBox(width: 3),
+                    Text(
+                      sex,
+                      style: TextStyle(fontSize: 13, color: Colors.white),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      "V${user.group.rank}",
+                      style: TextStyle(fontSize: 13, color: getSexColor()),
+                    ),
+                    SizedBox(width: 3),
+                    Text(
+                      user.group.name,
+                      style: TextStyle(fontSize: 13, color: Colors.white),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 9),
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: CustomColors.divider.withAlpha(80),
+                ),
+                SizedBox(height: 9),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${user.attendCount}关注 · ${user.fansCount}粉丝",
+                      style: TextStyle(fontSize: 14, color: Colors.white),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Fluttertoast.showToast(msg: "编辑资料");
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: CustomColors.bgMain,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              "编辑资料",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        InkWell(
+                          onTap: () {
+                            Fluttertoast.showToast(msg: "设置");
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: CustomColors.bgMain,
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              "设置",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: CustomColors.bgMain,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCollapsedContent() {
+    return Container(
+      padding: const EdgeInsets.only(left: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: user.avatar,
+                  fit: BoxFit.cover,
+                  width: 30,
+                  height: 30,
+                  memCacheWidth: 60,
+                  memCacheHeight: 60,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                user.userName,
+                style: TextStyle(color: CustomColors.textDark, fontSize: 14),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.search, color: Colors.white),
+                onPressed: () {
+                  Fluttertoast.showToast(msg: "搜索");
+                },
+                padding: EdgeInsets.zero,
+                iconSize: 30,
+              ),
+              IconButton(
+                icon: const Icon(Icons.more_vert, color: Colors.white),
+                onPressed: () {
+                  Fluttertoast.showToast(msg: "更多");
+                },
+                padding: EdgeInsets.zero,
+                iconSize: 30,
+              ),
+            ],
           ),
         ],
       ),
