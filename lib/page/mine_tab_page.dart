@@ -19,10 +19,12 @@ class MineTabPage extends BaseStatefulWidget {
   BaseState<BaseStatefulWidget> createState() => _MinePageState();
 }
 
-class _MinePageState extends BaseState<MineTabPage> {
+class _MinePageState extends BaseState<MineTabPage>
+    with TickerProviderStateMixin {
   // 缓存屏幕宽度，避免重复计算
   late double _screenWidth;
   late double _statusBarHeight;
+  late TabController _tabController;
 
   // 替换原有的api调用，改为使用仓库类
   final userRepo = UserRepository();
@@ -36,7 +38,14 @@ class _MinePageState extends BaseState<MineTabPage> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: tabList.length, vsync: this);
     _getUserInfo();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,6 +73,9 @@ class _MinePageState extends BaseState<MineTabPage> {
       this.bgUrl = bgUrl;
       tabList = userRepo.getTabList(userInfo);
       _isLoading = false;
+      // 更新TabController长度
+      _tabController.dispose();
+      _tabController = TabController(length: tabList.length, vsync: this);
     });
   }
 
@@ -95,15 +107,16 @@ class _MinePageState extends BaseState<MineTabPage> {
             delegate: MiddleHeaderDelegate(
               height: appBarHeight,
               tabList: tabList,
+              tabController: _tabController,
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => ListTile(
-                title: Text("底部列表项 $index"),
-                tileColor: index % 2 == 0 ? Colors.white : Colors.grey[100],
-              ),
-              childCount: 50,
+          SliverFillRemaining(
+            child: TabBarView(
+              controller: _tabController,
+              children: tabList.map((item) {
+                // 根据不同的tab显示不同内容，这里仅做示例
+                return Center(child: Text("${item.title} 内容页面"));
+              }).toList(),
             ),
           ),
         ],
@@ -404,12 +417,17 @@ class _MinePageState extends BaseState<MineTabPage> {
   }
 }
 
-// 自定义中间置顶布局的代理类
+// 修改自定义中间置顶布局的代理类
 class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double height; // 中间布局的固定高度
-  List<MineTabItem> tabList = [];
+  final List<MineTabItem> tabList;
+  final TabController tabController;
 
-  MiddleHeaderDelegate({required this.height, required this.tabList});
+  MiddleHeaderDelegate({
+    required this.height,
+    required this.tabList,
+    required this.tabController,
+  });
 
   @override
   Widget build(
@@ -417,9 +435,26 @@ class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return DefaultTabController(
-      length: tabList.length, // Tab 数量
-      child: Column(),
+    return Container(
+      color: Colors.white, // 背景色，避免滚动时内容穿透
+      child: TabBar(
+        controller: tabController,
+        tabs: tabList.map((item) {
+          // 假设MineTabItem有title属性，根据实际情况调整
+          return Tab(text: item.title);
+        }).toList(),
+        isScrollable: true,
+        // 如果tab数量多可以滚动
+        labelColor: CustomColors.textDark,
+        // 选中文字颜色
+        unselectedLabelColor: CustomColors.textLight,
+        // 未选中文字颜色
+        indicatorColor: CustomColors.bgMain,
+        // 指示器颜色
+        indicatorSize: TabBarIndicatorSize.label,
+        // 指示器与文字同宽
+        labelPadding: EdgeInsets.symmetric(horizontal: 16), // 每个tab的内边距
+      ),
     );
   }
 
@@ -433,7 +468,9 @@ class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   // 布局变化时是否重建（true=重建）
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return oldDelegate.maxExtent != height;
+  bool shouldRebuild(covariant MiddleHeaderDelegate oldDelegate) {
+    return oldDelegate.height != height ||
+        oldDelegate.tabList != tabList ||
+        oldDelegate.tabController != tabController;
   }
 }
