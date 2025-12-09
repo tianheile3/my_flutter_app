@@ -21,10 +21,12 @@ class PostListPage extends BaseStatefulWidget {
   BaseState<BaseStatefulWidget> createState() => _PostListPage();
 }
 
-class _PostListPage extends BaseState<PostListPage> {
+class _PostListPage extends BaseState<PostListPage> with AutomaticKeepAliveClientMixin{
   final api = NetworkManager().getApiClient();
   int page = 1;
   List<UserThreadMyThreadList> items = [];
+
+
 
   @override
   void initState() {
@@ -131,6 +133,7 @@ class _PostListPage extends BaseState<PostListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (isRefreshing) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -279,4 +282,7 @@ class _PostListPage extends BaseState<PostListPage> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

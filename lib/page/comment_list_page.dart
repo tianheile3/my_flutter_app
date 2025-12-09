@@ -9,7 +9,8 @@ class CommentListPage extends BaseStatefulWidget {
   BaseState<BaseStatefulWidget> createState() => _CommentListPage();
 }
 
-class _CommentListPage extends BaseState<CommentListPage> {
+class _CommentListPage extends BaseState<CommentListPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -17,6 +18,10 @@ class _CommentListPage extends BaseState<CommentListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Center(child: Text("点评 内容页面"));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

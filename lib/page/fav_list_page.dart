@@ -9,7 +9,8 @@ class FavListPage extends BaseStatefulWidget {
   BaseState<BaseStatefulWidget> createState() => _FavListPage();
 }
 
-class _FavListPage extends BaseState<FavListPage> {
+class _FavListPage extends BaseState<FavListPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -17,6 +18,10 @@ class _FavListPage extends BaseState<FavListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Center(child: Text("收藏 内容页面"));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
