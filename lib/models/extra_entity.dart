@@ -8,8 +8,8 @@ class ExtraEntity {
 	late String summary;
 	late String videoUrl;
 	late String? imageUrls;
-	late String picNum;
-	late String holdVideo;
+	late int picNum;
+	late bool holdVideo;
 
 	ExtraEntity();
 

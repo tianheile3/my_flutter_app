@@ -15,11 +15,11 @@ ExtraEntity $ExtraEntityFromJson(Map<String, dynamic> json) {
   if (imageUrls != null) {
     extraEntity.imageUrls = imageUrls;
   }
-  final String? picNum = jsonConvert.convert<String>(json['picNum']);
+  final int? picNum = jsonConvert.convert<int>(json['picNum']);
   if (picNum != null) {
     extraEntity.picNum = picNum;
   }
-  final String? holdVideo = jsonConvert.convert<String>(json['holdVideo']);
+  final bool? holdVideo = jsonConvert.convert<bool>(json['holdVideo']);
   if (holdVideo != null) {
     extraEntity.holdVideo = holdVideo;
   }
@@ -41,8 +41,8 @@ extension ExtraEntityExtension on ExtraEntity {
     String? summary,
     String? videoUrl,
     String? imageUrls,
-    String? picNum,
-    String? holdVideo,
+    int? picNum,
+    bool? holdVideo,
   }) {
     return ExtraEntity()
       ..summary = summary ?? this.summary

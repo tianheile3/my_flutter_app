@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_study/page/comment_list_page.dart';
+import 'package:flutter_study/page/fav_list_page.dart';
+import 'package:flutter_study/page/post_list_page.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -33,8 +36,6 @@ class _MinePageState extends BaseState<MineTabPage>
   String bgUrl = "";
   List<MineTabItem> tabList = [];
 
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -60,7 +61,7 @@ class _MinePageState extends BaseState<MineTabPage>
   Future<void> _getUserInfo() async {
     // 开始加载
     setState(() {
-      _isLoading = true;
+      isRefreshing = true;
     });
     final userInfo = await userRepo.getUserInfo();
     if (userInfo == null) {
@@ -72,7 +73,7 @@ class _MinePageState extends BaseState<MineTabPage>
       this.userInfo = userInfo;
       this.bgUrl = bgUrl;
       tabList = userRepo.getTabList(userInfo);
-      _isLoading = false;
+      isRefreshing = false;
       // 更新TabController长度
       _tabController.dispose();
       _tabController = TabController(length: tabList.length, vsync: this);
@@ -82,7 +83,7 @@ class _MinePageState extends BaseState<MineTabPage>
   @override
   Widget build(BuildContext context) {
     // 加载状态显示加载界面
-    if (_isLoading) {
+    if (isRefreshing) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(), // 加载指示器
@@ -114,14 +115,62 @@ class _MinePageState extends BaseState<MineTabPage>
             child: TabBarView(
               controller: _tabController,
               children: tabList.map((item) {
-                // 根据不同的tab显示不同内容，这里仅做示例
-                return Center(child: Text("${item.title} 内容页面"));
+                switch (item.type) {
+                  case 1:
+                    return _buildRate();
+                  case 2:
+                    return _buildFav();
+                  default:
+                    return _buildPost();
+                }
               }).toList(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildPost() {
+    final tabController = TabController(length: 3, vsync: this);
+    return Column(
+      children: [
+        Container(
+          color: Colors.white,
+          child: TabBar(
+            controller: tabController,
+            tabs: const [
+              Tab(text: "帖子"),
+              Tab(text: "点评"),
+              Tab(text: "合集"),
+            ],
+            isScrollable: true,
+            labelColor: CustomColors.bgMain,
+            unselectedLabelColor: CustomColors.textLight,
+            indicatorColor: CustomColors.bgMain,
+            indicatorSize: TabBarIndicatorSize.label,
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              PostListPage(uid: userInfo.uid),
+              CommentListPage(),
+              FavListPage(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRate() {
+    return Center(child: Text("点赞 内容页面"));
+  }
+
+  Widget _buildFav() {
+    return Center(child: Text("收藏 内容页面"));
   }
 
   Widget _buildFlexibleSpace() {
@@ -287,7 +336,7 @@ class _MinePageState extends BaseState<MineTabPage>
                 Divider(
                   height: 1,
                   thickness: 1,
-                  color: CustomColors.divider.withAlpha(80),
+                  color: CustomColors.divider.withValues(alpha: 0.8),
                 ),
                 SizedBox(height: 9),
                 Row(
@@ -443,17 +492,10 @@ class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
           // 假设MineTabItem有title属性，根据实际情况调整
           return Tab(text: item.title);
         }).toList(),
-        isScrollable: true,
-        // 如果tab数量多可以滚动
         labelColor: CustomColors.textDark,
-        // 选中文字颜色
         unselectedLabelColor: CustomColors.textLight,
-        // 未选中文字颜色
         indicatorColor: CustomColors.bgMain,
-        // 指示器颜色
         indicatorSize: TabBarIndicatorSize.label,
-        // 指示器与文字同宽
-        labelPadding: EdgeInsets.symmetric(horizontal: 16), // 每个tab的内边距
       ),
     );
   }

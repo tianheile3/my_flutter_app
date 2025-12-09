@@ -189,6 +189,107 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<UserThreadEntity?> getUserThread({
+    int page = 1,
+    int perPage = 30,
+    String secInfoId = "allCity",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'perPage': perPage,
+      r'city': secInfoId,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<UserThreadEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/myinfo/getUserThread',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : UserThreadEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<UserCommentListEntity?> getUserCommentList({
+    int uid = 1,
+    int page = 1,
+    int perPage = 20,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'isMine': uid,
+      r'page': page,
+      r'perPage': perPage,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<UserCommentListEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/board/getUserCommentList',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : UserCommentListEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<MyGatherEntity?> getMyGather({int uid = 0}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'uid': uid};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<MyGatherEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/myinfo/getMyGather',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : MyGatherEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<TokenEntity?> login(FormData data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

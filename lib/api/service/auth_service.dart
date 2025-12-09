@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/utils/auth_utils.dart';
 
-import '../../utils/aes_util.dart';
+import '../../utils/aes_utils.dart';
 import '../../utils/global_state.dart';
 import '../response/token_entity.dart';
 
@@ -28,7 +28,7 @@ class AuthService {
     final key = await api.getEncryptKey();
     if (key == null) return false;
 
-    final encrypted = AESUtil.encrypt(password, key.encryptKey);
+    final encrypted = AESUtils.encrypt(password, key.encryptKey);
     final token = await login(username: username, passwordEncrypt: encrypted);
 
     if (token == null) return false;

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_study/utils/logger_mixin.dart';
 
-class AESUtil with LoggerMixin {
+class AESUtils with LoggerMixin {
   static String encrypt(String data, String secretKey) {
     try {
       final key = Key.fromUtf8(secretKey);

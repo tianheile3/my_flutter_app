@@ -12,7 +12,6 @@ import 'package:flutter_study/models/home_item.dart';
 import 'package:flutter_study/utils/common_utils.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:flutter_study/utils/date_tools.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/user_second_recom_thread_entity.dart';
@@ -33,11 +32,6 @@ class _HomePageState extends BaseState<HomeTabPage> {
   final String sId = "marry22";
   int page = 1;
   List<HomeListItem> items = [];
-
-  // 添加加载状态标识
-  bool _isRefreshing = false;
-  bool _isLoadingMore = false;
-  bool _loadComplete = false;
 
   // 缓存屏幕宽度，避免重复计算
   late double _screenWidth;
@@ -67,13 +61,13 @@ class _HomePageState extends BaseState<HomeTabPage> {
   }
 
   Future<void> _refresh() async {
-    if (_isRefreshing) {
+    if (isRefreshing) {
       return;
     }
     setState(() {
-      _isRefreshing = true;
+      isRefreshing = true;
       page = 1;
-      _loadComplete = false;
+      isLoadComplete = false;
       // 清空现有数据
       items.clear();
     });
@@ -85,18 +79,18 @@ class _HomePageState extends BaseState<HomeTabPage> {
     } finally {
       if (mounted) {
         setState(() {
-          _isRefreshing = false;
+          isRefreshing = false;
         });
       }
     }
   }
 
   Future<void> _onLoad() async {
-    if (_loadComplete || _isLoadingMore) {
+    if (isLoadComplete || isLoadingMore) {
       return;
     }
     setState(() {
-      _isLoadingMore = true;
+      isLoadingMore = true;
     });
     try {
       final list = await _initThread();
@@ -105,10 +99,9 @@ class _HomePageState extends BaseState<HomeTabPage> {
       });
     } catch (e) {
       logger.e('加载更多失败: $e');
-      showErrorToast('加载更多失败');
     } finally {
       if (mounted) {
-        setState(() => _isLoadingMore = false);
+        setState(() => isLoadingMore = false);
       }
     }
   }
@@ -178,7 +171,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
         threadList.add(item);
       }
     }
-    _loadComplete = page >= int.parse(res.maxPage);
+    isLoadComplete = page >= int.parse(res.maxPage);
     page++;
     return threadList;
   }
@@ -401,7 +394,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
                       );
                     },
                     options: CarouselOptions(
-                      aspectRatio: 5/2,
+                      aspectRatio: 5 / 2,
                       // 中间项放大
                       autoPlay: true,
                       // 自动播放

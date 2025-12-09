@@ -13,6 +13,12 @@ abstract class BaseStatefulWidget extends StatefulWidget with LoggerMixin {
 /// 基础状态类，已混入LoggerMixin
 abstract class BaseState<T extends BaseStatefulWidget> extends State<T>
     with LoggerMixin {
+
+  // 添加加载状态标识
+  bool isRefreshing = false;
+  bool isLoadingMore = false;
+  bool isLoadComplete = false;
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +32,11 @@ abstract class BaseState<T extends BaseStatefulWidget> extends State<T>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant T oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

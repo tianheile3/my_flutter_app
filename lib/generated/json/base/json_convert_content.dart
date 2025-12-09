@@ -7,10 +7,13 @@ import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
+import 'package:flutter_study/api/response/my_gather_entity.dart';
 import 'package:flutter_study/api/response/second_config_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
+import 'package:flutter_study/api/response/user_comment_list_entity.dart';
 import 'package:flutter_study/api/response/user_second_recom_thread_entity.dart';
+import 'package:flutter_study/api/response/user_thread_entity.dart';
 import 'package:flutter_study/models/extra_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
@@ -174,6 +177,14 @@ class JsonConvert {
       return data.map<MobileBgUrlEntity>((Map<String, dynamic> e) =>
           MobileBgUrlEntity.fromJson(e)).toList() as M;
     }
+    if (<MyGatherEntity>[] is M) {
+      return data.map<MyGatherEntity>((Map<String, dynamic> e) =>
+          MyGatherEntity.fromJson(e)).toList() as M;
+    }
+    if (<MyGatherGatherList>[] is M) {
+      return data.map<MyGatherGatherList>((Map<String, dynamic> e) =>
+          MyGatherGatherList.fromJson(e)).toList() as M;
+    }
     if (<SecondConfigEntity>[] is M) {
       return data.map<SecondConfigEntity>((Map<String, dynamic> e) =>
           SecondConfigEntity.fromJson(e)).toList() as M;
@@ -237,6 +248,26 @@ class JsonConvert {
       return data.map<TokenEntity>((Map<String, dynamic> e) =>
           TokenEntity.fromJson(e)).toList() as M;
     }
+    if (<UserCommentListEntity>[] is M) {
+      return data.map<UserCommentListEntity>((Map<String, dynamic> e) =>
+          UserCommentListEntity.fromJson(e)).toList() as M;
+    }
+    if (<UserCommentListComments>[] is M) {
+      return data.map<UserCommentListComments>((Map<String, dynamic> e) =>
+          UserCommentListComments.fromJson(e)).toList() as M;
+    }
+    if (<UserCommentListCommentsBoardInfo>[] is M) {
+      return data.map<UserCommentListCommentsBoardInfo>((
+          Map<String, dynamic> e) =>
+          UserCommentListCommentsBoardInfo.fromJson(e)).toList() as M;
+    }
+    if (<UserCommentListCommentsBoardInfoPicUrlsList>[] is M) {
+      return data
+          .map<UserCommentListCommentsBoardInfoPicUrlsList>((
+          Map<String, dynamic> e) =>
+          UserCommentListCommentsBoardInfoPicUrlsList.fromJson(e))
+          .toList() as M;
+    }
     if (<UserSecondRecomThreadEntity>[] is M) {
       return data.map<UserSecondRecomThreadEntity>((Map<String, dynamic> e) =>
           UserSecondRecomThreadEntity.fromJson(e)).toList() as M;
@@ -264,6 +295,22 @@ class JsonConvert {
           Map<String, dynamic> e) =>
           UserSecondRecomThreadRecomThreadListZanInfo.fromJson(e))
           .toList() as M;
+    }
+    if (<UserThreadEntity>[] is M) {
+      return data.map<UserThreadEntity>((Map<String, dynamic> e) =>
+          UserThreadEntity.fromJson(e)).toList() as M;
+    }
+    if (<UserThreadMyThreadList>[] is M) {
+      return data.map<UserThreadMyThreadList>((Map<String, dynamic> e) =>
+          UserThreadMyThreadList.fromJson(e)).toList() as M;
+    }
+    if (<UserThreadMyThreadListAuthor>[] is M) {
+      return data.map<UserThreadMyThreadListAuthor>((Map<String, dynamic> e) =>
+          UserThreadMyThreadListAuthor.fromJson(e)).toList() as M;
+    }
+    if (<UserThreadMyThreadListZanInfo>[] is M) {
+      return data.map<UserThreadMyThreadListZanInfo>((Map<String, dynamic> e) =>
+          UserThreadMyThreadListZanInfo.fromJson(e)).toList() as M;
     }
     if (<ExtraEntity>[] is M) {
       return data.map<ExtraEntity>((Map<String, dynamic> e) =>
@@ -296,6 +343,8 @@ class JsonConvertClassCollection {
     (CurrentUserInfoUserMedals).toString(): CurrentUserInfoUserMedals.fromJson,
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
     (MobileBgUrlEntity).toString(): MobileBgUrlEntity.fromJson,
+    (MyGatherEntity).toString(): MyGatherEntity.fromJson,
+    (MyGatherGatherList).toString(): MyGatherGatherList.fromJson,
     (SecondConfigEntity).toString(): SecondConfigEntity.fromJson,
     (SecondConfigConfigInfo).toString(): SecondConfigConfigInfo.fromJson,
     (SecondConfigConfigInfoAppPortalInfo)
@@ -318,6 +367,12 @@ class JsonConvertClassCollection {
         .toString(): SecondConfigConfigInfoPicTurnListThreadAuthor.fromJson,
     (SystemTimeEntity).toString(): SystemTimeEntity.fromJson,
     (TokenEntity).toString(): TokenEntity.fromJson,
+    (UserCommentListEntity).toString(): UserCommentListEntity.fromJson,
+    (UserCommentListComments).toString(): UserCommentListComments.fromJson,
+    (UserCommentListCommentsBoardInfo)
+        .toString(): UserCommentListCommentsBoardInfo.fromJson,
+    (UserCommentListCommentsBoardInfoPicUrlsList)
+        .toString(): UserCommentListCommentsBoardInfoPicUrlsList.fromJson,
     (UserSecondRecomThreadEntity).toString(): UserSecondRecomThreadEntity
         .fromJson,
     (UserSecondRecomThreadRecomThreadList)
@@ -329,6 +384,12 @@ class JsonConvertClassCollection {
         .fromJson,
     (UserSecondRecomThreadRecomThreadListZanInfo)
         .toString(): UserSecondRecomThreadRecomThreadListZanInfo.fromJson,
+    (UserThreadEntity).toString(): UserThreadEntity.fromJson,
+    (UserThreadMyThreadList).toString(): UserThreadMyThreadList.fromJson,
+    (UserThreadMyThreadListAuthor).toString(): UserThreadMyThreadListAuthor
+        .fromJson,
+    (UserThreadMyThreadListZanInfo).toString(): UserThreadMyThreadListZanInfo
+        .fromJson,
     (ExtraEntity).toString(): ExtraEntity.fromJson,
   };
 

@@ -15,4 +15,7 @@ abstract class Constants {
   static const String AGENT = "nineteenlou";
 
   static const String prefKeyDeviceId = 'pref_key_device_id';
+
+  static const String ATT2_HOST = "att2.citysbs.com/";
+  static const String ATT3_HOST = "att3.citysbs.com/";
 }
