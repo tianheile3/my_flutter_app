@@ -59,25 +59,39 @@ class _MinePageState extends BaseState<MineTabPage>
   }
 
   Future<void> _getUserInfo() async {
-    // 开始加载
     setState(() {
       isRefreshing = true;
     });
-    final userInfo = await userRepo.getUserInfo();
-    if (userInfo == null) {
-      showErrorToast('加载失败，请重试');
-      return;
+    try {
+      final userInfo = await userRepo.getUserInfo();
+      if (userInfo == null) {
+        setState(() {
+          errorMessage = '初始化失败';
+          isRefreshFailed = true;
+        });
+      } else {
+        final bgUrl = await userRepo.getMobileBgUrl(userInfo.uid);
+        setState(() {
+          this.userInfo = userInfo;
+          this.bgUrl = bgUrl;
+          tabList = userRepo.getTabList(userInfo);
+          isRefreshing = false;
+          isRefreshFailed = false;
+          // 更新TabController长度
+          _tabController.dispose();
+          _tabController = TabController(length: tabList.length, vsync: this);
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = '初始化失败: $e';
+        isRefreshFailed = true;
+      });
+    } finally {
+      setState(() {
+        isRefreshing = false;
+      });
     }
-    final bgUrl = await userRepo.getMobileBgUrl(userInfo.uid);
-    setState(() {
-      this.userInfo = userInfo;
-      this.bgUrl = bgUrl;
-      tabList = userRepo.getTabList(userInfo);
-      isRefreshing = false;
-      // 更新TabController长度
-      _tabController.dispose();
-      _tabController = TabController(length: tabList.length, vsync: this);
-    });
   }
 
   @override
@@ -88,6 +102,20 @@ class _MinePageState extends BaseState<MineTabPage>
         body: Center(
           child: CircularProgressIndicator(), // 加载指示器
         ),
+      );
+    }
+    if (isRefreshFailed) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            errorMessage,
+            style: const TextStyle(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(onPressed: _getUserInfo, child: const Text('重试')),
+        ],
       );
     }
     return Scaffold(

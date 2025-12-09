@@ -1,6 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/network_manager.dart';
+import 'package:flutter_study/base/base_state.dart';
 import 'package:flutter_study/page/login_page.dart';
 import 'package:flutter_study/page/main_home_page.dart';
 import 'package:flutter_study/utils/global_state.dart';
@@ -52,16 +53,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoadingPage extends StatefulWidget {
+class LoadingPage extends BaseStatefulWidget {
   const LoadingPage({super.key});
 
   @override
-  State<LoadingPage> createState() => _MyLoadingPageState();
+  BaseState<LoadingPage> createState() => _MyLoadingPageState();
 }
 
-class _MyLoadingPageState extends State<LoadingPage> {
-  String _errorMessage = '';
-
+class _MyLoadingPageState extends BaseState<LoadingPage> {
   @override
   void initState() {
     super.initState();
@@ -73,6 +72,10 @@ class _MyLoadingPageState extends State<LoadingPage> {
 
   Future<void> _initializeApp() async {
     try {
+      setState(() {
+        isRefreshFailed = false;
+        errorMessage = "";
+      });
       await GlobalState.instance.getLocalStorage();
       if (GlobalState.instance.cityName == "") {
         GlobalState.instance.cityName = "jiaxing";
@@ -93,7 +96,8 @@ class _MyLoadingPageState extends State<LoadingPage> {
       );
     } catch (e) {
       setState(() {
-        _errorMessage = '初始化失败: $e';
+        isRefreshFailed = true;
+        errorMessage = '初始化失败: $e';
       });
     }
   }
@@ -102,12 +106,12 @@ class _MyLoadingPageState extends State<LoadingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _errorMessage.isNotEmpty
+        child: isRefreshFailed
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _errorMessage,
+                    errorMessage,
                     style: const TextStyle(color: Colors.red),
                     textAlign: TextAlign.center,
                   ),

@@ -39,7 +39,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
   @override
   void initState() {
     super.initState();
-    _initData();
+    _refresh();
   }
 
   @override
@@ -65,6 +65,8 @@ class _HomePageState extends BaseState<HomeTabPage> {
       return;
     }
     setState(() {
+      isRefreshFailed = false;
+      errorMessage = "";
       isRefreshing = true;
       page = 1;
       isLoadComplete = false;
@@ -74,8 +76,8 @@ class _HomePageState extends BaseState<HomeTabPage> {
     try {
       await _initData();
     } catch (e) {
-      logger.e('刷新数据失败: $e');
-      showErrorToast('刷新失败，请重试');
+      isRefreshFailed = true;
+      errorMessage = '初始化失败: $e';
     } finally {
       if (mounted) {
         setState(() {
@@ -92,19 +94,32 @@ class _HomePageState extends BaseState<HomeTabPage> {
     setState(() {
       isLoadingMore = true;
     });
+    bool hasError = false;
     try {
       final list = await _initThread();
       setState(() {
         items.addAll(list);
       });
     } catch (e) {
-      logger.e('加载更多失败: $e');
+      hasError = true;
     } finally {
+      if (hasError) {
+        _controller.finishLoad(IndicatorResult.fail);
+      } else if (isLoadComplete) {
+        _controller.finishLoad(IndicatorResult.noMore);
+      } else {
+        _controller.finishLoad(IndicatorResult.success);
+      }
       if (mounted) {
         setState(() => isLoadingMore = false);
       }
     }
   }
+
+  final EasyRefreshController _controller = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   Future<List<HomeListItem>> _initConfig() async {
     final dio = Dio();
@@ -150,7 +165,6 @@ class _HomePageState extends BaseState<HomeTabPage> {
 
     final res = await api.getUserSecondRecomThread(industryId: sId, page: page);
     if (res == null) {
-      showErrorToast('加载失败，请重试');
       return threadList;
     }
     if (res.recomThreadList.isNotEmpty) {
@@ -321,10 +335,33 @@ class _HomePageState extends BaseState<HomeTabPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 加载状态显示加载界面
+    if (isRefreshing) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(), // 加载指示器
+        ),
+      );
+    }
+    if (isRefreshFailed) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            errorMessage,
+            style: const TextStyle(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(onPressed: _refresh, child: const Text('重试')),
+        ],
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(title: const Text("首页")),
       body: EasyRefresh(
+        controller: _controller,
         onRefresh: _refresh,
         onLoad: _onLoad,
         child: ListView.builder(

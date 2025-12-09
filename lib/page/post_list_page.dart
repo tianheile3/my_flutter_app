@@ -67,9 +67,7 @@ class _PostListPage extends BaseState<PostListPage> {
     setState(() {
       isLoadingMore = true;
     });
-
     bool hasError = false;
-
     try {
       final res = await api.getUserThread(page: page);
       if (res == null || res.code != "1") {
