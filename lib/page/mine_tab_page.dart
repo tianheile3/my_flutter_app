@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/page/comment_list_page.dart';
-import 'package:flutter_study/page/fav_list_page.dart';
+import 'package:flutter_study/page/gather_list_page.dart';
 import 'package:flutter_study/page/post_list_page.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -185,7 +185,7 @@ class _MinePageState extends BaseState<MineTabPage>
             children: [
               PostListPage(uid: userInfo.uid),
               CommentListPage(),
-              FavListPage(),
+              GatherListPage(),
             ],
           ),
         ),
