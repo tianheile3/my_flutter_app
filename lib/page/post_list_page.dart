@@ -53,30 +53,44 @@ class _PostListPage extends BaseState<PostListPage> {
     } catch (e) {
       logger.e('加载失败: $e');
     } finally {
+      _controller.finishRefresh();
+      _controller.resetFooter();
       setState(() => isRefreshing = false);
     }
   }
 
   Future<void> _onLoad() async {
     if (isLoadComplete || isLoadingMore || isRefreshing) {
+      _controller.finishLoad();
       return;
     }
     setState(() {
       isLoadingMore = true;
     });
+
+    bool hasError = false;
+
     try {
       final res = await api.getUserThread(page: page);
       if (res == null || res.code != "1") {
-        setState(() => isLoadingMore = false);
-        return;
+        hasError = true;
+      } else {
+        await dataProcessing(res);
+        setState(() {
+          items.addAll(res.myThreadList);
+        });
       }
-      await dataProcessing(res);
-      setState(() {
-        items.addAll(res.myThreadList);
-      });
     } catch (e) {
       logger.e('加载失败: $e');
+      hasError = true;
     } finally {
+      if (hasError) {
+        _controller.finishLoad(IndicatorResult.fail);
+      } else if (isLoadComplete) {
+        _controller.finishLoad(IndicatorResult.noMore);
+      } else {
+        _controller.finishLoad(IndicatorResult.success);
+      }
       if (mounted) {
         setState(() => isLoadingMore = false);
       }
@@ -99,9 +113,7 @@ class _PostListPage extends BaseState<PostListPage> {
         }
       }
     }
-    setState(() {
-      isLoadComplete = res.page * res.perPage >= res.totalCount;
-    });
+    isLoadComplete = res.page * res.perPage >= res.totalCount;
     page++;
   }
 
@@ -114,6 +126,11 @@ class _PostListPage extends BaseState<PostListPage> {
     }
   }
 
+  final EasyRefreshController _controller = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
+
   @override
   Widget build(BuildContext context) {
     if (isRefreshing) {
@@ -122,6 +139,7 @@ class _PostListPage extends BaseState<PostListPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: EasyRefresh(
+        controller: _controller,
         onLoad: _onLoad,
         child: ListView.builder(
           itemCount: items.length,
