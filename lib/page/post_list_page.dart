@@ -21,10 +21,16 @@ class PostListPage extends BaseStatefulWidget {
   BaseState<BaseStatefulWidget> createState() => _PostListPage();
 }
 
-class _PostListPage extends BaseState<PostListPage> with AutomaticKeepAliveClientMixin{
+class _PostListPage extends BaseState<PostListPage>
+    with AutomaticKeepAliveClientMixin {
   final api = NetworkManager().getApiClient();
   int page = 1;
   List<UserThreadMyThreadList> items = [];
+
+  final EasyRefreshController _controller = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   @override
   void initState() {
@@ -124,11 +130,6 @@ class _PostListPage extends BaseState<PostListPage> with AutomaticKeepAliveClien
     }
   }
 
-  final EasyRefreshController _controller = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -137,29 +138,33 @@ class _PostListPage extends BaseState<PostListPage> with AutomaticKeepAliveClien
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      body: EasyRefresh(
-        controller: _controller,
-        onLoad: _onLoad,
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-              child: Column(
-                children: [
-                  if (item.itemType == 0)
-                    _buildPic(item)
-                  else
-                    _buildVideo(item),
-                  SizedBox(height: 10),
-                  _buildComment(item),
-                  SizedBox(height: 10),
-                  Divider(height: 1, color: CustomColors.divider),
-                ],
-              ),
-            );
-          },
+      body: MediaQuery.removePadding(
+        context: context,
+        removeTop: true, // 移除顶部的padding
+        child: EasyRefresh(
+          controller: _controller,
+          onLoad: _onLoad,
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                child: Column(
+                  children: [
+                    if (item.itemType == 0)
+                      _buildPic(item)
+                    else
+                      _buildVideo(item),
+                    SizedBox(height: 10),
+                    _buildComment(item),
+                    SizedBox(height: 10),
+                    Divider(height: 1, color: CustomColors.divider),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
