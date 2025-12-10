@@ -27,7 +27,13 @@ class _MinePageState extends BaseState<MineTabPage>
   // 缓存屏幕宽度，避免重复计算
   late double _screenWidth;
   late double _statusBarHeight;
-  late TabController _tabController;
+  late TabController _outerTabController;
+  late TabController _innerTabController;
+
+  bool get _isPostTab => _tabList.isNotEmpty && _outerTabController.index >= 0
+      ? _tabList[_outerTabController.index].type != 1 &&
+            _tabList[_outerTabController.index].type != 2
+      : false;
 
   // 替换原有的api调用，改为使用仓库类
   final userRepo = UserRepository();
@@ -39,13 +45,32 @@ class _MinePageState extends BaseState<MineTabPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabList.length, vsync: this);
+    _outerTabController = TabController(length: _tabList.length, vsync: this);
+    _innerTabController = TabController(length: 3, vsync: this);
+
+    _outerTabController.addListener(_onOuterTabChanged);
+    _innerTabController.addListener(_onInnerTabChanged);
     _getUserInfo();
+  }
+
+  void _onOuterTabChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _onInnerTabChanged() {
+    if (mounted && _isPostTab) {
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _outerTabController.removeListener(_onOuterTabChanged);
+    _innerTabController.removeListener(_onInnerTabChanged);
+    _outerTabController.dispose();
+    _innerTabController.dispose();
     super.dispose();
   }
 
@@ -78,8 +103,13 @@ class _MinePageState extends BaseState<MineTabPage>
           isRefreshing = false;
           isRefreshFailed = false;
           // 更新TabController长度
-          _tabController.dispose();
-          _tabController = TabController(length: _tabList.length, vsync: this);
+          _outerTabController.removeListener(_onOuterTabChanged);
+          _outerTabController.dispose();
+          _outerTabController = TabController(
+            length: _tabList.length,
+            vsync: this,
+          );
+          _outerTabController.addListener(_onOuterTabChanged);
         });
       }
     } catch (e) {
@@ -122,7 +152,7 @@ class _MinePageState extends BaseState<MineTabPage>
       body: NestedScrollView(
         // 1. 外部 Sliver 区域
         headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
+          final slivers = [
             SliverAppBar(
               expandedHeight: expandedHeight,
               toolbarHeight: collapsedToolbarHeight,
@@ -138,59 +168,53 @@ class _MinePageState extends BaseState<MineTabPage>
               delegate: MiddleHeaderDelegate(
                 height: appBarHeight,
                 tabList: _tabList,
-                tabController: _tabController,
+                tabController: _outerTabController,
               ),
             ),
           ];
+          // 如果当前是“动态”tab，添加内层 TabBar
+          if (_isPostTab) {
+            slivers.add(
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _InnerTabBarDelegate(
+                  tabController: _innerTabController,
+                  height: appBarHeight,
+                ),
+              ),
+            );
+          }
+          return slivers;
         },
-        body: TabBarView(
-          controller: _tabController,
-          children: _tabList.map((item) {
-            switch (item.type) {
-              case 1:
-                return _buildRate();
-              case 2:
-                return _buildFav();
-              default:
-                return _buildPost();
+        body: Builder(
+          builder: (context) {
+            if (_outerTabController.index < 0 || _tabList.isEmpty) {
+              return Container();
             }
-          }).toList(),
+            final currentTabType = _tabList[_outerTabController.index].type;
+            return Stack(
+              children: [
+                // 动态（帖子/点评/合集）
+                Offstage(
+                  offstage: !_isPostTab,
+                  child: IndexedStack(
+                    index: _innerTabController.index,
+                    children: [
+                      PostListPage(uid: userInfo.uid),
+                      CommentListPage(),
+                      GatherListPage(),
+                    ],
+                  ),
+                ),
+                // 点赞
+                Offstage(offstage: currentTabType != 1, child: _buildRate()),
+                // 收藏
+                Offstage(offstage: currentTabType != 2, child: _buildFav()),
+              ],
+            );
+          },
         ),
       ),
-    );
-  }
-
-  Widget _buildPost() {
-    final tabController = TabController(length: 3, vsync: this);
-    return Column(
-      children: [
-        Container(
-          color: Colors.white,
-          child: TabBar(
-            controller: tabController,
-            tabs: const [
-              Tab(text: "帖子"),
-              Tab(text: "点评"),
-              Tab(text: "合集"),
-            ],
-            isScrollable: true,
-            labelColor: CustomColors.bgMain,
-            unselectedLabelColor: CustomColors.textLight,
-            indicatorColor: CustomColors.bgMain,
-            indicatorSize: TabBarIndicatorSize.label,
-          ),
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              PostListPage(uid: userInfo.uid),
-              CommentListPage(),
-              GatherListPage(),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -543,5 +567,47 @@ class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
     return oldDelegate.height != height ||
         oldDelegate.tabList != tabList ||
         oldDelegate.tabController != tabController;
+  }
+}
+
+class _InnerTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final double height; // 中间布局的固定高度
+  final TabController tabController;
+
+  _InnerTabBarDelegate({required this.tabController, required this.height});
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: Colors.white,
+      child: TabBar(
+        controller: tabController,
+        tabs: const [
+          Tab(text: "帖子"),
+          Tab(text: "点评"),
+          Tab(text: "合集"),
+        ],
+        labelColor: CustomColors.textDark,
+        unselectedLabelColor: CustomColors.textLight,
+        indicatorColor: CustomColors.bgMain,
+        indicatorSize: TabBarIndicatorSize.label,
+        isScrollable: false,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _InnerTabBarDelegate oldDelegate) {
+    return tabController != oldDelegate.tabController;
   }
 }

@@ -26,8 +26,6 @@ class _PostListPage extends BaseState<PostListPage> with AutomaticKeepAliveClien
   int page = 1;
   List<UserThreadMyThreadList> items = [];
 
-
-
   @override
   void initState() {
     super.initState();
