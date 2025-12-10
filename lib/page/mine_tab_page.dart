@@ -34,12 +34,12 @@ class _MinePageState extends BaseState<MineTabPage>
 
   late CurrentUserInfoUser userInfo;
   String bgUrl = "";
-  List<MineTabItem> tabList = [];
+  List<MineTabItem> _tabList = [];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: tabList.length, vsync: this);
+    _tabController = TabController(length: _tabList.length, vsync: this);
     _getUserInfo();
   }
 
@@ -74,12 +74,12 @@ class _MinePageState extends BaseState<MineTabPage>
         setState(() {
           this.userInfo = userInfo;
           this.bgUrl = bgUrl;
-          tabList = userRepo.getTabList(userInfo);
+          _tabList = userRepo.getTabList(userInfo);
           isRefreshing = false;
           isRefreshFailed = false;
           // 更新TabController长度
           _tabController.dispose();
-          _tabController = TabController(length: tabList.length, vsync: this);
+          _tabController = TabController(length: _tabList.length, vsync: this);
         });
       }
     } catch (e) {
@@ -119,42 +119,43 @@ class _MinePageState extends BaseState<MineTabPage>
       );
     }
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: expandedHeight,
-            toolbarHeight: collapsedToolbarHeight,
-            pinned: true,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            title: const SizedBox.shrink(),
-            backgroundColor: Colors.white,
-            flexibleSpace: _buildFlexibleSpace(),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: MiddleHeaderDelegate(
-              height: appBarHeight,
-              tabList: tabList,
-              tabController: _tabController,
+      body: NestedScrollView(
+        // 1. 外部 Sliver 区域
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              expandedHeight: expandedHeight,
+              toolbarHeight: collapsedToolbarHeight,
+              pinned: true,
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              title: const SizedBox.shrink(),
+              backgroundColor: Colors.white,
+              flexibleSpace: _buildFlexibleSpace(),
             ),
-          ),
-          SliverFillRemaining(
-            child: TabBarView(
-              controller: _tabController,
-              children: tabList.map((item) {
-                switch (item.type) {
-                  case 1:
-                    return _buildRate();
-                  case 2:
-                    return _buildFav();
-                  default:
-                    return _buildPost();
-                }
-              }).toList(),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: MiddleHeaderDelegate(
+                height: appBarHeight,
+                tabList: _tabList,
+                tabController: _tabController,
+              ),
             ),
-          ),
-        ],
+          ];
+        },
+        body: TabBarView(
+          controller: _tabController,
+          children: _tabList.map((item) {
+            switch (item.type) {
+              case 1:
+                return _buildRate();
+              case 2:
+                return _buildFav();
+              default:
+                return _buildPost();
+            }
+          }).toList(),
+        ),
       ),
     );
   }
