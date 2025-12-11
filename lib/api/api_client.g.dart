@@ -290,6 +290,76 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<GatherThreadPageInfoEntity?> getGatherThreadPageInfo({
+    required String gatherId,
+    required String order,
+    int page = 1,
+    int perPage = 10,
+    int currentTid = 0,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'gatherId': gatherId,
+      r'order': order,
+      r'page': page,
+      r'perPage': perPage,
+      r'currentTid': currentTid,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<GatherThreadPageInfoEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/myinfo/getGatherThreadPageInfo',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : GatherThreadPageInfoEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<IsRatedBatchEntity?> isRatedBatch({required String tidPids}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'tidPids': tidPids};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<IsRatedBatchEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/board/isRatedBatch',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : IsRatedBatchEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<TokenEntity?> login(FormData data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

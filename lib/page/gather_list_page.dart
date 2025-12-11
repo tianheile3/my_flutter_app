@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_study/page/gather_page.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 
 import '../api/network_manager.dart';
@@ -82,74 +83,84 @@ class _FavListPage extends BaseState<GatherListPage>
             final item = items[index];
             const double containerHeight = 100;
             if (item is MyGatherGatherList) {
-              return Container(
-                padding: EdgeInsets.fromLTRB(15, 12, 15, 0),
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: CachedNetworkImage(
-                            imageUrl: item.cover,
-                            width: 100,
-                            height: containerHeight,
-                            fit: BoxFit.cover,
-                            memCacheWidth: 200,
-                            memCacheHeight: 200,
-                          ),
-                        ),
-                        SizedBox(width: 15),
-                        SizedBox(
-                          height: 100,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.name,
-                                    style: TextStyle(
-                                      color: CustomColors.textDark,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxWidth:
-                                          _screenWidth - 160, // 减去左侧图片和间距的宽度
-                                    ),
-                                    child: Text(
-                                      item.desc,
-                                      style: TextStyle(
-                                        color: CustomColors.textOther,
-                                        fontSize: 13,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                _getNumbers(item),
-                                style: TextStyle(
-                                  color: CustomColors.textLight,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GatherPage(gatherId: item.id),
                     ),
-                    SizedBox(height: 12),
-                    Divider(height: 1, thickness: 1, color: Colors.grey[200]),
-                  ],
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(15, 12, 15, 0),
+                  child: Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CachedNetworkImage(
+                              imageUrl: item.cover,
+                              width: 100,
+                              height: containerHeight,
+                              fit: BoxFit.cover,
+                              memCacheWidth: 200,
+                              memCacheHeight: 200,
+                            ),
+                          ),
+                          SizedBox(width: 15),
+                          SizedBox(
+                            height: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.name,
+                                      style: TextStyle(
+                                        color: CustomColors.textDark,
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5),
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            _screenWidth - 160, // 减去左侧图片和间距的宽度
+                                      ),
+                                      child: Text(
+                                        item.desc,
+                                        style: TextStyle(
+                                          color: CustomColors.textOther,
+                                          fontSize: 13,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  _getNumbers(item),
+                                  style: TextStyle(
+                                    color: CustomColors.textLight,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+                    ],
+                  ),
                 ),
               );
             } else if (item is String) {

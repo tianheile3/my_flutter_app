@@ -1,4 +1,5 @@
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_study/utils/constants.dart';
 import 'package:intl/intl.dart';
@@ -134,5 +135,28 @@ class CommonUtils {
     } catch (e) {
       return "";
     }
+  }
+
+  static double calculateTextHeight({
+    required String text,
+    required TextStyle style,
+    double? maxWidth, // 如果文本需要换行，必须指定最大宽度
+    int? maxLines,
+  }) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: ui.TextDirection.ltr,
+      // 或 rtl
+      textAlign: TextAlign.left,
+      maxLines: maxLines,
+    );
+
+    if (maxWidth != null) {
+      textPainter.layout(maxWidth: maxWidth);
+    } else {
+      textPainter.layout(); // 不限制宽度（单行）
+    }
+
+    return textPainter.size.height;
   }
 }

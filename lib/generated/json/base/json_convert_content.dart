@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
+import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
 import 'package:flutter_study/api/response/second_config_entity.dart';
@@ -172,6 +174,37 @@ class JsonConvert {
     if (<EncryptKeyEntity>[] is M) {
       return data.map<EncryptKeyEntity>((Map<String, dynamic> e) =>
           EncryptKeyEntity.fromJson(e)).toList() as M;
+    }
+    if (<GatherThreadPageInfoEntity>[] is M) {
+      return data.map<GatherThreadPageInfoEntity>((Map<String, dynamic> e) =>
+          GatherThreadPageInfoEntity.fromJson(e)).toList() as M;
+    }
+    if (<GatherThreadPageInfoThreadList>[] is M) {
+      return data
+          .map<GatherThreadPageInfoThreadList>((
+          Map<String, dynamic> e) => GatherThreadPageInfoThreadList.fromJson(e))
+          .toList() as M;
+    }
+    if (<GatherThreadPageInfoThreadListAuthor>[] is M) {
+      return data.map<GatherThreadPageInfoThreadListAuthor>((
+          Map<String, dynamic> e) =>
+          GatherThreadPageInfoThreadListAuthor.fromJson(e)).toList() as M;
+    }
+    if (<GatherThreadPageInfoGatherInfo>[] is M) {
+      return data
+          .map<GatherThreadPageInfoGatherInfo>((
+          Map<String, dynamic> e) => GatherThreadPageInfoGatherInfo.fromJson(e))
+          .toList() as M;
+    }
+    if (<GatherThreadPageInfoGatherUser>[] is M) {
+      return data
+          .map<GatherThreadPageInfoGatherUser>((
+          Map<String, dynamic> e) => GatherThreadPageInfoGatherUser.fromJson(e))
+          .toList() as M;
+    }
+    if (<IsRatedBatchEntity>[] is M) {
+      return data.map<IsRatedBatchEntity>((Map<String, dynamic> e) =>
+          IsRatedBatchEntity.fromJson(e)).toList() as M;
     }
     if (<MobileBgUrlEntity>[] is M) {
       return data.map<MobileBgUrlEntity>((Map<String, dynamic> e) =>
@@ -342,6 +375,17 @@ class JsonConvertClassCollection {
     (CurrentUserInfoUserGroup).toString(): CurrentUserInfoUserGroup.fromJson,
     (CurrentUserInfoUserMedals).toString(): CurrentUserInfoUserMedals.fromJson,
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
+    (GatherThreadPageInfoEntity).toString(): GatherThreadPageInfoEntity
+        .fromJson,
+    (GatherThreadPageInfoThreadList).toString(): GatherThreadPageInfoThreadList
+        .fromJson,
+    (GatherThreadPageInfoThreadListAuthor)
+        .toString(): GatherThreadPageInfoThreadListAuthor.fromJson,
+    (GatherThreadPageInfoGatherInfo).toString(): GatherThreadPageInfoGatherInfo
+        .fromJson,
+    (GatherThreadPageInfoGatherUser).toString(): GatherThreadPageInfoGatherUser
+        .fromJson,
+    (IsRatedBatchEntity).toString(): IsRatedBatchEntity.fromJson,
     (MobileBgUrlEntity).toString(): MobileBgUrlEntity.fromJson,
     (MyGatherEntity).toString(): MyGatherEntity.fromJson,
     (MyGatherGatherList).toString(): MyGatherGatherList.fromJson,

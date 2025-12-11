@@ -11,14 +11,13 @@ UserThreadEntity $UserThreadEntityFromJson(Map<String, dynamic> json) {
   if (message != null) {
     userThreadEntity.message = message;
   }
-  final List<UserThreadMyThreadList>? myThreadList =
-      (json['my_thread_list'] as List<dynamic>?)
-          ?.map(
-            (e) =>
-                jsonConvert.convert<UserThreadMyThreadList>(e)
-                    as UserThreadMyThreadList,
-          )
-          .toList();
+  final List<
+      UserThreadMyThreadList>? myThreadList = (json['my_thread_list'] as List<
+      dynamic>?)
+      ?.map(
+          (e) =>
+      jsonConvert.convert<UserThreadMyThreadList>(e) as UserThreadMyThreadList)
+      .toList();
   if (myThreadList != null) {
     userThreadEntity.myThreadList = myThreadList;
   }
@@ -68,10 +67,8 @@ extension UserThreadEntityExtension on UserThreadEntity {
 }
 
 UserThreadMyThreadList $UserThreadMyThreadListFromJson(
-  Map<String, dynamic> json,
-) {
-  final UserThreadMyThreadList userThreadMyThreadList =
-      UserThreadMyThreadList();
+    Map<String, dynamic> json) {
+  final UserThreadMyThreadList userThreadMyThreadList = UserThreadMyThreadList();
   final String? isPrivate = jsonConvert.convert<String>(json['is_private']);
   if (isPrivate != null) {
     userThreadMyThreadList.isPrivate = isPrivate;
@@ -108,8 +105,8 @@ UserThreadMyThreadList $UserThreadMyThreadListFromJson(
   if (subject != null) {
     userThreadMyThreadList.subject = subject;
   }
-  final UserThreadMyThreadListAuthor? author = jsonConvert
-      .convert<UserThreadMyThreadListAuthor>(json['author']);
+  final UserThreadMyThreadListAuthor? author = jsonConvert.convert<
+      UserThreadMyThreadListAuthor>(json['author']);
   if (author != null) {
     userThreadMyThreadList.author = author;
   }
@@ -150,20 +147,17 @@ UserThreadMyThreadList $UserThreadMyThreadListFromJson(
     userThreadMyThreadList.closed = closed;
   }
   final String? lastPostTime = jsonConvert.convert<String>(
-    json['last_post_time'],
-  );
+      json['last_post_time']);
   if (lastPostTime != null) {
     userThreadMyThreadList.lastPostTime = lastPostTime;
   }
   final String? lastPostAuthor = jsonConvert.convert<String>(
-    json['last_post_author'],
-  );
+      json['last_post_author']);
   if (lastPostAuthor != null) {
     userThreadMyThreadList.lastPostAuthor = lastPostAuthor;
   }
   final String? lastPostAuthorUid = jsonConvert.convert<String>(
-    json['last_post_author_uid'],
-  );
+      json['last_post_author_uid']);
   if (lastPostAuthorUid != null) {
     userThreadMyThreadList.lastPostAuthorUid = lastPostAuthorUid;
   }
@@ -192,7 +186,8 @@ UserThreadMyThreadList $UserThreadMyThreadListFromJson(
     userThreadMyThreadList.createdAt = createdAt;
   }
   final List<dynamic>? threadTags = (json['thread_tags'] as List<dynamic>?)
-      ?.map((e) => e)
+      ?.map(
+          (e) => e)
       .toList();
   if (threadTags != null) {
     userThreadMyThreadList.threadTags = threadTags;
@@ -201,32 +196,28 @@ UserThreadMyThreadList $UserThreadMyThreadListFromJson(
   if (holdVideo != null) {
     userThreadMyThreadList.holdVideo = holdVideo;
   }
-  final UserThreadMyThreadListZanInfo? zanInfo = jsonConvert
-      .convert<UserThreadMyThreadListZanInfo>(json['zan_info']);
+  final UserThreadMyThreadListZanInfo? zanInfo = jsonConvert.convert<
+      UserThreadMyThreadListZanInfo>(json['zan_info']);
   if (zanInfo != null) {
     userThreadMyThreadList.zanInfo = zanInfo;
   }
   final String? searchSubject = jsonConvert.convert<String>(
-    json['search_subject'],
-  );
+      json['search_subject']);
   if (searchSubject != null) {
     userThreadMyThreadList.searchSubject = searchSubject;
   }
   final String? searchContent = jsonConvert.convert<String>(
-    json['search_content'],
-  );
+      json['search_content']);
   if (searchContent != null) {
     userThreadMyThreadList.searchContent = searchContent;
   }
   final String? ratePlusNumber = jsonConvert.convert<String>(
-    json['rate_plus_number'],
-  );
+      json['rate_plus_number']);
   if (ratePlusNumber != null) {
     userThreadMyThreadList.ratePlusNumber = ratePlusNumber;
   }
   final String? topicListStick = jsonConvert.convert<String>(
-    json['topic_list_stick'],
-  );
+      json['topic_list_stick']);
   if (topicListStick != null) {
     userThreadMyThreadList.topicListStick = topicListStick;
   }
@@ -239,14 +230,14 @@ UserThreadMyThreadList $UserThreadMyThreadListFromJson(
     userThreadMyThreadList.tagStr = tagStr;
   }
   final List<dynamic>? attachments = (json['attachments'] as List<dynamic>?)
-      ?.map((e) => e)
+      ?.map(
+          (e) => e)
       .toList();
   if (attachments != null) {
     userThreadMyThreadList.attachments = attachments;
   }
   final String? forumCategoryName = jsonConvert.convert<String>(
-    json['forum_category_name'],
-  );
+      json['forum_category_name']);
   if (forumCategoryName != null) {
     userThreadMyThreadList.forumCategoryName = forumCategoryName;
   }
@@ -258,12 +249,24 @@ UserThreadMyThreadList $UserThreadMyThreadListFromJson(
   if (rateid != null) {
     userThreadMyThreadList.rateid = rateid;
   }
+  final int? itemType = jsonConvert.convert<int>(json['itemType']);
+  if (itemType != null) {
+    userThreadMyThreadList.itemType = itemType;
+  }
+  final String? firstImageUrl = jsonConvert.convert<String>(
+      json['firstImageUrl']);
+  if (firstImageUrl != null) {
+    userThreadMyThreadList.firstImageUrl = firstImageUrl;
+  }
+  final int? picNum = jsonConvert.convert<int>(json['picNum']);
+  if (picNum != null) {
+    userThreadMyThreadList.picNum = picNum;
+  }
   return userThreadMyThreadList;
 }
 
 Map<String, dynamic> $UserThreadMyThreadListToJson(
-  UserThreadMyThreadList entity,
-) {
+    UserThreadMyThreadList entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['is_private'] = entity.isPrivate;
   data['cityid'] = entity.cityid;
@@ -306,6 +309,9 @@ Map<String, dynamic> $UserThreadMyThreadListToJson(
   data['forum_category_name'] = entity.forumCategoryName;
   data['stick_time'] = entity.stickTime;
   data['rateid'] = entity.rateid;
+  data['itemType'] = entity.itemType;
+  data['firstImageUrl'] = entity.firstImageUrl;
+  data['picNum'] = entity.picNum;
   return data;
 }
 
@@ -352,6 +358,9 @@ extension UserThreadMyThreadListExtension on UserThreadMyThreadList {
     String? forumCategoryName,
     String? stickTime,
     String? rateid,
+    int? itemType,
+    String? firstImageUrl,
+    int? picNum,
   }) {
     return UserThreadMyThreadList()
       ..isPrivate = isPrivate ?? this.isPrivate
@@ -394,15 +403,16 @@ extension UserThreadMyThreadListExtension on UserThreadMyThreadList {
       ..attachments = attachments ?? this.attachments
       ..forumCategoryName = forumCategoryName ?? this.forumCategoryName
       ..stickTime = stickTime ?? this.stickTime
-      ..rateid = rateid ?? this.rateid;
+      ..rateid = rateid ?? this.rateid
+      ..itemType = itemType ?? this.itemType
+      ..firstImageUrl = firstImageUrl ?? this.firstImageUrl
+      ..picNum = picNum ?? this.picNum;
   }
 }
 
 UserThreadMyThreadListAuthor $UserThreadMyThreadListAuthorFromJson(
-  Map<String, dynamic> json,
-) {
-  final UserThreadMyThreadListAuthor userThreadMyThreadListAuthor =
-      UserThreadMyThreadListAuthor();
+    Map<String, dynamic> json) {
+  final UserThreadMyThreadListAuthor userThreadMyThreadListAuthor = UserThreadMyThreadListAuthor();
   final String? uid = jsonConvert.convert<String>(json['uid']);
   if (uid != null) {
     userThreadMyThreadListAuthor.uid = uid;
@@ -436,8 +446,7 @@ UserThreadMyThreadListAuthor $UserThreadMyThreadListAuthorFromJson(
     userThreadMyThreadListAuthor.highVerify = highVerify;
   }
   final String? honourVerify = jsonConvert.convert<String>(
-    json['honour_verify'],
-  );
+      json['honour_verify']);
   if (honourVerify != null) {
     userThreadMyThreadListAuthor.honourVerify = honourVerify;
   }
@@ -482,20 +491,17 @@ UserThreadMyThreadListAuthor $UserThreadMyThreadListAuthorFromJson(
     userThreadMyThreadListAuthor.isTenYear = isTenYear;
   }
   final bool? shiJiaShangJia = jsonConvert.convert<bool>(
-    json['shi_jia_shang_jia'],
-  );
+      json['shi_jia_shang_jia']);
   if (shiJiaShangJia != null) {
     userThreadMyThreadListAuthor.shiJiaShangJia = shiJiaShangJia;
   }
   final String? shiJiaShangJiaDesc = jsonConvert.convert<String>(
-    json['shi_jia_shang_jia_desc'],
-  );
+      json['shi_jia_shang_jia_desc']);
   if (shiJiaShangJiaDesc != null) {
     userThreadMyThreadListAuthor.shiJiaShangJiaDesc = shiJiaShangJiaDesc;
   }
-  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)
-      ?.map((e) => e)
-      .toList();
+  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)?.map(
+          (e) => e).toList();
   if (medals != null) {
     userThreadMyThreadListAuthor.medals = medals;
   }
@@ -508,8 +514,7 @@ UserThreadMyThreadListAuthor $UserThreadMyThreadListAuthorFromJson(
     userThreadMyThreadListAuthor.cityname = cityname;
   }
   final String? originalAvatar = jsonConvert.convert<String>(
-    json['original_avatar'],
-  );
+      json['original_avatar']);
   if (originalAvatar != null) {
     userThreadMyThreadListAuthor.originalAvatar = originalAvatar;
   }
@@ -526,20 +531,17 @@ UserThreadMyThreadListAuthor $UserThreadMyThreadListAuthorFromJson(
     userThreadMyThreadListAuthor.longitude = longitude;
   }
   final String? totalZanCount = jsonConvert.convert<String>(
-    json['total_zan_count'],
-  );
+      json['total_zan_count']);
   if (totalZanCount != null) {
     userThreadMyThreadListAuthor.totalZanCount = totalZanCount;
   }
   final String? totalFansCount = jsonConvert.convert<String>(
-    json['total_fans_count'],
-  );
+      json['total_fans_count']);
   if (totalFansCount != null) {
     userThreadMyThreadListAuthor.totalFansCount = totalFansCount;
   }
   final String? totalFavCount = jsonConvert.convert<String>(
-    json['total_fav_count'],
-  );
+      json['total_fav_count']);
   if (totalFavCount != null) {
     userThreadMyThreadListAuthor.totalFavCount = totalFavCount;
   }
@@ -547,8 +549,7 @@ UserThreadMyThreadListAuthor $UserThreadMyThreadListAuthorFromJson(
 }
 
 Map<String, dynamic> $UserThreadMyThreadListAuthorToJson(
-  UserThreadMyThreadListAuthor entity,
-) {
+    UserThreadMyThreadListAuthor entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['uid'] = entity.uid;
   data['user_name'] = entity.userName;
@@ -584,8 +585,7 @@ Map<String, dynamic> $UserThreadMyThreadListAuthorToJson(
   return data;
 }
 
-extension UserThreadMyThreadListAuthorExtension
-    on UserThreadMyThreadListAuthor {
+extension UserThreadMyThreadListAuthorExtension on UserThreadMyThreadListAuthor {
   UserThreadMyThreadListAuthor copyWith({
     String? uid,
     String? userName,
@@ -655,10 +655,8 @@ extension UserThreadMyThreadListAuthorExtension
 }
 
 UserThreadMyThreadListZanInfo $UserThreadMyThreadListZanInfoFromJson(
-  Map<String, dynamic> json,
-) {
-  final UserThreadMyThreadListZanInfo userThreadMyThreadListZanInfo =
-      UserThreadMyThreadListZanInfo();
+    Map<String, dynamic> json) {
+  final UserThreadMyThreadListZanInfo userThreadMyThreadListZanInfo = UserThreadMyThreadListZanInfo();
   final String? timeStamp = jsonConvert.convert<String>(json['time_stamp']);
   if (timeStamp != null) {
     userThreadMyThreadListZanInfo.timeStamp = timeStamp;
@@ -676,8 +674,7 @@ UserThreadMyThreadListZanInfo $UserThreadMyThreadListZanInfoFromJson(
     userThreadMyThreadListZanInfo.objectId = objectId;
   }
   final String? relationObjectIds = jsonConvert.convert<String>(
-    json['relation_object_ids'],
-  );
+      json['relation_object_ids']);
   if (relationObjectIds != null) {
     userThreadMyThreadListZanInfo.relationObjectIds = relationObjectIds;
   }
@@ -689,8 +686,7 @@ UserThreadMyThreadListZanInfo $UserThreadMyThreadListZanInfoFromJson(
 }
 
 Map<String, dynamic> $UserThreadMyThreadListZanInfoToJson(
-  UserThreadMyThreadListZanInfo entity,
-) {
+    UserThreadMyThreadListZanInfo entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['time_stamp'] = entity.timeStamp;
   data['uid'] = entity.uid;
@@ -701,8 +697,7 @@ Map<String, dynamic> $UserThreadMyThreadListZanInfoToJson(
   return data;
 }
 
-extension UserThreadMyThreadListZanInfoExtension
-    on UserThreadMyThreadListZanInfo {
+extension UserThreadMyThreadListZanInfoExtension on UserThreadMyThreadListZanInfo {
   UserThreadMyThreadListZanInfo copyWith({
     String? timeStamp,
     String? uid,

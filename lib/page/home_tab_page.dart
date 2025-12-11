@@ -125,7 +125,7 @@ class _HomePageState extends BaseState<HomeTabPage> {
     final dio = Dio();
     final String url =
         "https://att3.citysbs.com/appstatic/${sId}_second.json?secondid=$sId&ts=${DateTime.now().millisecondsSinceEpoch}";
-    logger.e('config: $url');
+    logger.d('config: $url');
 
     final response = await dio.get(url);
     if (response.data == null) {

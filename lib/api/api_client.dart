@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
+import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
@@ -61,6 +63,20 @@ abstract class ApiClient {
 
   @GET("/api/myinfo/getMyGather")
   Future<MyGatherEntity?> getMyGather({@Query("uid") int uid = 0});
+
+  @GET("/api/myinfo/getGatherThreadPageInfo")
+  Future<GatherThreadPageInfoEntity?> getGatherThreadPageInfo({
+    @Query("gatherId") required String gatherId,
+    @Query("order") required String order,
+    @Query("page") int page = 1,
+    @Query("perPage") int perPage = 10,
+    @Query("currentTid") int currentTid = 0,
+  });
+
+  @GET("/api/board/isRatedBatch")
+  Future<IsRatedBatchEntity?> isRatedBatch({
+    @Query("tidPids") required String tidPids,
+  });
 
   //-----------------------------------以下post----------------------------------
 
