@@ -10,17 +10,17 @@ abstract class BaseStatefulWidget extends StatefulWidget with LoggerMixin {
   BaseState createState();
 }
 
+// 定义请求状态枚举
+enum LoadState {
+  refreshing, // 加载中
+  success, // 加载成功
+  failed, // 加载失败
+}
+
 /// 基础状态类，已混入LoggerMixin
 abstract class BaseState<T extends BaseStatefulWidget> extends State<T>
     with LoggerMixin {
-
-  // 添加加载状态标识
-  bool isRefreshFailed = false;//刷新失败
-  String errorMessage = "";//刷新失败的日志
-
-  bool isRefreshing = false;//下拉刷新中
-  bool isLoadingMore = false;//上拉加载中
-  bool isLoadComplete = false;//没有加载更多
+  String errorMessage = ""; //刷新失败的日志
 
   @override
   void initState() {

@@ -23,6 +23,7 @@ class PostListPage extends BaseStatefulWidget {
 
 class _PostListPage extends BaseState<PostListPage>
     with AutomaticKeepAliveClientMixin {
+  LoadState _loadState = LoadState.refreshing; // 初始加载中
   final api = NetworkManager().getApiClient();
   int page = 1;
   List<UserThreadMyThreadList> items = [];
@@ -39,73 +40,58 @@ class _PostListPage extends BaseState<PostListPage>
   }
 
   Future<void> _getUserThread() async {
-    // 开始加载
     setState(() {
-      isRefreshing = true;
-      isLoadComplete = false;
       page = 1;
       items.clear();
+      _loadState = LoadState.refreshing;
+      _controller.resetFooter();
     });
     try {
       final res = await api.getUserThread(page: page);
       if (res == null || res.code != "1") {
-        showErrorToast('加载失败，请重试');
+        setState(() {
+          errorMessage = '加载失败';
+          _loadState = LoadState.failed;
+        });
+        _controller.finishRefresh(IndicatorResult.fail);
         return;
       }
-      await dataProcessing(res);
+      await dataProcessing(res, true);
       setState(() {
         items.addAll(res.myThreadList);
+        _loadState = LoadState.success;
       });
     } catch (e) {
-      logger.e('加载失败: $e');
-    } finally {
-      _controller.finishRefresh();
-      _controller.resetFooter();
-      setState(() => isRefreshing = false);
+      setState(() {
+        errorMessage = '加载失败: $e';
+        _loadState = LoadState.failed;
+      });
+      _controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
   Future<void> _onLoad() async {
-    if (isLoadComplete || isLoadingMore || isRefreshing) {
-      _controller.finishLoad();
-      return;
-    }
-    setState(() {
-      isLoadingMore = true;
-    });
-    bool hasError = false;
     try {
       final res = await api.getUserThread(page: page);
       if (res == null || res.code != "1") {
-        hasError = true;
+        _controller.finishLoad(IndicatorResult.fail);
       } else {
-        await dataProcessing(res);
+        await dataProcessing(res, false);
         setState(() {
           items.addAll(res.myThreadList);
         });
       }
     } catch (e) {
       logger.e('加载失败: $e');
-      hasError = true;
-    } finally {
-      if (hasError) {
-        _controller.finishLoad(IndicatorResult.fail);
-      } else if (isLoadComplete) {
-        _controller.finishLoad(IndicatorResult.noMore);
-      } else {
-        _controller.finishLoad(IndicatorResult.success);
-      }
-      if (mounted) {
-        setState(() => isLoadingMore = false);
-      }
+      _controller.finishLoad(IndicatorResult.fail);
     }
   }
 
-  Future<void> dataProcessing(UserThreadEntity res) async {
+  Future<void> dataProcessing(UserThreadEntity res, isRefresh) async {
     for (var item in res.myThreadList) {
       if (item.extra.isNotEmpty) {
         final extra = ExtraEntity.fromJson(json.decode(item.extra));
-        final List<String> imgList = extra.imageUrls?.split(",") ?? [];
+        final List<String> imgList = extra.imageUrls.split(",");
         if (imgList.isNotEmpty) {
           item.firstImageUrl = ImageUtils.imgToAtt3Size(imgList[0], "m300x");
         }
@@ -117,8 +103,22 @@ class _PostListPage extends BaseState<PostListPage>
         }
       }
     }
-    isLoadComplete = res.page * res.perPage >= res.totalCount;
+    setFinishState(res, isRefresh);
     page++;
+  }
+
+  void setFinishState(UserThreadEntity res, bool isRefresh) {
+    bool noMore = res.page * res.perPage >= res.totalCount;
+    if (isRefresh) {
+      _controller.finishRefresh(IndicatorResult.success);
+      if (noMore) {
+        _controller.finishLoad(IndicatorResult.noMore);
+      }
+    } else {
+      _controller.finishLoad(
+        noMore ? IndicatorResult.noMore : IndicatorResult.success,
+      );
+    }
   }
 
   @override
@@ -133,8 +133,22 @@ class _PostListPage extends BaseState<PostListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (isRefreshing) {
+    if (_loadState == LoadState.refreshing) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_loadState == LoadState.failed) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            errorMessage,
+            style: const TextStyle(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(onPressed: _getUserThread, child: const Text('重试')),
+        ],
+      );
     }
     return Scaffold(
       backgroundColor: Colors.white,

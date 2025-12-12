@@ -22,6 +22,8 @@ class GatherPage extends BaseStatefulWidget {
 }
 
 class _GatherPage extends BaseState<GatherPage> {
+  LoadState _loadState = LoadState.refreshing; // 初始加载中
+
   late double _expandedHeight;
   late double _screenWidth;
 
@@ -50,60 +52,48 @@ class _GatherPage extends BaseState<GatherPage> {
     _onRefresh();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Future<void> _onRefresh() async {
-    logger.d("_onRefresh isRefreshing=$isRefreshing");
-    if (isRefreshing) {
-      return;
-    }
     setState(() {
-      isRefreshFailed = false;
-      isRefreshing = true;
-      isLoadComplete = false;
-      items.clear();
       page = 1;
+      items.clear();
+      _loadState = LoadState.refreshing;
+      _controller.resetFooter();
     });
-    var hasError = false;
     try {
       final res = await api.getGatherThreadPageInfo(
         gatherId: widget.gatherId,
         order: order,
       );
       if (res == null || res.code != 1) {
-        hasError = true;
+        setState(() {
+          _loadState = LoadState.failed;
+        });
+        _controller.finishRefresh(IndicatorResult.fail);
         return;
       }
       setState(() {
         gatherInfo = res.gatherInfo;
         gatherUser = res.gatherUser;
         calculateExpandedHeight();
+        _loadState = LoadState.success;
       });
-      await dataProcessing(res);
+      await dataProcessing(res, true);
     } catch (e) {
-      logger.e('加载失败: $e');
-      hasError = true;
-    } finally {
-      _controller.finishRefresh();
-      _controller.resetFooter();
       setState(() {
-        isRefreshing = false;
-        isRefreshFailed = hasError;
+        errorMessage = '加载失败: $e';
+        _loadState = LoadState.failed;
       });
+      _controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
   Future<void> _onLoad() async {
-    if (isLoadComplete) {
-      _controller.finishLoad(IndicatorResult.noMore);
-      return;
-    }
-    if (isLoadingMore || isRefreshing) {
-      _controller.finishLoad();
-      return;
-    }
-    setState(() {
-      isLoadingMore = true;
-    });
-    bool hasError = false;
     try {
       final res = await api.getGatherThreadPageInfo(
         gatherId: widget.gatherId,
@@ -111,29 +101,19 @@ class _GatherPage extends BaseState<GatherPage> {
         page: page,
       );
       if (res == null || res.code != 1) {
-        hasError = true;
-      } else {
-        await dataProcessing(res);
+        _controller.finishLoad(IndicatorResult.fail);
+        return;
       }
+      await dataProcessing(res, false);
     } catch (e) {
       logger.e('加载失败: $e');
-      hasError = true;
-    } finally {
-      if (hasError) {
-        _controller.finishLoad(IndicatorResult.fail);
-      } else if (isLoadComplete) {
-        _controller.finishLoad(IndicatorResult.noMore);
-      } else {
-        _controller.finishLoad(IndicatorResult.success);
-      }
-      if (mounted) {
-        setState(() => isLoadingMore = false);
-      }
+      _controller.finishLoad(IndicatorResult.fail);
     }
   }
 
-  Future<void> dataProcessing(GatherThreadPageInfoEntity res) async {
+  Future<void> dataProcessing(GatherThreadPageInfoEntity res, isRefresh) async {
     if (res.threadList == null) {
+      setFinishState(res, isRefresh);
       return;
     }
     final List<GatherThreadPageInfoThreadList> list = [];
@@ -171,13 +151,26 @@ class _GatherPage extends BaseState<GatherPage> {
     setState(() {
       items.addAll(list);
     });
-    isLoadComplete = res.page * res.perPage >= res.totalCount;
+    setFinishState(res, isRefresh);
     page++;
+  }
+
+  void setFinishState(GatherThreadPageInfoEntity res, bool isRefresh) {
+    bool noMore = res.page * res.perPage >= res.totalCount;
+    if (isRefresh) {
+      _controller.finishRefresh(IndicatorResult.success);
+      if (noMore) {
+        _controller.finishLoad(IndicatorResult.noMore);
+      }
+    } else {
+      _controller.finishLoad(
+        noMore ? IndicatorResult.noMore : IndicatorResult.success,
+      );
+    }
   }
 
   void calculateExpandedHeight() {
     _expandedHeight = _screenWidth * 8 / 15;
-    logger.d("_expandedHeight: $_expandedHeight");
     if (gatherInfo.desc.isNotEmpty) {
       // 获取文本实际可用宽度（示例：屏幕宽度减去左右边距）
       final double textMaxWidth = _screenWidth - 30;
@@ -188,9 +181,7 @@ class _GatherPage extends BaseState<GatherPage> {
         maxWidth: textMaxWidth,
         maxLines: 2,
       );
-      logger.d("descHeight: $descHeight");
       _expandedHeight += descHeight;
-      logger.d("_expandedHeight: $_expandedHeight");
     } else {
       _expandedHeight -= 25;
     }
@@ -211,14 +202,14 @@ class _GatherPage extends BaseState<GatherPage> {
   @override
   Widget build(BuildContext context) {
     // 加载状态显示加载界面
-    if (isRefreshing) {
+    if (_loadState == LoadState.refreshing) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(), // 加载指示器
         ),
       );
     }
-    if (isRefreshFailed) {
+    if (_loadState == LoadState.failed) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

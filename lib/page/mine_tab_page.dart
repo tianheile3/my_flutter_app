@@ -24,6 +24,7 @@ class MineTabPage extends BaseStatefulWidget {
 
 class _MinePageState extends BaseState<MineTabPage>
     with TickerProviderStateMixin {
+  LoadState _loadState = LoadState.refreshing; // 初始加载中
   // 缓存屏幕宽度，避免重复计算
   late double _screenWidth;
   late double _statusBarHeight;
@@ -85,23 +86,22 @@ class _MinePageState extends BaseState<MineTabPage>
 
   Future<void> _getUserInfo() async {
     setState(() {
-      isRefreshing = true;
+      _loadState = LoadState.refreshing;
     });
     try {
       final userInfo = await userRepo.getUserInfo();
       if (userInfo == null) {
         setState(() {
           errorMessage = '初始化失败';
-          isRefreshFailed = true;
+          _loadState = LoadState.failed;
         });
       } else {
         final bgUrl = await userRepo.getMobileBgUrl(userInfo.uid);
         setState(() {
+          _loadState = LoadState.success;
           this.userInfo = userInfo;
           this.bgUrl = bgUrl;
           _tabList = userRepo.getTabList(userInfo);
-          isRefreshing = false;
-          isRefreshFailed = false;
           // 更新TabController长度
           _outerTabController.removeListener(_onOuterTabChanged);
           _outerTabController.dispose();
@@ -115,11 +115,7 @@ class _MinePageState extends BaseState<MineTabPage>
     } catch (e) {
       setState(() {
         errorMessage = '初始化失败: $e';
-        isRefreshFailed = true;
-      });
-    } finally {
-      setState(() {
-        isRefreshing = false;
+        _loadState = LoadState.failed;
       });
     }
   }
@@ -127,14 +123,14 @@ class _MinePageState extends BaseState<MineTabPage>
   @override
   Widget build(BuildContext context) {
     // 加载状态显示加载界面
-    if (isRefreshing) {
+    if (_loadState == LoadState.refreshing) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(), // 加载指示器
         ),
       );
     }
-    if (isRefreshFailed) {
+    if (_loadState == LoadState.failed) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

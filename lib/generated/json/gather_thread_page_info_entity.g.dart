@@ -1,6 +1,6 @@
 import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
-import 'package:flutter_study/models/rate_and_share.dart';
+import 'package:flutter_study/base/rate_and_share.dart';
 
 
 GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(

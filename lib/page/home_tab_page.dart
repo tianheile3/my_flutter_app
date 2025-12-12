@@ -28,6 +28,11 @@ class HomeTabPage extends BaseStatefulWidget {
 }
 
 class _HomePageState extends BaseState<HomeTabPage> {
+  LoadState _loadState = LoadState.refreshing; // 初始加载中
+  final EasyRefreshController _controller = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
   final api = NetworkManager().getApiClient();
   final String sId = "marry22";
   int page = 1;
@@ -51,85 +56,55 @@ class _HomePageState extends BaseState<HomeTabPage> {
 
   Future<void> _initData() async {
     final configFuture = _initConfig();
-    final threadFuture = _initThread();
+    final threadFuture = _initThread(true);
 
     final results = await Future.wait([configFuture, threadFuture]);
     setState(() {
+      _loadState = LoadState.success;
       items.addAll(results[0]);
       items.addAll(results[1]);
     });
   }
 
   Future<void> _refresh() async {
-    if (isRefreshing) {
-      return;
-    }
     setState(() {
-      isRefreshFailed = false;
-      errorMessage = "";
-      isRefreshing = true;
       page = 1;
-      isLoadComplete = false;
-      // 清空现有数据
       items.clear();
+      _loadState = LoadState.refreshing;
+      _controller.resetFooter();
     });
     try {
       await _initData();
     } catch (e) {
-      isRefreshFailed = true;
-      errorMessage = '初始化失败: $e';
-    } finally {
-      if (mounted) {
-        setState(() {
-          isRefreshing = false;
-        });
-      }
+      setState(() {
+        errorMessage = '初始化失败: $e';
+        _loadState = LoadState.failed;
+      });
+      _controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
   Future<void> _onLoad() async {
-    if (isLoadComplete || isLoadingMore) {
-      return;
-    }
-    setState(() {
-      isLoadingMore = true;
-    });
-    bool hasError = false;
     try {
-      final list = await _initThread();
+      final list = await _initThread(false);
+      if (list.isEmpty) {
+        _controller.finishLoad(IndicatorResult.fail);
+      }
       setState(() {
         items.addAll(list);
       });
     } catch (e) {
-      hasError = true;
-    } finally {
-      if (hasError) {
-        _controller.finishLoad(IndicatorResult.fail);
-      } else if (isLoadComplete) {
-        _controller.finishLoad(IndicatorResult.noMore);
-      } else {
-        _controller.finishLoad(IndicatorResult.success);
-      }
-      if (mounted) {
-        setState(() => isLoadingMore = false);
-      }
+      logger.e('加载失败: $e');
+      _controller.finishLoad(IndicatorResult.fail);
     }
   }
-
-  final EasyRefreshController _controller = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
 
   Future<List<HomeListItem>> _initConfig() async {
     final dio = Dio();
     final String url =
         "https://att3.citysbs.com/appstatic/${sId}_second.json?secondid=$sId&ts=${DateTime.now().millisecondsSinceEpoch}";
-    logger.d('config: $url');
-
     final response = await dio.get(url);
     if (response.data == null) {
-      showErrorToast('加载失败，请重试');
       return [];
     }
     final parsedData = jsonDecode(response.data);
@@ -160,19 +135,24 @@ class _HomePageState extends BaseState<HomeTabPage> {
     return configItems;
   }
 
-  Future<List<HomeListItem>> _initThread() async {
+  Future<List<HomeListItem>> _initThread(bool isRefresh) async {
     List<HomeListItem> threadList = [];
 
     final res = await api.getUserSecondRecomThread(industryId: sId, page: page);
     if (res == null) {
+      if (isRefresh) {
+        _controller.finishRefresh(IndicatorResult.fail);
+      } else {
+        _controller.finishLoad(IndicatorResult.fail);
+      }
       return threadList;
     }
     if (res.recomThreadList.isNotEmpty) {
       for (var item in res.recomThreadList) {
         if (item.extra.isNotEmpty) {
           final extra = ExtraEntity.fromJson(json.decode(item.extra));
-          if (extra.imageUrls?.isNotEmpty ?? false) {
-            final images = extra.imageUrls?.split(",") ?? [];
+          if (extra.imageUrls.isNotEmpty) {
+            final images = extra.imageUrls.split(",");
             item.images.addAll(images);
           }
         }
@@ -185,9 +165,23 @@ class _HomePageState extends BaseState<HomeTabPage> {
         threadList.add(item);
       }
     }
-    isLoadComplete = page >= int.parse(res.maxPage);
+    setFinishState(res, isRefresh);
     page++;
     return threadList;
+  }
+
+  void setFinishState(UserSecondRecomThreadEntity res, bool isRefresh) {
+    bool noMore = page >= int.parse(res.maxPage);
+    if (isRefresh) {
+      _controller.finishRefresh(IndicatorResult.success);
+      if (noMore) {
+        _controller.finishLoad(IndicatorResult.noMore);
+      }
+    } else {
+      _controller.finishLoad(
+        noMore ? IndicatorResult.noMore : IndicatorResult.success,
+      );
+    }
   }
 
   //行业入口布局
@@ -336,14 +330,14 @@ class _HomePageState extends BaseState<HomeTabPage> {
   @override
   Widget build(BuildContext context) {
     // 加载状态显示加载界面
-    if (isRefreshing) {
+    if (_loadState == LoadState.refreshing) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(), // 加载指示器
         ),
       );
     }
-    if (isRefreshFailed) {
+    if (_loadState == LoadState.failed) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

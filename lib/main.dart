@@ -61,6 +61,8 @@ class LoadingPage extends BaseStatefulWidget {
 }
 
 class _MyLoadingPageState extends BaseState<LoadingPage> {
+  LoadState _loadState = LoadState.refreshing; // 初始加载中
+
   @override
   void initState() {
     super.initState();
@@ -73,14 +75,12 @@ class _MyLoadingPageState extends BaseState<LoadingPage> {
   Future<void> _initializeApp() async {
     try {
       setState(() {
-        isRefreshFailed = false;
-        errorMessage = "";
+        _loadState = LoadState.refreshing;
       });
       await GlobalState.instance.getLocalStorage();
       if (GlobalState.instance.cityName == "") {
         GlobalState.instance.cityName = "jiaxing";
       }
-      if (!mounted) return; // 页面已销毁，直接退出
       final response = await NetworkManager().getApiClient().getSystemTime();
       if (response != null) {
         GlobalState.instance.systemTimeDiff =
@@ -96,7 +96,7 @@ class _MyLoadingPageState extends BaseState<LoadingPage> {
       );
     } catch (e) {
       setState(() {
-        isRefreshFailed = true;
+        _loadState = LoadState.failed;
         errorMessage = '初始化失败: $e';
       });
     }
@@ -106,7 +106,7 @@ class _MyLoadingPageState extends BaseState<LoadingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: isRefreshFailed
+        child: _loadState == LoadState.failed
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

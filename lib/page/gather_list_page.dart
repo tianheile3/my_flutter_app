@@ -16,6 +16,8 @@ class GatherListPage extends BaseStatefulWidget {
 
 class _FavListPage extends BaseState<GatherListPage>
     with AutomaticKeepAliveClientMixin {
+  LoadState _loadState = LoadState.refreshing; // 初始加载中
+
   final api = NetworkManager().getApiClient();
 
   // 缓存屏幕宽度，避免重复计算
@@ -38,25 +40,28 @@ class _FavListPage extends BaseState<GatherListPage>
   Future<void> _getGathers() async {
     // 开始加载
     setState(() {
-      isRefreshing = true;
+      _loadState = LoadState.refreshing;
       items.clear();
     });
     try {
       final res = await api.getMyGather();
       if (res == null) {
-        showErrorToast('加载失败，请重试');
+        setState(() {
+          errorMessage = '加载失败';
+          _loadState = LoadState.failed;
+        });
         return;
       }
       setState(() {
         items.add("1");
         items.addAll(res.gatherList);
         items.add(1);
+        _loadState = LoadState.success;
       });
     } catch (e) {
-      logger.e('加载失败: $e');
-    } finally {
       setState(() {
-        isRefreshing = false;
+        errorMessage = '加载失败: $e';
+        _loadState = LoadState.failed;
       });
     }
   }
@@ -69,8 +74,22 @@ class _FavListPage extends BaseState<GatherListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (isRefreshing) {
+    if (_loadState == LoadState.refreshing) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_loadState == LoadState.failed) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            errorMessage,
+            style: const TextStyle(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(onPressed: _getGathers, child: const Text('重试')),
+        ],
+      );
     }
     return Scaffold(
       backgroundColor: Colors.white,
