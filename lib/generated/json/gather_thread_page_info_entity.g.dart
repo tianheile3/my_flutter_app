@@ -31,15 +31,15 @@ GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(
   if (gatherUser != null) {
     gatherThreadPageInfoEntity.gatherUser = gatherUser;
   }
-  final String? totalCount = jsonConvert.convert<String>(json['total_count']);
+  final int? totalCount = jsonConvert.convert<int>(json['total_count']);
   if (totalCount != null) {
     gatherThreadPageInfoEntity.totalCount = totalCount;
   }
-  final String? page = jsonConvert.convert<String>(json['page']);
+  final int? page = jsonConvert.convert<int>(json['page']);
   if (page != null) {
     gatherThreadPageInfoEntity.page = page;
   }
-  final String? perPage = jsonConvert.convert<String>(json['per_page']);
+  final int? perPage = jsonConvert.convert<int>(json['per_page']);
   if (perPage != null) {
     gatherThreadPageInfoEntity.perPage = perPage;
   }
@@ -73,9 +73,9 @@ extension GatherThreadPageInfoEntityExtension on GatherThreadPageInfoEntity {
     List<GatherThreadPageInfoThreadList>? threadList,
     GatherThreadPageInfoGatherInfo? gatherInfo,
     GatherThreadPageInfoGatherUser? gatherUser,
-    String? totalCount,
-    String? page,
-    String? perPage,
+    int? totalCount,
+    int? page,
+    int? perPage,
     String? currentCount,
   }) {
     return GatherThreadPageInfoEntity()

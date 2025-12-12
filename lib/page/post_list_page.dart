@@ -213,7 +213,11 @@ class _PostListPage extends BaseState<PostListPage>
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.image_outlined, size: 16),
+                        Icon(
+                          Icons.image_outlined,
+                          size: 16,
+                          color: Colors.white,
+                        ),
                         Text(
                           item.picNum.toString(),
                           style: TextStyle(color: Colors.white, fontSize: 12),
@@ -253,7 +257,7 @@ class _PostListPage extends BaseState<PostListPage>
                 memCacheHeight: 400,
               ),
             ),
-            Icon(Icons.play_circle, size: 65),
+            Icon(Icons.play_circle, size: 65, color: Colors.grey),
           ],
         ),
       ],
@@ -273,13 +277,13 @@ class _PostListPage extends BaseState<PostListPage>
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.more_horiz, size: 24),
+            Icon(Icons.more_horiz, size: 24, color: Colors.grey),
             SizedBox(width: 10),
-            Icon(Icons.ios_share_sharp, size: 24),
+            Icon(Icons.ios_share_sharp, size: 24, color: Colors.grey),
             SizedBox(width: 10),
-            Icon(Icons.comment, size: 24),
+            Icon(Icons.comment, size: 24, color: Colors.grey),
             SizedBox(width: 10),
-            Icon(Icons.thumb_up_off_alt, size: 24),
+            Icon(Icons.thumb_up_off_alt, size: 24, color: Colors.grey),
           ],
         ),
       ],

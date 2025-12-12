@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_study/utils/custom_colors.dart';
 
 import '../api/response/gather_thread_page_info_entity.dart';
 import '../base/base_state.dart';
+import '../models/extra_entity.dart';
+import '../utils/images_utils.dart';
 
 class GatherPage extends BaseStatefulWidget {
   final String gatherId;
@@ -24,11 +28,11 @@ class _GatherPage extends BaseState<GatherPage> {
   final api = NetworkManager().getApiClient();
   var order = "desc";
   final List<GatherThreadPageInfoThreadList> items = [];
-  late final GatherThreadPageInfoGatherInfo gatherInfo;
-  late final GatherThreadPageInfoGatherUser gatherUser;
+  late GatherThreadPageInfoGatherInfo gatherInfo;
+  late GatherThreadPageInfoGatherUser gatherUser;
   var page = 1;
 
-  final EasyRefreshController controller = EasyRefreshController(
+  final EasyRefreshController _controller = EasyRefreshController(
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
@@ -47,6 +51,10 @@ class _GatherPage extends BaseState<GatherPage> {
   }
 
   Future<void> _onRefresh() async {
+    logger.d("_onRefresh isRefreshing=$isRefreshing");
+    if (isRefreshing) {
+      return;
+    }
     setState(() {
       isRefreshFailed = false;
       isRefreshing = true;
@@ -68,19 +76,88 @@ class _GatherPage extends BaseState<GatherPage> {
         gatherInfo = res.gatherInfo;
         gatherUser = res.gatherUser;
         calculateExpandedHeight();
-        if (res.threadList != null && res.threadList!.isNotEmpty) {
-          items.addAll(res.threadList!);
-        }
       });
+      dataProcessing(res);
     } catch (e) {
       logger.e('加载失败: $e');
       hasError = true;
     } finally {
+      _controller.finishRefresh();
+      _controller.resetFooter();
       setState(() {
         isRefreshing = false;
         isRefreshFailed = hasError;
       });
     }
+  }
+
+  Future<void> _onLoad() async {
+    if (isLoadComplete) {
+      _controller.finishLoad(IndicatorResult.noMore);
+      return;
+    }
+    if (isLoadingMore || isRefreshing) {
+      _controller.finishLoad();
+      return;
+    }
+    setState(() {
+      isLoadingMore = true;
+    });
+    bool hasError = false;
+    try {
+      final res = await api.getGatherThreadPageInfo(
+        gatherId: widget.gatherId,
+        order: order,
+        page: page,
+      );
+      if (res == null || res.code != 1) {
+        hasError = true;
+      } else {
+        dataProcessing(res);
+      }
+    } catch (e) {
+      logger.e('加载失败: $e');
+      hasError = true;
+    } finally {
+      if (hasError) {
+        _controller.finishLoad(IndicatorResult.fail);
+      } else if (isLoadComplete) {
+        _controller.finishLoad(IndicatorResult.noMore);
+      } else {
+        _controller.finishLoad(IndicatorResult.success);
+      }
+      if (mounted) {
+        setState(() => isLoadingMore = false);
+      }
+    }
+  }
+
+  void dataProcessing(GatherThreadPageInfoEntity res) {
+    if (res.threadList == null) {
+      return;
+    }
+    final List<GatherThreadPageInfoThreadList> list = [];
+    for (var item in res.threadList!) {
+      if (item.extra.isNotEmpty) {
+        final extra = ExtraEntity.fromJson(json.decode(item.extra));
+        final List<String> imgList = extra.imageUrls?.split(",") ?? [];
+        if (imgList.isNotEmpty) {
+          item.firstImageUrl = ImageUtils.imgToAtt3Size(imgList[0], "m300x");
+        }
+        item.picNum = extra.picNum;
+        if (imgList.isNotEmpty && extra.holdVideo) {
+          item.holdVideo = true;
+        } else {
+          item.holdVideo = false;
+        }
+      }
+      list.add(item);
+    }
+    setState(() {
+      items.addAll(list);
+    });
+    isLoadComplete = res.page * res.perPage >= res.totalCount;
+    page++;
   }
 
   void calculateExpandedHeight() {
@@ -99,6 +176,8 @@ class _GatherPage extends BaseState<GatherPage> {
       logger.d("descHeight: $descHeight");
       _expandedHeight += descHeight;
       logger.d("_expandedHeight: $_expandedHeight");
+    } else {
+      _expandedHeight -= 25;
     }
   }
 
@@ -148,7 +227,19 @@ class _GatherPage extends BaseState<GatherPage> {
               pinned: true,
               floating: true,
               snap: true,
+              automaticallyImplyLeading: false,
               flexibleSpace: FlexibleSpaceBar(background: _headWidget()),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                  ),
+                  Icon(Icons.more_horiz, size: 25, color: Colors.white),
+                ],
+              ),
             ),
           ];
         },
@@ -245,12 +336,131 @@ class _GatherPage extends BaseState<GatherPage> {
   }
 
   Widget _listWidget() {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: 25,
-      itemBuilder: (context, index) {
-        return ListTile(title: Text("第$index项"));
-      },
+    return EasyRefresh(
+      onRefresh: _onRefresh,
+      onLoad: _onLoad,
+      controller: _controller,
+      child: ListView.builder(
+        itemCount: items.length,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return Container(
+            padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.subject,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: CustomColors.textDark,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (item.firstImageUrl.isNotEmpty)
+                      Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CachedNetworkImage(
+                              imageUrl: item.firstImageUrl,
+                              width: 107,
+                              height: 73,
+                              fit: BoxFit.cover,
+                              memCacheWidth: 214,
+                              memCacheHeight: 146,
+                            ),
+                          ),
+                          if (item.holdVideo)
+                            Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.play_circle,
+                                size: 38,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          if (item.picNum > 1)
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 60),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 2,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.image_outlined,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 2),
+                                    Text(
+                                      item.picNum.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.createdAt.substring(0, 16),
+                      style: TextStyle(
+                        color: CustomColors.textLight,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.more_horiz, size: 24, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Icon(Icons.comment, size: 24, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Icon(
+                          Icons.thumb_up_off_alt,
+                          size: 24,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Divider(height: 10, color: CustomColors.divider),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

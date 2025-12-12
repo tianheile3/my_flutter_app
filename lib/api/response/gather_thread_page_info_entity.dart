@@ -1,6 +1,8 @@
 import 'package:flutter_study/generated/json/base/json_field.dart';
 import 'package:flutter_study/generated/json/gather_thread_page_info_entity.g.dart';
 import 'dart:convert';
+
+import 'package:flutter_study/models/rate_and_share.dart';
 export 'package:flutter_study/generated/json/gather_thread_page_info_entity.g.dart';
 
 @JsonSerializable()
@@ -14,10 +16,10 @@ class GatherThreadPageInfoEntity {
   @JSONField(name: 'gather_user')
   late GatherThreadPageInfoGatherUser gatherUser;
   @JSONField(name: 'total_count')
-  late String totalCount;
-  late String page;
+  late int totalCount;
+  late int page;
   @JSONField(name: 'per_page')
-  late String perPage;
+  late int perPage;
   @JSONField(name: 'current_count')
   late String currentCount;
 
@@ -35,7 +37,7 @@ class GatherThreadPageInfoEntity {
 }
 
 @JsonSerializable()
-class GatherThreadPageInfoThreadList {
+class GatherThreadPageInfoThreadList extends RateAndShare{
   @JSONField(name: 'is_private')
   late String isPrivate;
   late String cityid;
@@ -96,6 +98,9 @@ class GatherThreadPageInfoThreadList {
   @JSONField(name: 'stick_time')
   late String stickTime;
   late String rateid;
+
+  String firstImageUrl = "";
+  int picNum = 0;
 
   GatherThreadPageInfoThreadList();
 
