@@ -1,5 +1,7 @@
 import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
+import 'package:flutter_study/models/rate_and_share.dart';
+
 
 GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(
     Map<String, dynamic> json) {
@@ -151,7 +153,7 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
   if (views != null) {
     gatherThreadPageInfoThreadList.views = views;
   }
-  final String? replies = jsonConvert.convert<String>(json['replies']);
+  final int? replies = jsonConvert.convert<int>(json['replies']);
   if (replies != null) {
     gatherThreadPageInfoThreadList.replies = replies;
   }
@@ -269,6 +271,15 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
   if (rateid != null) {
     gatherThreadPageInfoThreadList.rateid = rateid;
   }
+  final String? firstImageUrl = jsonConvert.convert<String>(
+      json['firstImageUrl']);
+  if (firstImageUrl != null) {
+    gatherThreadPageInfoThreadList.firstImageUrl = firstImageUrl;
+  }
+  final int? picNum = jsonConvert.convert<int>(json['picNum']);
+  if (picNum != null) {
+    gatherThreadPageInfoThreadList.picNum = picNum;
+  }
   return gatherThreadPageInfoThreadList;
 }
 
@@ -315,6 +326,8 @@ Map<String, dynamic> $GatherThreadPageInfoThreadListToJson(
   data['forum_category_name'] = entity.forumCategoryName;
   data['stick_time'] = entity.stickTime;
   data['rateid'] = entity.rateid;
+  data['firstImageUrl'] = entity.firstImageUrl;
+  data['picNum'] = entity.picNum;
   return data;
 }
 
@@ -334,7 +347,7 @@ extension GatherThreadPageInfoThreadListExtension on GatherThreadPageInfoThreadL
     String? category,
     String? threadType,
     String? views,
-    String? replies,
+    int? replies,
     String? favorites,
     String? status,
     String? extra,
@@ -360,6 +373,8 @@ extension GatherThreadPageInfoThreadListExtension on GatherThreadPageInfoThreadL
     String? forumCategoryName,
     String? stickTime,
     String? rateid,
+    String? firstImageUrl,
+    int? picNum,
   }) {
     return GatherThreadPageInfoThreadList()
       ..isPrivate = isPrivate ?? this.isPrivate
@@ -401,7 +416,9 @@ extension GatherThreadPageInfoThreadListExtension on GatherThreadPageInfoThreadL
       ..attachments = attachments ?? this.attachments
       ..forumCategoryName = forumCategoryName ?? this.forumCategoryName
       ..stickTime = stickTime ?? this.stickTime
-      ..rateid = rateid ?? this.rateid;
+      ..rateid = rateid ?? this.rateid
+      ..firstImageUrl = firstImageUrl ?? this.firstImageUrl
+      ..picNum = picNum ?? this.picNum;
   }
 }
 

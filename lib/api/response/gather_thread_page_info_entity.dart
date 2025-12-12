@@ -55,7 +55,7 @@ class GatherThreadPageInfoThreadList extends RateAndShare{
   @JSONField(name: 'thread_type')
   late String threadType;
   late String views;
-  late String replies;
+  late int replies;
   late String favorites;
   late String status;
   late String extra;

@@ -77,7 +77,7 @@ class _GatherPage extends BaseState<GatherPage> {
         gatherUser = res.gatherUser;
         calculateExpandedHeight();
       });
-      dataProcessing(res);
+      await dataProcessing(res);
     } catch (e) {
       logger.e('加载失败: $e');
       hasError = true;
@@ -113,7 +113,7 @@ class _GatherPage extends BaseState<GatherPage> {
       if (res == null || res.code != 1) {
         hasError = true;
       } else {
-        dataProcessing(res);
+        await dataProcessing(res);
       }
     } catch (e) {
       logger.e('加载失败: $e');
@@ -132,26 +132,41 @@ class _GatherPage extends BaseState<GatherPage> {
     }
   }
 
-  void dataProcessing(GatherThreadPageInfoEntity res) {
+  Future<void> dataProcessing(GatherThreadPageInfoEntity res) async {
     if (res.threadList == null) {
       return;
     }
     final List<GatherThreadPageInfoThreadList> list = [];
-    for (var item in res.threadList!) {
+    final tidPids = StringBuffer();
+    res.threadList!.asMap().forEach((index, item) {
       if (item.extra.isNotEmpty) {
         final extra = ExtraEntity.fromJson(json.decode(item.extra));
-        final List<String> imgList = extra.imageUrls?.split(",") ?? [];
+        final List<String> imgList = extra.imageUrls.split(",");
         if (imgList.isNotEmpty) {
           item.firstImageUrl = ImageUtils.imgToAtt3Size(imgList[0], "m300x");
         }
         item.picNum = extra.picNum;
+        item.rateCount = extra.ratePlusNumber;
         if (imgList.isNotEmpty && extra.holdVideo) {
           item.holdVideo = true;
         } else {
           item.holdVideo = false;
         }
+        item.tidPid = "${item.tid}_${item.pid}";
+        tidPids.write(item.tidPid);
+        if (index != res.threadList!.length - 1) {
+          tidPids.write(",");
+        }
       }
       list.add(item);
+    });
+    if (tidPids.isNotEmpty) {
+      final rate = await api.isRatedBatch(tidPids: tidPids.toString());
+      if (rate != null && rate.code == 1 && rate.isZanMap != null) {
+        for (var item in list) {
+          item.rate = rate.isZanMap![item.tidPid] == true;
+        }
+      }
     }
     setState(() {
       items.addAll(list);
@@ -444,11 +459,37 @@ class _GatherPage extends BaseState<GatherPage> {
                         Icon(Icons.more_horiz, size: 24, color: Colors.grey),
                         SizedBox(width: 10),
                         Icon(Icons.comment, size: 24, color: Colors.grey),
+                        Text(
+                          item.replies > 0 ? item.replies.toString() : "评论",
+                          style: TextStyle(
+                            color: CustomColors.textLight,
+                            fontSize: 12,
+                          ),
+                        ),
                         SizedBox(width: 10),
-                        Icon(
-                          Icons.thumb_up_off_alt,
-                          size: 24,
-                          color: Colors.grey,
+                        IconButton(
+                          onPressed: () => {
+                            setState(() {
+                              item.rateCount = item.rate
+                                  ? item.rateCount - 1
+                                  : item.rateCount + 1;
+                              item.rate = !item.rate;
+                            }),
+                          },
+                          icon: Icon(
+                            item.rate
+                                ? Icons.thumb_up_alt
+                                : Icons.thumb_up_off_alt,
+                            size: 24,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          item.rateCount > 0 ? item.rateCount.toString() : "点赞",
+                          style: TextStyle(
+                            color: CustomColors.textLight,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),

@@ -1,9 +1,9 @@
-import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/generated/json/base/json_convert_content.dart';
+import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 
 IsRatedBatchEntity $IsRatedBatchEntityFromJson(Map<String, dynamic> json) {
   final IsRatedBatchEntity isRatedBatchEntity = IsRatedBatchEntity();
-  final String? code = jsonConvert.convert<String>(json['code']);
+  final int? code = jsonConvert.convert<int>(json['code']);
   if (code != null) {
     isRatedBatchEntity.code = code;
   }
@@ -11,15 +11,15 @@ IsRatedBatchEntity $IsRatedBatchEntityFromJson(Map<String, dynamic> json) {
   if (message != null) {
     isRatedBatchEntity.message = message;
   }
-  final Map<String, bool>? isRatedMap = jsonConvert.convert<Map<String, bool>>(
-    json['is_rated_map'],
-  );
+  final Map<String, bool>? isRatedMap =
+  (json['is_rated_map'] as Map<String, dynamic>).map(
+          (k, e) => MapEntry(k, jsonConvert.convert<bool>(e) as bool));
   if (isRatedMap != null) {
     isRatedBatchEntity.isRatedMap = isRatedMap;
   }
-  final Map<String, bool>? isZanMap = jsonConvert.convert<Map<String, bool>>(
-    json['is_zan_map'],
-  );
+  final Map<String, bool>? isZanMap =
+  (json['is_zan_map'] as Map<String, dynamic>).map(
+          (k, e) => MapEntry(k, jsonConvert.convert<bool>(e) as bool));
   if (isZanMap != null) {
     isRatedBatchEntity.isZanMap = isZanMap;
   }
@@ -37,7 +37,7 @@ Map<String, dynamic> $IsRatedBatchEntityToJson(IsRatedBatchEntity entity) {
 
 extension IsRatedBatchEntityExtension on IsRatedBatchEntity {
   IsRatedBatchEntity copyWith({
-    String? code,
+    int? code,
     String? message,
     Map<String, bool>? isRatedMap,
     Map<String, bool>? isZanMap,

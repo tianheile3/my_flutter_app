@@ -5,12 +5,12 @@ export 'package:flutter_study/generated/json/is_rated_batch_entity.g.dart';
 
 @JsonSerializable()
 class IsRatedBatchEntity {
-  late String code;
+  late int code;
   late String message;
   @JSONField(name: 'is_rated_map')
   late Map<String, bool> isRatedMap;
   @JSONField(name: 'is_zan_map')
-  late Map<String, bool> isZanMap;
+  late Map<String, bool>? isZanMap;
 
   IsRatedBatchEntity();
 
