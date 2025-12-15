@@ -3,8 +3,10 @@ import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
+import 'package:flutter_study/api/response/map_config_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
+import 'package:flutter_study/api/response/record_list_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
 import 'package:flutter_study/api/response/user_comment_list_entity.dart';
@@ -76,6 +78,18 @@ abstract class ApiClient {
   @GET("/api/board/isRatedBatch")
   Future<IsRatedBatchEntity?> isRatedBatch({
     @Query("tidPids") required String tidPids,
+  });
+
+  @GET("/api/app/getSiteMapConfig")
+  Future<MapConfigEntity?> getSiteMapConfig();
+
+  @GET("/record/list")
+  Future<RecordListEntity?> recordList({
+    @Query("cityId") int cityId = 330400,
+    @Query("page") int page = 1,
+    @Query("perPage") int pageSize = 10,
+    @Query("pass") int pass = 0,
+    @Query("limitDateTime") int limitDateTime = 0,
   });
 
   //-----------------------------------以下post----------------------------------

@@ -29,13 +29,13 @@ class _GatherPageState extends BaseState<GatherPage> {
     _viewModel = GatherViewModel(widget.gatherId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _viewModel.setScreenWidth(MediaQuery.of(context).size.width);
-      _onRefresh();
+      _onRefresh(_viewModel);
     });
   }
 
-  Future<void> _onRefresh() async {
+  Future<void> _onRefresh(GatherViewModel viewModel) async {
     _controller.resetFooter();
-    await _viewModel.onRefresh((bool success, bool hasMore) {
+    await viewModel.onRefresh((bool success, bool hasMore) {
       if (!success) {
         _controller.finishRefresh(IndicatorResult.fail);
       } else {
@@ -47,8 +47,8 @@ class _GatherPageState extends BaseState<GatherPage> {
     });
   }
 
-  Future<void> _onLoad() async {
-    await _viewModel.onLoadMore((bool success, bool hasMore) {
+  Future<void> _onLoad(GatherViewModel viewModel) async {
+    await viewModel.onLoadMore((bool success, bool hasMore) {
       if (!success) {
         _controller.finishLoad(IndicatorResult.fail);
       } else {
@@ -87,7 +87,7 @@ class _GatherPageState extends BaseState<GatherPage> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _onRefresh(),
+                    onPressed: () => _onRefresh(viewModel),
                     child: const Text('重试'),
                   ),
                 ],
@@ -227,8 +227,8 @@ class _GatherPageState extends BaseState<GatherPage> {
 
   Widget _listWidget(GatherViewModel viewModel) {
     return EasyRefresh(
-      onRefresh: () => _onRefresh(),
-      onLoad: () => _onLoad(),
+      onRefresh: () => _onRefresh(viewModel),
+      onLoad: () => _onLoad(viewModel),
       controller: _controller,
       child: ListView.builder(
         itemCount: viewModel.items.length,

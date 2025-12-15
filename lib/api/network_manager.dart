@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_study/api/api_client.dart';
 import 'package:flutter_study/utils/auth_utils.dart';
 import 'package:flutter_study/utils/global_state.dart';
@@ -28,23 +29,43 @@ class NetworkManager with LoggerMixin {
     _dio.interceptors.add(CommonParamsInterceptor());
     // 添加自定义的响应拦截器
     _dio.interceptors.add(CustomResponseInterceptor());
-    // 添加日志拦截器（建议只在调试模式下启用）
-    _dio.interceptors.add(
-      LogInterceptor(responseBody: true, requestBody: true, request: true),
-    );
+    // 添加日志拦截器
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        LogInterceptor(responseBody: true, requestBody: true, request: true),
+      );
+    }
   }
 
   Dio get dio => _dio;
 
-  // 2. 提供动态修改 Base URL 的方法
-  NetworkManager updateBaseUrl(String newBaseUrl) {
-    _dio.options.baseUrl = newBaseUrl;
-    logger.d("Base URL updated to: ${_dio.options.baseUrl}");
-    return this;
-  }
-
   ApiClient getApiClient() {
     return ApiClient(dio);
+  }
+
+  /// 创建一个使用指定 baseUrl 的临时 ApiClient，不影响全局单例
+  ApiClient withOtherBaseUrl(String newBaseUrl) {
+    final tempDio = Dio(
+      BaseOptions(
+        baseUrl: newBaseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        responseType: ResponseType.json,
+      ),
+    );
+
+    // 重新添加拦截器（关键：不要共享原拦截器实例）
+    tempDio.interceptors.add(CommonParamsInterceptor());
+    tempDio.interceptors.add(CustomResponseInterceptor());
+
+    // 调试模式下加日志
+    if (kDebugMode) {
+      tempDio.interceptors.add(
+        LogInterceptor(responseBody: true, requestBody: true, request: true),
+      );
+    }
+
+    return ApiClient(tempDio);
   }
 }
 

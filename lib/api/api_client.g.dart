@@ -360,6 +360,74 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<MapConfigEntity?> getSiteMapConfig() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<MapConfigEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/app/getSiteMapConfig',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : MapConfigEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<RecordListEntity?> recordList({
+    int cityId = 330400,
+    int page = 1,
+    int pageSize = 10,
+    int pass = 0,
+    int limitDateTime = 0,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'cityId': cityId,
+      r'page': page,
+      r'perPage': pageSize,
+      r'pass': pass,
+      r'limitDateTime': limitDateTime,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<RecordListEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/record/list',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : RecordListEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<TokenEntity?> login(FormData data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

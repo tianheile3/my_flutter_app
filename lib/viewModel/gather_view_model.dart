@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/base/base_view_model.dart';
 import 'package:flutter_study/models/extra_entity.dart';
@@ -13,7 +12,6 @@ import '../utils/custom_colors.dart';
 
 class GatherViewModel extends BaseViewModel {
   final String gatherId;
-  final api = NetworkManager().getApiClient();
 
   // State
   LoadState loadState = LoadState.refreshing;
