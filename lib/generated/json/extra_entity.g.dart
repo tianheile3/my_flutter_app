@@ -36,8 +36,7 @@ ExtraEntity $ExtraEntityFromJson(Map<String, dynamic> json) {
   if (lon != null) {
     extraEntity.lon = lon;
   }
-  final int? ratePlusNumber = jsonConvert.convert<int>(
-      json['ratePlusNumber']);
+  final int? ratePlusNumber = jsonConvert.convert<int>(json['ratePlusNumber']);
   if (ratePlusNumber != null) {
     extraEntity.ratePlusNumber = ratePlusNumber;
   }

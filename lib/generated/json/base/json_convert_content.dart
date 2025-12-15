@@ -8,8 +8,10 @@ import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
+import 'package:flutter_study/api/response/map_config_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
+import 'package:flutter_study/api/response/record_list_entity.dart';
 import 'package:flutter_study/api/response/second_config_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
@@ -206,6 +208,18 @@ class JsonConvert {
       return data.map<IsRatedBatchEntity>((Map<String, dynamic> e) =>
           IsRatedBatchEntity.fromJson(e)).toList() as M;
     }
+    if (<MapConfigEntity>[] is M) {
+      return data.map<MapConfigEntity>((Map<String, dynamic> e) =>
+          MapConfigEntity.fromJson(e)).toList() as M;
+    }
+    if (<MapConfigGroupList>[] is M) {
+      return data.map<MapConfigGroupList>((Map<String, dynamic> e) =>
+          MapConfigGroupList.fromJson(e)).toList() as M;
+    }
+    if (<MapConfigGroupListItemList>[] is M) {
+      return data.map<MapConfigGroupListItemList>((Map<String, dynamic> e) =>
+          MapConfigGroupListItemList.fromJson(e)).toList() as M;
+    }
     if (<MobileBgUrlEntity>[] is M) {
       return data.map<MobileBgUrlEntity>((Map<String, dynamic> e) =>
           MobileBgUrlEntity.fromJson(e)).toList() as M;
@@ -217,6 +231,22 @@ class JsonConvert {
     if (<MyGatherGatherList>[] is M) {
       return data.map<MyGatherGatherList>((Map<String, dynamic> e) =>
           MyGatherGatherList.fromJson(e)).toList() as M;
+    }
+    if (<RecordListEntity>[] is M) {
+      return data.map<RecordListEntity>((Map<String, dynamic> e) =>
+          RecordListEntity.fromJson(e)).toList() as M;
+    }
+    if (<RecordListData>[] is M) {
+      return data.map<RecordListData>((Map<String, dynamic> e) =>
+          RecordListData.fromJson(e)).toList() as M;
+    }
+    if (<RecordListDataItems>[] is M) {
+      return data.map<RecordListDataItems>((Map<String, dynamic> e) =>
+          RecordListDataItems.fromJson(e)).toList() as M;
+    }
+    if (<RecordListDataItemsJobRecord>[] is M) {
+      return data.map<RecordListDataItemsJobRecord>((Map<String, dynamic> e) =>
+          RecordListDataItemsJobRecord.fromJson(e)).toList() as M;
     }
     if (<SecondConfigEntity>[] is M) {
       return data.map<SecondConfigEntity>((Map<String, dynamic> e) =>
@@ -386,9 +416,18 @@ class JsonConvertClassCollection {
     (GatherThreadPageInfoGatherUser).toString(): GatherThreadPageInfoGatherUser
         .fromJson,
     (IsRatedBatchEntity).toString(): IsRatedBatchEntity.fromJson,
+    (MapConfigEntity).toString(): MapConfigEntity.fromJson,
+    (MapConfigGroupList).toString(): MapConfigGroupList.fromJson,
+    (MapConfigGroupListItemList).toString(): MapConfigGroupListItemList
+        .fromJson,
     (MobileBgUrlEntity).toString(): MobileBgUrlEntity.fromJson,
     (MyGatherEntity).toString(): MyGatherEntity.fromJson,
     (MyGatherGatherList).toString(): MyGatherGatherList.fromJson,
+    (RecordListEntity).toString(): RecordListEntity.fromJson,
+    (RecordListData).toString(): RecordListData.fromJson,
+    (RecordListDataItems).toString(): RecordListDataItems.fromJson,
+    (RecordListDataItemsJobRecord).toString(): RecordListDataItemsJobRecord
+        .fromJson,
     (SecondConfigEntity).toString(): SecondConfigEntity.fromJson,
     (SecondConfigConfigInfo).toString(): SecondConfigConfigInfo.fromJson,
     (SecondConfigConfigInfoAppPortalInfo)

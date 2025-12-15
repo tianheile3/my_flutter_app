@@ -18,7 +18,7 @@ IsRatedBatchEntity $IsRatedBatchEntityFromJson(Map<String, dynamic> json) {
     isRatedBatchEntity.isRatedMap = isRatedMap;
   }
   final Map<String, bool>? isZanMap =
-  (json['is_zan_map'] as Map<String, dynamic>).map(
+  (json['is_zan_map'] as Map<String, dynamic>?)?.map(
           (k, e) => MapEntry(k, jsonConvert.convert<bool>(e) as bool));
   if (isZanMap != null) {
     isRatedBatchEntity.isZanMap = isZanMap;
