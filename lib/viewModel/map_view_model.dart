@@ -8,6 +8,7 @@ class MapViewModel extends BaseViewModel {
   final infoApi = NetworkManager().withOtherBaseUrl(
     "https://infoapi.19lou.com",
   );
+  static const int cityId = 330400;
 
   LoadState loadState = LoadState.refreshing;
   var page = 1;

@@ -25,6 +25,7 @@ dependencies:
   cached_network_image: ^3.3.0 #图片缓存，类似glide
   easy_refresh: ^3.4.0 #轻量级下拉刷新和上拉加载库
   provider: ^6.1.1 # 状态管理
+  webview_flutter: ^4.7.0
 
 dev_dependencies:
   flutter_test:
