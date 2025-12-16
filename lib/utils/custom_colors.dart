@@ -11,5 +11,7 @@ class CustomColors {
   static const Color female = Color(0xFFFF73A1); // 女
   static const Color male = Color(0xFF73C2FF); // 男
   static const Color sexOther = Color(0xFFD2D2D2); // 性别-未设置
+  static const Color badge = Color(0xFFF2624E);
+  static const Color tabBg = Color(0xFFF4F6F8);
 
 }

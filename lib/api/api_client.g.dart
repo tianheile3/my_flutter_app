@@ -399,7 +399,7 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{
       r'cityId': cityId,
       r'page': page,
-      r'perPage': pageSize,
+      r'pageSize': pageSize,
       r'pass': pass,
       r'limitDateTime': limitDateTime,
     };

@@ -253,7 +253,7 @@ Map<String, dynamic> $RecordListDataItemsToJson(RecordListDataItems entity) {
   data['stick'] = entity.stick;
   data['categoryStick'] = entity.categoryStick;
   data['autoStick'] = entity.autoStick;
-  data['jobRecord'] = entity.jobRecord.toJson();
+  data['jobRecord'] = entity.jobRecord?.toJson();
   data['nowTime'] = entity.nowTime;
   data['ifPass'] = entity.ifPass;
   data['showTag'] = entity.showTag;

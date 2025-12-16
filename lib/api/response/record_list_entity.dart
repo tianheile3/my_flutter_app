@@ -50,11 +50,11 @@ class RecordListDataItems {
 	late String description;
 	late int uid;
 	late String username;
-	late String mainImgUrl;
+	String mainImgUrl = "";
 	late int price;
 	late int originPrice;
 	late String region;
-	late String community;
+  String? community;
 	late String publishName;
 	late String publishPhone;
 	late String tags;
@@ -67,7 +67,7 @@ class RecordListDataItems {
 	late int stick;
 	late int categoryStick;
 	late int autoStick;
-	late RecordListDataItemsJobRecord jobRecord;
+  RecordListDataItemsJobRecord? jobRecord;
 	late int nowTime;
 	late int ifPass;
 	late String showTag;

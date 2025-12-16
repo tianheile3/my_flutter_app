@@ -13,7 +13,7 @@ class NetworkManager with LoggerMixin {
   factory NetworkManager() => _instance;
 
   late Dio _dio;
-  final String baseUrl = "https://taizhou.19lou.com"; // 默认 Base URL
+  final String baseUrl = "https://jiaxing.19lou.com"; // 默认 Base URL
 
   NetworkManager._internal() {
     _dio = Dio(

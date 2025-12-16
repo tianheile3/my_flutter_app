@@ -87,7 +87,7 @@ abstract class ApiClient {
   Future<RecordListEntity?> recordList({
     @Query("cityId") int cityId = 330400,
     @Query("page") int page = 1,
-    @Query("perPage") int pageSize = 10,
+    @Query("pageSize") int pageSize = 10,
     @Query("pass") int pass = 0,
     @Query("limitDateTime") int limitDateTime = 0,
   });

@@ -31,7 +31,7 @@ class MapConfigGroupList {
 	late String name;
 	@JSONField(name: 'display_type')
 	late int displayType;
-	late int hide;
+  int hide = 0;
 	@JSONField(name: 'item_list')
 	late List<MapConfigGroupListItemList> itemList;
 
