@@ -185,27 +185,32 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
               ),
               itemBuilder: (context, index) {
                 final item = bean.itemList[index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: item.iconUrl,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.fill,
-                      memCacheWidth: 50,
-                      memCacheHeight: 50,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      item.name,
-                      style: TextStyle(
-                        color: CustomColors.textDark,
-                        fontSize: 12,
+                return InkWell(
+                  onTap: () {
+                    _toDetail(item.link);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: item.iconUrl,
+                        width: 25,
+                        height: 25,
+                        fit: BoxFit.fill,
+                        memCacheWidth: 50,
+                        memCacheHeight: 50,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10),
+                      Text(
+                        item.name,
+                        style: TextStyle(
+                          color: CustomColors.textDark,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -246,28 +251,33 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
               ),
               itemBuilder: (context, index) {
                 final item = bean.itemList[index];
-                return Stack(
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: item.iconUrl,
-                      width: double.infinity,
-                      height: double.infinity,
-                      memCacheWidth: 200,
-                      memCacheHeight: 70,
-                      fit: BoxFit.fill,
-                    ),
-                    Positioned(
-                      left: 10,
-                      top: 5,
-                      child: Text(
-                        item.name,
-                        style: TextStyle(
-                          color: CustomColors.textDark,
-                          fontSize: 16,
+                return InkWell(
+                  onTap: () {
+                    _toDetail(item.link);
+                  },
+                  child: Stack(
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: item.iconUrl,
+                        width: double.infinity,
+                        height: double.infinity,
+                        memCacheWidth: 200,
+                        memCacheHeight: 70,
+                        fit: BoxFit.fill,
+                      ),
+                      Positioned(
+                        left: 10,
+                        top: 5,
+                        child: Text(
+                          item.name,
+                          style: TextStyle(
+                            color: CustomColors.textDark,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               },
             ),
