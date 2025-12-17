@@ -9,6 +9,7 @@ import 'package:flutter_study/api/response/second_config_entity.dart';
 import 'package:flutter_study/base/base_state.dart';
 import 'package:flutter_study/models/extra_entity.dart';
 import 'package:flutter_study/models/home_item.dart';
+import 'package:flutter_study/page/test_page.dart';
 import 'package:flutter_study/utils/common_utils.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:flutter_study/utils/date_tools.dart';
@@ -189,32 +190,44 @@ class _HomePageState extends BaseState<HomeTabPage> {
     final itemWidth = _screenWidth / 5;
     return SizedBox(
       width: itemWidth,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CachedNetworkImage(
-            imageUrl: item.logoUrl,
-            width: 50,
-            height: 50,
-            fit: BoxFit.fill,
-            placeholder: (context, url) => Icon(Icons.image, size: 25),
-            errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
-            memCacheWidth: 100,
-            memCacheHeight: 100,
-          ),
-          SizedBox(height: 8),
-          Text(
-            item.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: CustomColors.textDark),
-          ),
-          SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            height: 5,
-            color: CustomColors.divider,
-          ),
-        ],
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (builder) {
+                return TestPage();
+              },
+            ),
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CachedNetworkImage(
+              imageUrl: item.logoUrl,
+              width: 50,
+              height: 50,
+              fit: BoxFit.fill,
+              placeholder: (context, url) => Icon(Icons.image, size: 25),
+              errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
+              memCacheWidth: 100,
+              memCacheHeight: 100,
+            ),
+            SizedBox(height: 8),
+            Text(
+              item.name,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: CustomColors.textDark),
+            ),
+            SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              height: 5,
+              color: CustomColors.divider,
+            ),
+          ],
+        ),
       ),
     );
   }

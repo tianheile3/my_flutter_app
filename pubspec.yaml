@@ -26,6 +26,8 @@ dependencies:
   easy_refresh: ^3.4.0 #轻量级下拉刷新和上拉加载库
   provider: ^6.1.1 # 状态管理
   webview_flutter: ^4.13.0 # webview
+  permission_handler: ^12.0.1  # 权限申请（Android/iOS）
+  path_provider: ^2.1.5  # 获取本地存储路径
 
 dev_dependencies:
   flutter_test:
