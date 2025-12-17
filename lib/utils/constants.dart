@@ -18,4 +18,6 @@ abstract class Constants {
 
   static const String ATT2_HOST = "att2.citysbs.com/";
   static const String ATT3_HOST = "att3.citysbs.com/";
+
+  static const String GUID = "19LouAPP-30f8-0a12-ffff-ffffca01fdf4";
 }

@@ -17,7 +17,7 @@ class AuthUtils {
       'current_time': time,
       'sign': '1',
       'ver': Constants.CLIENT_VER,
-      'device': '19LouAPP-30f8-0a12-ffff-ffffca01fdf4', // 建议统一设备 ID
+      'device': Constants.GUID,
       'uid': GlobalState.instance.userId.toString(),
       'cityName': GlobalState.instance.cityName,
       'simple': true,

@@ -22,10 +22,10 @@ dependencies:
   encrypt: ^5.0.3 #加密
   carousel_slider: ^5.1.1 #轮播图
   intl: ^0.18.1 #日期、时间、数字、货币等的格式化
-  cached_network_image: ^3.3.0 #图片缓存，类似glide
+  cached_network_image: ^3.4.1 #图片缓存，类似glide
   easy_refresh: ^3.4.0 #轻量级下拉刷新和上拉加载库
   provider: ^6.1.1 # 状态管理
-  webview_flutter: ^4.7.0
+  webview_flutter: ^4.13.0 # webview
 
 dev_dependencies:
   flutter_test:
