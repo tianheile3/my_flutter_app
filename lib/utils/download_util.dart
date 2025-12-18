@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/utils/permission_utils.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:saver_gallery/saver_gallery.dart';
 
 class DownloadUtil with LoggerMixin {
   // 单例
@@ -14,37 +15,14 @@ class DownloadUtil with LoggerMixin {
 
   DownloadUtil._internal();
 
-  TargetPlatform _platform = TargetPlatform.android;
-
-  void setPlatform(TargetPlatform platform) {
-    _platform = platform;
-  }
-
   Future<void> download({
     required String url,
     required String fileName,
-    bool saveToPublicDir = false, // 是否保存到公共 Download 目录
     required Function(double) onProgress,
     required Function(String) onSuccess,
     required Function(String) onError,
   }) async {
-    Directory saveDir;
-    if (saveToPublicDir) {
-      final hasPermission = await requestStoragePermission();
-      if (!hasPermission) {
-        onError("存储权限未授予，无法保存到公共目录");
-        return;
-      }
-      // Android 公共 Download 目录
-      if (_platform == TargetPlatform.android) {
-        saveDir = Directory("/storage/emulated/0/Download/flutter");
-      } else {
-        // iOS 公共目录
-        saveDir = await getApplicationDocumentsDirectory();
-      }
-    } else {
-      saveDir = await getApplicationDocumentsDirectory();
-    }
+    Directory saveDir = await getApplicationDocumentsDirectory();
     if (!await saveDir.exists()) {
       await saveDir.create(recursive: true);
     }
@@ -72,43 +50,40 @@ class DownloadUtil with LoggerMixin {
     }
   }
 
-  // 检查并申请下载所需的存储权限
-  Future<bool> requestStoragePermission() async {
-    Permission permission;
-
-    if (_platform == TargetPlatform.android) {
-      // Android 权限适配
-      if (await Permission.manageExternalStorage.isRestricted) {
-        // Android 13+ 用 MANAGE_EXTERNAL_STORAGE
-        permission = Permission.manageExternalStorage;
-      } else {
-        // Android 12- 用 STORAGE（兼容旧版本）
-        permission = Permission.storage;
+  /// 保存网络图片到相册
+  Future<void> saveNetworkImage({
+    required String imageUrl,
+    required Function() onSuccess,
+    required Function(String) onError,
+  }) async {
+    try {
+      // 1. 申请权限
+      final hasPermission = await PermissionUtils.requestPhotoPermission(
+        skipIfExists: true,
+      );
+      if (!hasPermission) {
+        throw Exception("相册权限未授权");
       }
-    } else if (_platform == TargetPlatform.iOS) {
-      // iOS 权限适配（替代原 filesLibrary）
-      // 场景1：仅添加文件到相册/文件库 → photosAddOnly（推荐，权限更低）
-      // 场景2：读写文件库 → photos（需完整相册权限）
-      permission = Permission.photos;
-      // 若需要完整读写权限，用：permission = Permission.photos;
-    } else {
-      // 其他平台（如 macOS/Windows）
-      return true;
+      // 2. 下载图片为字节数据
+      var response = await Dio().get(
+        imageUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      // 3. 保存到相册
+      final String fileName = "19lou_${DateTime.now().millisecondsSinceEpoch}";
+      logger.d("fileName:$fileName");
+      final result = await SaverGallery.saveImage(
+        Uint8List.fromList(response.data),
+        fileName: fileName,
+        skipIfExists: true,
+      );
+      if (result.isSuccess) {
+        return onSuccess();
+      } else {
+        onError("保存失败：${result.errorMessage}");
+      }
+    } catch (e) {
+      onError("保存网络图片失败：$e");
     }
-
-    // 权限状态判断
-    final status = await permission.status;
-    if (status.isGranted) {
-      return true;
-    } else if (status.isDenied) {
-      // 首次申请权限
-      final result = await permission.request();
-      return result.isGranted;
-    } else if (status.isPermanentlyDenied || status.isRestricted) {
-      // 权限被永久拒绝，引导到设置页
-      openAppSettings();
-      return false;
-    }
-    return false;
   }
 }

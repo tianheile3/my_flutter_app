@@ -390,10 +390,6 @@ class _HomePageState extends BaseState<HomeTabPage> {
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: double.infinity,
-                            placeholder: (context, url) =>
-                                Icon(Icons.image, size: double.infinity),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.image, size: double.infinity),
                             memCacheWidth: (_screenWidth * 2).toInt(),
                             memCacheHeight: 400,
                           ),

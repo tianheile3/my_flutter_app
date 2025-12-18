@@ -20,6 +20,12 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+    println("Flutter compileSdkVersion: ${flutter.compileSdkVersion}")
+    println("Flutter minSdkVersion: ${flutter.minSdkVersion}")
+    println("Flutter targetSdkVersion: ${flutter.targetSdkVersion}")
+    println("Flutter versionCode: ${flutter.versionCode}")
+    println("Flutter versionName: ${flutter.versionName}")
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -47,7 +53,6 @@ android {
             keyPassword = props.getProperty("keyPassword")
             storePassword = props.getProperty("storePassword")
             storeFile = props.getProperty("storeFile")?.let { rootProject.file(it) }
-
         }
     }
 
