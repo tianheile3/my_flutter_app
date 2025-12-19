@@ -2,6 +2,7 @@ import 'package:flutter_study/api/response/file_upload_entity.dart';
 import 'package:flutter_study/base/base_view_model.dart';
 import 'package:flutter_study/utils/download_util.dart';
 import 'package:flutter_study/utils/permission_utils.dart';
+import 'package:flutter_study/utils/upload_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -45,6 +46,7 @@ class UploadViewModel extends BaseViewModel {
       for (var image in result) {
         final entity = FileUploadFile();
         entity.path = image.path;
+        entity.status = "loading";
         images.add(entity);
       }
       notifyListeners();
@@ -54,5 +56,39 @@ class UploadViewModel extends BaseViewModel {
   // 拍摄图片（相机）
   Future<void> pickFromCamera() async {}
 
-  void uploadImage() {}
+  //并发更新
+  Future<void> uploadImageWithUpdateTogether() async {
+    if (images.isEmpty) return;
+    // 1. 筛选需要上传的图片（排除已上传的）
+    final needUploadItems = images.where((item) => item.aid.isEmpty).toList();
+    if (needUploadItems.isEmpty) return;
+    // 2. 批量生成上传任务（不立即执行）
+    final uploadTasks = needUploadItems
+        .map((item) => UploadUtils(item).doUpload())
+        .toList();
+    // 3. 并行执行所有上传任务，等待全部完成
+    await Future.wait(uploadTasks);
+    // 4. 所有任务完成后刷新UI
+    notifyListeners();
+  }
+
+  Future<void> uploadImage() async {
+    if (images.isEmpty) return;
+    // 1. 筛选需要上传的图片（排除已上传的）
+    final needUploadItems = images.where((item) => item.aid.isEmpty).toList();
+    if (needUploadItems.isEmpty) return;
+
+    // 并行执行，每个任务完成后立即刷新UI
+    for (var item in needUploadItems) {
+      // 不加 await，让任务异步并行执行
+      UploadUtils(item)
+          .doUpload()
+          .then((_) {
+            notifyListeners(); // 单张上传完成就刷新
+          })
+          .catchError((e) {
+            logger.d("单张上传失败：$e");
+          });
+    }
+  }
 }

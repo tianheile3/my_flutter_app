@@ -47,6 +47,13 @@ class _TestState extends BaseState<TestPage> {
                     onPressed: () {
                       viewModel.pickFromGallery();
                     },
+                    child: const Text("选择图片"),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      viewModel.uploadImage();
+                    },
                     child: const Text("上传"),
                   ),
                   SizedBox(height: 20),
@@ -67,13 +74,27 @@ class _TestState extends BaseState<TestPage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: item.aid.isNotEmpty
-                              ? CachedNetworkImage(
-                                  imageUrl: item.origUrl,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  fit: BoxFit.cover,
-                                  memCacheWidth: 200,
-                                  memCacheHeight: 250,
+                              ? Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: item.origUrl,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                      memCacheWidth: 200,
+                                      memCacheHeight: 250,
+                                    ),
+                                    Icon(
+                                      item.status == "loading"
+                                          ? Icons.file_upload
+                                          : (item.status == "fail"
+                                                ? Icons.close
+                                                : Icons.done),
+                                      size: 25,
+                                      color: Colors.white,
+                                    ),
+                                  ],
                                 )
                               : Image.file(
                                   File(item.path),

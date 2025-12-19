@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/file_upload_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
@@ -96,4 +97,7 @@ abstract class ApiClient {
 
   @POST("/oauth/token")
   Future<TokenEntity?> login(@Body() FormData data);
+
+  @POST("/api/user/fileUpload")
+  Future<FileUploadEntity?> fileUpload(@Body() FormData data);
 }

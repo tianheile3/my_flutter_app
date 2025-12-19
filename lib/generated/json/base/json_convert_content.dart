@@ -186,6 +186,10 @@ class JsonConvert {
       return data.map<FileUploadFile>((Map<String, dynamic> e) =>
           FileUploadFile.fromJson(e)).toList() as M;
     }
+    if (<FileUploadChunk>[] is M) {
+      return data.map<FileUploadChunk>((Map<String, dynamic> e) =>
+          FileUploadChunk.fromJson(e)).toList() as M;
+    }
     if (<GatherThreadPageInfoEntity>[] is M) {
       return data.map<GatherThreadPageInfoEntity>((Map<String, dynamic> e) =>
           GatherThreadPageInfoEntity.fromJson(e)).toList() as M;
@@ -416,6 +420,7 @@ class JsonConvertClassCollection {
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
     (FileUploadEntity).toString(): FileUploadEntity.fromJson,
     (FileUploadFile).toString(): FileUploadFile.fromJson,
+    (FileUploadChunk).toString(): FileUploadChunk.fromJson,
     (GatherThreadPageInfoEntity).toString(): GatherThreadPageInfoEntity
         .fromJson,
     (GatherThreadPageInfoThreadList).toString(): GatherThreadPageInfoThreadList

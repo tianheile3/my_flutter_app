@@ -3,7 +3,7 @@ import 'package:flutter_study/api/response/file_upload_entity.dart';
 
 FileUploadEntity $FileUploadEntityFromJson(Map<String, dynamic> json) {
   final FileUploadEntity fileUploadEntity = FileUploadEntity();
-  final String? code = jsonConvert.convert<String>(json['code']);
+  final int? code = jsonConvert.convert<int>(json['code']);
   if (code != null) {
     fileUploadEntity.code = code;
   }
@@ -16,6 +16,11 @@ FileUploadEntity $FileUploadEntityFromJson(Map<String, dynamic> json) {
   if (file != null) {
     fileUploadEntity.file = file;
   }
+  final FileUploadChunk? chunk = jsonConvert.convert<FileUploadChunk>(
+      json['chunk']);
+  if (chunk != null) {
+    fileUploadEntity.chunk = chunk;
+  }
   return fileUploadEntity;
 }
 
@@ -23,20 +28,23 @@ Map<String, dynamic> $FileUploadEntityToJson(FileUploadEntity entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['code'] = entity.code;
   data['message'] = entity.message;
-  data['file'] = entity.file.toJson();
+  data['file'] = entity.file?.toJson();
+  data['chunk'] = entity.chunk?.toJson();
   return data;
 }
 
 extension FileUploadEntityExtension on FileUploadEntity {
   FileUploadEntity copyWith({
-    String? code,
+    int? code,
     String? message,
     FileUploadFile? file,
+    FileUploadChunk? chunk,
   }) {
     return FileUploadEntity()
       ..code = code ?? this.code
       ..message = message ?? this.message
-      ..file = file ?? this.file;
+      ..file = file ?? this.file
+      ..chunk = chunk ?? this.chunk;
   }
 }
 
@@ -153,5 +161,43 @@ extension FileUploadFileExtension on FileUploadFile {
       ..hasSticker = hasSticker ?? this.hasSticker
       ..fileUri = fileUri ?? this.fileUri
       ..fileName = fileName ?? this.fileName;
+  }
+}
+
+FileUploadChunk $FileUploadChunkFromJson(Map<String, dynamic> json) {
+  final FileUploadChunk fileUploadChunk = FileUploadChunk();
+  final String? fileId = jsonConvert.convert<String>(json['file_id']);
+  if (fileId != null) {
+    fileUploadChunk.fileId = fileId;
+  }
+  final int? chunk = jsonConvert.convert<int>(json['chunk']);
+  if (chunk != null) {
+    fileUploadChunk.chunk = chunk;
+  }
+  final int? chunks = jsonConvert.convert<int>(json['chunks']);
+  if (chunks != null) {
+    fileUploadChunk.chunks = chunks;
+  }
+  return fileUploadChunk;
+}
+
+Map<String, dynamic> $FileUploadChunkToJson(FileUploadChunk entity) {
+  final Map<String, dynamic> data = <String, dynamic>{};
+  data['file_id'] = entity.fileId;
+  data['chunk'] = entity.chunk;
+  data['chunks'] = entity.chunks;
+  return data;
+}
+
+extension FileUploadChunkExtension on FileUploadChunk {
+  FileUploadChunk copyWith({
+    String? fileId,
+    int? chunk,
+    int? chunks,
+  }) {
+    return FileUploadChunk()
+      ..fileId = fileId ?? this.fileId
+      ..chunk = chunk ?? this.chunk
+      ..chunks = chunks ?? this.chunks;
   }
 }

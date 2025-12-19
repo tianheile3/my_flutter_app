@@ -1,7 +1,7 @@
 abstract class Constants {
   static const String CLIENT_ID = "102";
   static const String CLIENT_SECRET_KEY = "ec8956637a99787bd197eacd77acce5e";
-  static const String CLIENT_VER = "9.6.0";
+  static const String CLIENT_VER = "9.6.2";
   static const String CLIENT_SALT = "kcTO3XFn0s63";
 
   //手机注册时的salt
