@@ -30,6 +30,7 @@ dependencies:
   path_provider: ^2.1.5  # 获取本地存储路径
   image_picker: ^1.2.1 # 图片选择
   saver_gallery: ^4.1.0 #图片保存
+  flutter_image_compress: ^2.4.0 # 图片压缩
 
 dev_dependencies:
   flutter_test:

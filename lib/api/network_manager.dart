@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_study/api/api_client.dart';
 import 'package:flutter_study/utils/auth_utils.dart';
@@ -24,7 +26,7 @@ class NetworkManager with LoggerMixin {
         responseType: ResponseType.json,
       ),
     );
-
+    setCanCapturePackages(_dio);
     // 添加公共参数拦截器
     _dio.interceptors.add(CommonParamsInterceptor());
     // 添加自定义的响应拦截器
@@ -53,7 +55,7 @@ class NetworkManager with LoggerMixin {
         responseType: ResponseType.json,
       ),
     );
-
+    setCanCapturePackages(tempDio);
     // 重新添加拦截器（关键：不要共享原拦截器实例）
     tempDio.interceptors.add(CommonParamsInterceptor());
     tempDio.interceptors.add(CustomResponseInterceptor());
@@ -66,6 +68,26 @@ class NetworkManager with LoggerMixin {
     }
 
     return ApiClient(tempDio);
+  }
+
+  // 禁用 HTTPS 证书校验（抓包/测试环境用）
+  void setCanCapturePackages(Dio dio) {
+    if (!kDebugMode) {
+      return;
+    }
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        final client = HttpClient();
+        // 禁用 HTTPS 证书校验（抓包/测试环境用）
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        client.findProxy = (uri) {
+          // 格式：PROXY 电脑局域网IP:端口; DIRECT（DIRECT表示代理不可用时直连）
+          return "PROXY 172.16.112.9:8866; DIRECT";
+        };
+        return client;
+      },
+    );
   }
 }
 

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/page/home_tab_page.dart';
 import 'package:flutter_study/page/webview_page.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:flutter_study/utils/date_tools.dart';
@@ -179,8 +178,8 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                mainAxisSpacing: imageGridSpacing,
-                crossAxisSpacing: imageGridSpacing,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
                 childAspectRatio: 1.3,
               ),
               itemBuilder: (context, index) {

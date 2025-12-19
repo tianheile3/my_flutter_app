@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/file_upload_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
@@ -176,6 +177,14 @@ class JsonConvert {
     if (<EncryptKeyEntity>[] is M) {
       return data.map<EncryptKeyEntity>((Map<String, dynamic> e) =>
           EncryptKeyEntity.fromJson(e)).toList() as M;
+    }
+    if (<FileUploadEntity>[] is M) {
+      return data.map<FileUploadEntity>((Map<String, dynamic> e) =>
+          FileUploadEntity.fromJson(e)).toList() as M;
+    }
+    if (<FileUploadFile>[] is M) {
+      return data.map<FileUploadFile>((Map<String, dynamic> e) =>
+          FileUploadFile.fromJson(e)).toList() as M;
     }
     if (<GatherThreadPageInfoEntity>[] is M) {
       return data.map<GatherThreadPageInfoEntity>((Map<String, dynamic> e) =>
@@ -405,6 +414,8 @@ class JsonConvertClassCollection {
     (CurrentUserInfoUserGroup).toString(): CurrentUserInfoUserGroup.fromJson,
     (CurrentUserInfoUserMedals).toString(): CurrentUserInfoUserMedals.fromJson,
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
+    (FileUploadEntity).toString(): FileUploadEntity.fromJson,
+    (FileUploadFile).toString(): FileUploadFile.fromJson,
     (GatherThreadPageInfoEntity).toString(): GatherThreadPageInfoEntity
         .fromJson,
     (GatherThreadPageInfoThreadList).toString(): GatherThreadPageInfoThreadList

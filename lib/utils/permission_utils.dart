@@ -34,6 +34,24 @@ class PermissionUtils {
           : await Permission.photosAddOnly.request().isGranted;
     }
 
-    return false; // Unsupported platforms
+    return false;
+  }
+
+  static Future<bool> requestImagePermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return false;
+    }
+    if (Platform.isAndroid) {
+      final deviceInfo = await DeviceInfoPlugin().androidInfo;
+      final sdkInt = deviceInfo.version.sdkInt;
+
+      return sdkInt >= 33
+          ? await Permission.photos.request().isGranted
+          : await Permission.storage.request().isGranted;
+    } else if (Platform.isIOS) {
+      return await Permission.photos.request().isGranted;
+    }
+
+    return false;
   }
 }

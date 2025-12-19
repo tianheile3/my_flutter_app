@@ -1,15 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!-- 添加细分的媒体访问权限 -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /><!-- 图片 -->
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /><!-- 视频 -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" /><!-- 音频 -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <queries>
         <intent>
