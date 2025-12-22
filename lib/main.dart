@@ -5,6 +5,7 @@ import 'package:flutter_study/base/base_state.dart';
 import 'package:flutter_study/page/login_page.dart';
 import 'package:flutter_study/page/main_home_page.dart';
 import 'package:flutter_study/utils/global_state.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,11 +40,10 @@ void initEasyRefresh() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     //整个app只有一个MaterialApp
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
@@ -53,76 +53,71 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoadingPage extends BaseStatefulWidget {
-  const LoadingPage({super.key});
+// GetX控制器管理加载逻辑和状态
+class LoadingController extends GetxController {
+  final Rx<LoadState> loadState = LoadState.refreshing.obs;
+  final RxString errorMessage = ''.obs;
 
-  @override
-  BaseState<LoadingPage> createState() => _MyLoadingPageState();
-}
-
-class _MyLoadingPageState extends BaseState<LoadingPage> {
-  LoadState _loadState = LoadState.refreshing; // 初始加载中
-
-  @override
-  void initState() {
-    super.initState();
-    // 安全地延迟执行跳转逻辑
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeApp();
-    });
-  }
-
-  Future<void> _initializeApp() async {
+  Future<void> initializeApp() async {
     try {
-      setState(() {
-        _loadState = LoadState.refreshing;
-      });
+      loadState.value = LoadState.refreshing;
       await GlobalState.instance.getLocalStorage();
-      if (GlobalState.instance.cityName == "") {
+
+      if (GlobalState.instance.cityName.isEmpty) {
         GlobalState.instance.cityName = "jiaxing";
       }
+
       final response = await NetworkManager().getApiClient().getSystemTime();
       if (response != null) {
         GlobalState.instance.systemTimeDiff =
             int.tryParse(response.systemTime) ?? 0;
       }
-      if (!mounted) return;
+
+      // 检查是否登录并跳转
       final isLogin = GlobalState.instance.userId > 0;
-      await Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => isLogin ? MainHomePage() : LoginPage(),
-        ),
-        (route) => false, // 移除所有之前的路由);
-      );
+      Get.off(isLogin ? MainHomePage() : LoginPage());
     } catch (e) {
-      setState(() {
-        _loadState = LoadState.failed;
-        errorMessage = '初始化失败: $e';
-      });
+      loadState.value = LoadState.failed;
+      errorMessage.value = '初始化失败: $e';
     }
   }
+}
+
+class LoadingPage extends StatelessWidget {
+  const LoadingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // 实例化控制器（Get.put会自动管理生命周期）
+    final controller = Get.put(LoadingController());
+
+    // 页面构建完成后执行初始化
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.initializeApp();
+    });
+
     return Scaffold(
       body: Center(
-        child: _loadState == LoadState.failed
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _initializeApp,
-                    child: const Text('重试'),
-                  ),
-                ],
-              )
-            : const CircularProgressIndicator(), // 显示加载动画
+        // 使用Obx监听状态变化
+        child: Obx(() {
+          return controller.loadState.value == LoadState.failed
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      controller.errorMessage.value,
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => controller.initializeApp(),
+                      child: const Text('重试'),
+                    ),
+                  ],
+                )
+              : const CircularProgressIndicator();
+        }),
       ),
     );
   }
