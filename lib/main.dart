@@ -2,8 +2,8 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/base/base_state.dart';
-import 'package:flutter_study/page/login_page.dart';
-import 'package:flutter_study/page/main_home_page.dart';
+import 'package:flutter_study/page/login/view.dart';
+import 'package:flutter_study/page/main_home/view.dart';
 import 'package:flutter_study/utils/global_state.dart';
 import 'package:get/get.dart';
 

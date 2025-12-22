@@ -1,44 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_study/api/service/auth_service.dart';
-import 'package:flutter_study/base/base_state.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
-import 'main_home_page.dart';
+import 'logic.dart';
 
-class LoginPage extends BaseStatelessWidget {
+class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final TextEditingController _username = TextEditingController(
-    text: "zhangcheng504",
-  );
-  final TextEditingController _password = TextEditingController(
-    text: "q1234567",
-  );
-
-  Future<void> _handleLogin(BuildContext context) async {
-    String username = _username.text.trim();
-    String password = _password.text.trim();
-    if (username.isEmpty) {
-      Fluttertoast.showToast(msg: "用户名不能为空");
-      return;
-    }
-    if (password.isEmpty) {
-      Fluttertoast.showToast(msg: "密码不能为空");
-      return;
-    }
-    final success = await AuthService().performLogin(username, password);
-    if (success) {
-      Fluttertoast.showToast(msg: "登录成功");
-      // 等待toast显示后再导航（可选）
-      await Future.delayed(const Duration(milliseconds: 500));
-      // 检查当前widget是否仍然挂载
-      if (!context.mounted) return;
-      await Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MainHomePage()),
-        (route) => false,
-      );
-    }
-  }
+  final LoginLogic logic = Get.put(LoginLogic());
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +19,7 @@ class LoginPage extends BaseStatelessWidget {
           children: [
             //账号
             TextField(
-              controller: _username,
+              controller: logic.usernameController,
               decoration: const InputDecoration(
                 labelText: "账号",
                 hintText: "请输入账号",
@@ -63,7 +31,7 @@ class LoginPage extends BaseStatelessWidget {
             const SizedBox(height: 15),
             //密码
             TextField(
-              controller: _password,
+              controller: logic.passwordController,
               decoration: const InputDecoration(
                 labelText: "密码",
                 hintText: "请输入密码",
@@ -78,7 +46,7 @@ class LoginPage extends BaseStatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () => _handleLogin(context),
+                onPressed: () => logic.handleLogin(),
                 style: ElevatedButton.styleFrom(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
