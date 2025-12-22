@@ -1,30 +1,41 @@
-import 'package:flutter_study/base/base_view_model.dart';
+import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter_study/base/some_publish.dart';
+import 'package:get/get.dart';
 
-import '../api/network_manager.dart';
-import '../api/response/record_list_entity.dart';
-import '../base/base_state.dart';
+import '../../api/network_manager.dart';
+import '../../api/response/record_list_entity.dart';
+import '../webview_page.dart';
 
-class MapViewModel extends BaseViewModel {
+class CategoryTabLogic extends BaseController {
+  final EasyRefreshController controller = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
+
   final infoApi = NetworkManager().withOtherBaseUrl(
     "https://infoapi.19lou.com",
   );
-  static const int cityId = 330400;
+  final int cityId = 330400;
 
-  LoadState loadState = LoadState.refreshing;
   var page = 1;
-  final List<dynamic> items = [];
-  bool hasMore = true;
+  Rx<LoadState> loadState = LoadState.refreshing.obs;
+  final RxList<dynamic> items = <dynamic>[].obs;
 
-  Future<void> onRefresh(LoadMoreCallback callback) async {
+  @override
+  void onInit() {
+    super.onInit();
+    onRefresh();
+  }
+
+  Future<void> onRefresh() async {
     page = 1;
     items.clear();
-    hasMore = true;
-    loadState = LoadState.refreshing;
-    notifyListeners();
+    loadState.value = LoadState.refreshing;
+    controller.resetFooter();
 
     try {
-      final request1 = getMapConfig();
-      final request2 = getRecordList();
+      final request1 = _getMapConfig();
+      final request2 = _getRecordList(true);
       final results = await Future.wait([request1, request2]);
 
       final result1 = results[0];
@@ -40,36 +51,29 @@ class MapViewModel extends BaseViewModel {
         items.add("1");
         items.addAll(result2);
       }
-      loadState = LoadState.success;
-      notifyListeners();
-
-      callback(true, hasMore);
+      loadState.value = LoadState.success;
     } catch (e) {
-      errorMessage = "加载失败：$e";
-      loadState = LoadState.failed;
-      notifyListeners();
-
-      callback(false, false);
+      errorMessage.value = "加载失败：$e";
+      loadState.value = LoadState.failed;
+      controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
-  Future<void> onLoadMore(LoadMoreCallback callback) async {
+  Future<void> onLoadMore() async {
     try {
-      final result = await getRecordList();
+      final result = await _getRecordList(false);
       if (result == null) {
-        callback(false, true);
+        controller.finishLoad(IndicatorResult.fail);
         return;
       }
       items.addAll(result);
-      notifyListeners();
-      callback(true, hasMore);
     } catch (e) {
       logger.d("加载失败$e");
-      callback(false, true);
+      controller.finishLoad(IndicatorResult.fail);
     }
   }
 
-  Future<List<dynamic>> getMapConfig() async {
+  Future<List<dynamic>> _getMapConfig() async {
     final List<dynamic> list = [];
     final res = await api.getSiteMapConfig();
     if (res != null && res.groupList.isNotEmpty) {
@@ -90,14 +94,35 @@ class MapViewModel extends BaseViewModel {
     return list;
   }
 
-  Future<List<RecordListDataItems>?> getRecordList() async {
+  Future<List<RecordListDataItems>?> _getRecordList(bool isRefresh) async {
     final res = await infoApi.recordList(page: page);
     if (res != null && res.code == 200) {
-      hasMore = res.data.currentPage < res.data.maxPage;
+      setFinishState(res, isRefresh);
       page++;
       return res.data.items;
+    } else {
+      if (isRefresh) {
+        controller.finishRefresh(IndicatorResult.fail);
+      } else {
+        controller.finishLoad(IndicatorResult.fail);
+      }
     }
     return null;
+  }
+
+  void setFinishState(RecordListEntity res, bool isRefresh) {
+    bool noMore = res.data.currentPage >= res.data.maxPage;
+    logger.d("noMore:$noMore");
+    if (isRefresh) {
+      controller.finishRefresh(IndicatorResult.success);
+      if (noMore) {
+        controller.finishLoad(IndicatorResult.noMore);
+      }
+    } else {
+      controller.finishLoad(
+        noMore ? IndicatorResult.noMore : IndicatorResult.success,
+      );
+    }
   }
 
   String getTitle(RecordListDataItems item) {
@@ -150,5 +175,15 @@ class MapViewModel extends BaseViewModel {
         break;
     }
     return buffer.toString();
+  }
+
+  void toDetail(String url) {
+    Get.to(WebViewPage(url: url));
+  }
+
+  @override
+  void onClose() {
+    controller.dispose();
+    super.onClose();
   }
 }

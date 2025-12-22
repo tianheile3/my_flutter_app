@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../category_tab_page.dart';
-import '../home_tab_page.dart';
+import '../category_tab/view.dart';
+import '../home_tab/view.dart';
 import '../mine_tab_page.dart';
 
 class MainHomeLogic extends GetxController {
@@ -20,9 +20,9 @@ class MainHomeLogic extends GetxController {
   Widget _buildTabPage(int index) {
     switch (index) {
       case 0:
-        return const HomeTabPage();
+        return HomeTabPage();
       case 1:
-        return const CategoryTabPage();
+        return CategoryTabPage();
       case 2:
         return const MineTabPage();
       default:

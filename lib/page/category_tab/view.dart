@@ -1,136 +1,71 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/page/webview_page.dart';
-import 'package:flutter_study/utils/custom_colors.dart';
-import 'package:flutter_study/utils/date_tools.dart';
-import 'package:flutter_study/viewModel/map_view_model.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
-import '../api/response/map_config_entity.dart';
-import '../api/response/record_list_entity.dart';
-import '../base/base_state.dart';
+import '../../api/response/map_config_entity.dart';
+import '../../api/response/record_list_entity.dart';
+import '../../base/some_publish.dart';
+import '../../utils/custom_colors.dart';
+import '../../utils/date_tools.dart';
+import 'logic.dart';
 
-/// 分类 Tab 页面
-class CategoryTabPage extends BaseStatefulWidget {
-  const CategoryTabPage({super.key});
+class CategoryTabPage extends StatelessWidget {
+  CategoryTabPage({super.key});
 
-  @override
-  BaseState<BaseStatefulWidget> createState() => _CategoryPageState();
-}
-
-class _CategoryPageState extends BaseState<CategoryTabPage> {
-  late final MapViewModel _viewModel;
-
-  final EasyRefreshController _controller = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _viewModel = MapViewModel();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _onRefresh(_viewModel);
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _onRefresh(MapViewModel viewModel) async {
-    _controller.resetFooter();
-    await viewModel.onRefresh((bool success, bool hasMore) {
-      if (!success) {
-        _controller.finishRefresh(IndicatorResult.fail);
-      } else {
-        _controller.finishRefresh(IndicatorResult.success);
-        if (!hasMore) {
-          _controller.finishLoad(IndicatorResult.noMore);
-        }
-      }
-    });
-  }
-
-  Future<void> _onLoad(MapViewModel viewModel) async {
-    await viewModel.onLoadMore((bool success, bool hasMore) {
-      if (!success) {
-        _controller.finishLoad(IndicatorResult.fail);
-      } else {
-        _controller.finishLoad(
-          hasMore ? IndicatorResult.success : IndicatorResult.noMore,
-        );
-      }
-    });
-  }
-
-  void _toDetail(String url) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (builder) {
-          return WebViewPage(url: url);
-        },
-      ),
-    );
-  }
+  final CategoryTabLogic logic = Get.put(CategoryTabLogic());
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: _viewModel,
-      child: Consumer<MapViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.loadState == LoadState.refreshing) {
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
-          }
-
-          if (viewModel.loadState == LoadState.failed) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: const Text("发现")),
+      body: Obx(() {
+        switch (logic.loadState.value) {
+          case LoadState.refreshing:
             return Scaffold(
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    viewModel.errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _onRefresh(viewModel),
-                    child: const Text('重试'),
-                  ),
-                ],
+              body: Center(
+                child: CircularProgressIndicator(), // 加载指示器
               ),
             );
-          }
-
-          return Scaffold(
-            body: Container(
+          case LoadState.failed:
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  logic.errorMessage.value,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: logic.onRefresh,
+                  child: const Text('重试'),
+                ),
+              ],
+            );
+          case LoadState.success:
+            return Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
               child: EasyRefresh(
-                onRefresh: () => _onRefresh(viewModel),
-                onLoad: () => _onLoad(viewModel),
-                controller: _controller,
+                onRefresh: logic.onRefresh,
+                onLoad: logic.onLoadMore,
+                controller: logic.controller,
                 child: ListView.builder(
-                  itemCount: viewModel.items.length,
+                  itemCount: logic.items.length,
                   itemBuilder: (context, index) {
-                    final item = viewModel.items[index];
+                    final item = logic.items[index];
                     if (item is MapConfigGroupList) {
                       if (item.displayType == 1) {
-                        return _type1Widget(viewModel, item);
+                        return _type1Widget(item);
                       } else if (item.displayType == 2) {
-                        return _type2Widget(viewModel, item);
+                        return _type2Widget(item);
                       } else {
-                        return _type3Widget(viewModel, item);
+                        return _type3Widget(item);
                       }
                     } else if (item is RecordListDataItems) {
-                      return _recordList(viewModel, item);
+                      return _recordList(item);
                     } else if (item is int) {
                       return SizedBox(height: 10);
                     } else if (item is String) {
@@ -141,19 +76,18 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                   },
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+        }
+      }),
     );
   }
 
-  Widget _type1Widget(MapViewModel viewModel, MapConfigGroupList bean) {
+  Widget _type1Widget(MapConfigGroupList bean) {
     //不知
     return Container(color: Colors.red, width: 100, height: 100);
   }
 
-  Widget _type2Widget(MapViewModel viewModel, MapConfigGroupList bean) {
+  Widget _type2Widget(MapConfigGroupList bean) {
     //生活在嘉兴
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
@@ -186,7 +120,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                 final item = bean.itemList[index];
                 return InkWell(
                   onTap: () {
-                    _toDetail(item.link);
+                    logic.toDetail(item.link);
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -219,7 +153,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
     );
   }
 
-  Widget _type3Widget(MapViewModel viewModel, MapConfigGroupList bean) {
+  Widget _type3Widget(MapConfigGroupList bean) {
     //人生几件事
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
@@ -252,7 +186,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                 final item = bean.itemList[index];
                 return InkWell(
                   onTap: () {
-                    _toDetail(item.link);
+                    logic.toDetail(item.link);
                   },
                   child: Stack(
                     children: [
@@ -296,8 +230,8 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                _toDetail(
-                  "https://info.19lou.com/wap/zf/zf-${MapViewModel.cityId}.html",
+                logic.toDetail(
+                  "https://info.19lou.com/wap/zf/zf-${logic.cityId}.html",
                 );
               },
               child: Center(
@@ -349,8 +283,8 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                _toDetail(
-                  "https://info.19lou.com/wap/xz/xz-${MapViewModel.cityId}.html",
+                logic.toDetail(
+                  "https://info.19lou.com/wap/xz/xz-${logic.cityId}.html",
                 );
               },
               child: Center(
@@ -402,8 +336,8 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                _toDetail(
-                  "https://info.19lou.com/wap/zf/zf-${MapViewModel.cityId}.html",
+                logic.toDetail(
+                  "https://info.19lou.com/wap/zf/zf-${logic.cityId}.html",
                 );
               },
               child: Center(
@@ -457,10 +391,10 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
     );
   }
 
-  Widget _recordList(MapViewModel viewModel, RecordListDataItems item) {
+  Widget _recordList(RecordListDataItems item) {
     return InkWell(
       onTap: () {
-        _toDetail(item.detailUrl);
+        logic.toDetail(item.detailUrl);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
@@ -498,7 +432,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                           color: Colors.black.withValues(alpha: 0.32),
                           alignment: Alignment.center,
                           child: Text(
-                            viewModel.getDesc(item),
+                            logic.getDesc(item),
                             style: TextStyle(color: Colors.white, fontSize: 12),
                           ),
                         ),
@@ -513,7 +447,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        viewModel.getTitle(item),
+                        logic.getTitle(item),
                         style: TextStyle(
                           color: CustomColors.textDark,
                           fontSize: 15,
@@ -524,7 +458,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        viewModel.getAddress(item),
+                        logic.getAddress(item),
                         style: TextStyle(
                           color: CustomColors.textLight,
                           fontSize: 12,
@@ -542,7 +476,7 @@ class _CategoryPageState extends BaseState<CategoryTabPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            viewModel.getPrice(item),
+                            logic.getPrice(item),
                             style: TextStyle(
                               color: CustomColors.badge,
                               fontSize: 16,
