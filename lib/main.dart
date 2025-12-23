@@ -2,8 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/base/base_state.dart';
-import 'package:flutter_study/page/login/view.dart';
-import 'package:flutter_study/page/main_home/view.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:flutter_study/utils/global_state.dart';
 import 'package:get/get.dart';
 
@@ -49,6 +48,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
       home: const LoadingPage(),
+      initialRoute: MyRouteConfig.main,
+      getPages: MyRouteConfig.getPages,
     );
   }
 }
@@ -75,7 +76,7 @@ class LoadingController extends GetxController {
 
       // 检查是否登录并跳转
       final isLogin = GlobalState.instance.userId > 0;
-      Get.off(isLogin ? MainHomePage() : LoginPage());
+      Get.offNamed(isLogin ? MyRouteConfig.mainHome : MyRouteConfig.login);
     } catch (e) {
       loadState.value = LoadState.failed;
       errorMessage.value = '初始化失败: $e';

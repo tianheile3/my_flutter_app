@@ -1,13 +1,15 @@
-import 'package:flutter_study/api/response/file_upload_entity.dart';
-import 'package:flutter_study/base/base_view_model.dart';
-import 'package:flutter_study/utils/download_util.dart';
-import 'package:flutter_study/utils/permission_utils.dart';
-import 'package:flutter_study/utils/upload_utils.dart';
+import 'package:flutter_study/base/some_publish.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UploadViewModel extends BaseViewModel {
-  final List<FileUploadFile> images = [];
+import '../../api/response/file_upload_entity.dart';
+import '../../utils/download_util.dart';
+import '../../utils/permission_utils.dart';
+import '../../utils/upload_utils.dart';
+
+class TestLogic extends BaseController {
+  final RxList<FileUploadFile> images = <FileUploadFile>[].obs;
   final _picker = ImagePicker();
 
   void saveFile() {
@@ -28,8 +30,7 @@ class UploadViewModel extends BaseViewModel {
 
   void saveImage() {
     DownloadUtil().saveNetworkImage(
-      imageUrl:
-          "https://att2.citysbs.com/hangzhou/2025/12/17/10/middle_780x576-104436_v3_12541765939476531_abf7fcfcff70225789237b19b7e5f2d2.jpg",
+      imageUrl: "https://picsum.photos/1000/1000",
       onSuccess: () {
         Fluttertoast.showToast(msg: "保存成功");
       },
@@ -46,10 +47,9 @@ class UploadViewModel extends BaseViewModel {
       for (var image in result) {
         final entity = FileUploadFile();
         entity.path = image.path;
-        entity.status = "loading";
+        entity.status.value = "loading";
         images.add(entity);
       }
-      notifyListeners();
     }
   }
 
@@ -68,8 +68,6 @@ class UploadViewModel extends BaseViewModel {
         .toList();
     // 3. 并行执行所有上传任务，等待全部完成
     await Future.wait(uploadTasks);
-    // 4. 所有任务完成后刷新UI
-    notifyListeners();
   }
 
   Future<void> uploadImage() async {
@@ -83,9 +81,6 @@ class UploadViewModel extends BaseViewModel {
       // 不加 await，让任务异步并行执行
       UploadUtils(item)
           .doUpload()
-          .then((_) {
-            notifyListeners(); // 单张上传完成就刷新
-          })
           .catchError((e) {
             logger.d("单张上传失败：$e");
           });

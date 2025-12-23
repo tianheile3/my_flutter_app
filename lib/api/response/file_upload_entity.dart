@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_study/generated/json/base/json_field.dart';
 import 'package:flutter_study/generated/json/file_upload_entity.g.dart';
+import 'package:get/get.dart';
 
 export 'package:flutter_study/generated/json/file_upload_entity.g.dart';
 
@@ -52,7 +53,7 @@ class FileUploadFile {
   late String fileName;
 
   String path = ""; //本地uri
-  String status = "success"; //状态，success,fail,uploading
+  RxString status = "success".obs; //状态，success,fail,uploading
 
   FileUploadFile();
 

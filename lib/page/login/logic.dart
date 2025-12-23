@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/service/auth_service.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-
-import '../main_home/view.dart';
 
 class LoginLogic extends GetxController {
   final TextEditingController usernameController = TextEditingController(
@@ -29,7 +28,7 @@ class LoginLogic extends GetxController {
       Fluttertoast.showToast(msg: "登录成功");
       // 等待toast显示后再导航（可选）
       await Future.delayed(const Duration(milliseconds: 500));
-      Get.offAll(() => MainHomePage());
+      Get.offAllNamed(MyRouteConfig.mainHome);
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:get/get.dart';
 
 import '../../api/response/second_config_entity.dart';
@@ -11,7 +12,6 @@ import '../../models/home_item.dart';
 import '../../utils/common_utils.dart';
 import '../../utils/custom_colors.dart';
 import '../../utils/date_tools.dart';
-import '../test_page.dart';
 import 'logic.dart';
 
 class HomeTabPage extends StatelessWidget {
@@ -26,7 +26,7 @@ class HomeTabPage extends StatelessWidget {
       width: itemWidth,
       child: InkWell(
         onTap: () {
-          Get.to(TestPage());
+          Get.toNamed(MyRouteConfig.test);
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,

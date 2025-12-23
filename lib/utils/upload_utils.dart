@@ -22,14 +22,14 @@ class UploadUtils with LoggerMixin {
   UploadUtils(this.item);
 
   Future<void> doUpload() async {
-    item.status = "loading";
+    item.status.value = "loading";
     final List<String> slices = await sliceFileToBase64(file: File(item.path));
     if (slices.isEmpty) return;
     chunks = slices.length;
     while (chunk <= chunks) {
       final result = await uploadSlice(slices[chunk - 1]);
       if (result == null) {
-        item.status = "fail";
+        item.status.value = "fail";
         break;
       }
       if (result.chunk != null) {
@@ -39,7 +39,7 @@ class UploadUtils with LoggerMixin {
         item.aid = result.file!.aid;
         item.middleUrl = result.file!.middleUrl;
         item.origUrl = result.file!.origUrl;
-        item.status = "success";
+        item.status.value = "success";
         break;
       }
     }
