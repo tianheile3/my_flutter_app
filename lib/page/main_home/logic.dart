@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_study/page/mine_tab/view.dart';
 import 'package:get/get.dart';
 
 import '../category_tab/view.dart';
 import '../home_tab/view.dart';
-import '../mine_tab_page.dart';
 
 class MainHomeLogic extends GetxController {
   final RxInt selectedIndex = 0.obs;
@@ -24,7 +24,7 @@ class MainHomeLogic extends GetxController {
       case 1:
         return CategoryTabPage();
       case 2:
-        return const MineTabPage();
+        return MineTabPage();
       default:
         return const SizedBox();
     }

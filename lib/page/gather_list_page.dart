@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/page/gather_page.dart';
 import 'package:flutter_study/utils/custom_colors.dart';
+import 'package:get/get.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/my_gather_entity.dart';
 import '../base/base_state.dart';
+import '../route_config.dart';
 
 class GatherListPage extends BaseStatefulWidget {
   const GatherListPage({super.key});
@@ -104,11 +105,9 @@ class _FavListPage extends BaseState<GatherListPage>
             if (item is MyGatherGatherList) {
               return InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GatherPage(gatherId: item.id),
-                    ),
+                  Get.toNamed(
+                    MyRouteConfig.gather,
+                    arguments: {"gatherId": item.id},
                   );
                 },
                 child: Container(

@@ -29,8 +29,8 @@ class UserRepository {
     return res?.bgUrl ?? "";
   }
 
-  Color getSexColor(CurrentUserInfoUser user) {
-    if (user.genderPrivate == "1") {
+  Color getSexColor(CurrentUserInfoUser? user) {
+    if (user == null || user.genderPrivate == "1") {
       return CustomColors.sexOther;
     } else if (user.gender == "male") {
       return CustomColors.male;
@@ -41,13 +41,13 @@ class UserRepository {
 
   List<MineTabItem> getTabList(CurrentUserInfoUser user) {
     List<MineTabItem> list = [];
-    if (user.userType == "1") {
-      list.add(MineTabItem(title: "我的商家圈", num: -1, type: 3));
-    }
     var postNum = user.threads + user.comments;
     list.add(MineTabItem(title: "发布", num: postNum, type: 0));
     list.add(MineTabItem(title: "点赞", num: user.rateNum, type: 1));
     list.add(MineTabItem(title: "收藏", num: user.favCount, type: 2));
+    if (user.userType == "1") {
+      list.add(MineTabItem(title: "我的商家圈", num: -1, type: 3));
+    }
     return list;
   }
 }

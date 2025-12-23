@@ -1,4 +1,5 @@
 import 'package:flutter_study/main.dart';
+import 'package:flutter_study/page/gather/view.dart';
 import 'package:flutter_study/page/login/view.dart';
 import 'package:flutter_study/page/main_home/view.dart';
 import 'package:flutter_study/page/test/view.dart';
@@ -23,11 +24,6 @@ class MyRouteConfig {
   //测试
   static const String test = "/test";
 
-  //我家
-  static const String commentList = "/commentList";
-  static const String gatherList = "/gatherList";
-  static const String postList = "/postList";
-
   //合集
   static const String gather = "/gather";
 
@@ -37,9 +33,7 @@ class MyRouteConfig {
     GetPage(name: mainHome, page: () => MainHomePage()),
     GetPage(name: webview, page: () => WebviewPage()),
     GetPage(name: test, page: () => TestPage()),
-    // GetPage(name: main, page: () => MyApp()),
-    // GetPage(name: main, page: () => MyApp()),
-    // GetPage(name: main, page: () => MyApp()),
+    GetPage(name: gather, page: () => GatherPage()),
     // GetPage(name: main, page: () => MyApp()),
     // GetPage(name: main, page: () => MyApp()),
   ];

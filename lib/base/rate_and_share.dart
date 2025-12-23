@@ -1,7 +1,9 @@
+import 'package:get/get.dart';
+
 class RateAndShare {
   late String tidPid;
-  bool rate = false;
-  int rateCount = 0;
+  RxBool rate = false.obs;
+  RxInt rateCount = 0.obs;
 
-  int shareCount = 0;
+  RxInt shareCount = 0.obs;
 }

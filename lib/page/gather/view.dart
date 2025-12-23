@@ -1,148 +1,91 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/utils/custom_colors.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
-import '../base/base_state.dart';
-import '../viewModel/gather_view_model.dart';
+import '../../base/some_publish.dart';
+import '../../utils/custom_colors.dart';
+import 'logic.dart';
 
-class GatherPage extends BaseStatefulWidget {
-  final String gatherId;
+class GatherPage extends StatelessWidget {
+  GatherPage({super.key});
 
-  const GatherPage({super.key, required this.gatherId});
-
-  @override
-  BaseState<BaseStatefulWidget> createState() => _GatherPageState();
-}
-
-class _GatherPageState extends BaseState<GatherPage> {
-  late final GatherViewModel _viewModel;
-  final EasyRefreshController _controller = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _viewModel = GatherViewModel(widget.gatherId);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _viewModel.setScreenWidth(MediaQuery.of(context).size.width);
-      _onRefresh(_viewModel);
-    });
-  }
-
-  Future<void> _onRefresh(GatherViewModel viewModel) async {
-    _controller.resetFooter();
-    await viewModel.onRefresh((bool success, bool hasMore) {
-      if (!success) {
-        _controller.finishRefresh(IndicatorResult.fail);
-      } else {
-        _controller.finishRefresh(IndicatorResult.success);
-        if (!hasMore) {
-          _controller.finishLoad(IndicatorResult.noMore);
-        }
-      }
-    });
-  }
-
-  Future<void> _onLoad(GatherViewModel viewModel) async {
-    await viewModel.onLoadMore((bool success, bool hasMore) {
-      if (!success) {
-        _controller.finishLoad(IndicatorResult.fail);
-      } else {
-        _controller.finishLoad(
-          hasMore ? IndicatorResult.success : IndicatorResult.noMore,
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final GatherLogic logic = Get.put(GatherLogic());
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: _viewModel,
-      child: Consumer<GatherViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.loadState == LoadState.refreshing) {
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
-          }
-
-          if (viewModel.loadState == LoadState.failed) {
-            return Scaffold(
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    viewModel.errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _onRefresh(viewModel),
-                    child: const Text('重试'),
-                  ),
-                ],
-              ),
+    return Scaffold(
+      body: Obx(() {
+        switch (logic.loadState.value) {
+          case LoadState.refreshing:
+            return Center(
+              child: CircularProgressIndicator(), // 加载指示器
             );
-          }
-
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    expandedHeight: viewModel.expandedHeight,
-                    pinned: true,
-                    floating: true,
-                    snap: true,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: _headWidget(viewModel),
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(
-                            Icons.arrow_back_ios,
+          case LoadState.failed:
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  logic.errorMessage.value,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: logic.onRefresh,
+                  child: const Text('重试'),
+                ),
+              ],
+            );
+          case LoadState.success:
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      expandedHeight: logic.expandedHeight,
+                      pinned: true,
+                      floating: true,
+                      snap: true,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: _headWidget(),
+                      ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.more_horiz,
+                            size: 25,
                             color: Colors.white,
                           ),
-                        ),
-                        const Icon(
-                          Icons.more_horiz,
-                          size: 25,
-                          color: Colors.white,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ];
-              },
-              body: _listWidget(viewModel),
-            ),
-          );
-        },
-      ),
+                  ];
+                },
+                body: _listWidget(),
+              ),
+            );
+        }
+      }),
     );
   }
 
-  Widget _headWidget(GatherViewModel viewModel) {
+  Widget _headWidget() {
     return Column(
       children: [
         Container(
-          height: viewModel.screenWidth * 8 / 15,
+          height: logic.screenWidth * 8 / 15,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xFF8E6C56), Color(0xFFD3B089)],
@@ -160,7 +103,7 @@ class _GatherPageState extends BaseState<GatherPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      viewModel.gatherInfo.name,
+                      logic.gatherInfo.value!.name,
                       style: const TextStyle(fontSize: 17, color: Colors.white),
                     ),
                     const SizedBox(height: 4),
@@ -171,13 +114,13 @@ class _GatherPageState extends BaseState<GatherPage> {
                             width: 25,
                             height: 25,
                             fit: BoxFit.cover,
-                            imageUrl: viewModel.gatherUser.smallAvatar,
+                            imageUrl: logic.gatherUser.value!.smallAvatar,
                             memCacheWidth: 50,
                             memCacheHeight: 50,
                           ),
                         ),
                         Text(
-                          viewModel.gatherUser.userName,
+                          logic.gatherUser.value!.userName,
                           style: const TextStyle(
                             fontSize: 12,
                             color: Colors.white,
@@ -187,7 +130,7 @@ class _GatherPageState extends BaseState<GatherPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      viewModel.getViewString(),
+                      logic.getViewString(),
                       style: const TextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ],
@@ -199,7 +142,7 @@ class _GatherPageState extends BaseState<GatherPage> {
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
-                  imageUrl: viewModel.gatherInfo.cover,
+                  imageUrl: logic.gatherInfo.value!.cover,
                   memCacheWidth: 160,
                   memCacheHeight: 160,
                 ),
@@ -207,34 +150,34 @@ class _GatherPageState extends BaseState<GatherPage> {
             ],
           ),
         ),
-        if (viewModel.gatherInfo.desc.isNotEmpty)
+        if ((logic.gatherInfo.value?.desc ?? "").isNotEmpty)
           Container(
             color: Colors.white,
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Text(
-              viewModel.gatherInfo.desc,
+              logic.gatherInfo.value!.desc,
               style: TextStyle(fontSize: 12, color: CustomColors.textDark),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-        if (viewModel.gatherInfo.desc.isNotEmpty)
+        if (logic.gatherInfo.value!.desc.isNotEmpty)
           Divider(color: CustomColors.divider1, height: 5, thickness: 5),
       ],
     );
   }
 
-  Widget _listWidget(GatherViewModel viewModel) {
+  Widget _listWidget() {
     return EasyRefresh(
-      onRefresh: () => _onRefresh(viewModel),
-      onLoad: () => _onLoad(viewModel),
-      controller: _controller,
+      onRefresh: () => logic.onRefresh(),
+      onLoad: () => logic.onLoadMore(),
+      controller: logic.controller,
       child: ListView.builder(
-        itemCount: viewModel.items.length,
+        itemCount: logic.items.length,
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
-          final item = viewModel.items[index];
+          final item = logic.items[index];
           return Container(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: Column(
@@ -346,25 +289,29 @@ class _GatherPageState extends BaseState<GatherPage> {
                           ),
                         ),
                         const SizedBox(width: 10),
-                        IconButton(
-                          onPressed: () => viewModel.toggleLike(item),
-                          icon: Icon(
-                            item.rate
-                                ? Icons.thumb_up_alt
-                                : Icons.thumb_up_off_alt,
-                            size: 24,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          (item.rateCount) > 0
-                              ? item.rateCount.toString()
-                              : "点赞",
-                          style: TextStyle(
-                            color: CustomColors.textLight,
-                            fontSize: 12,
-                          ),
-                        ),
+                        Obx(() {
+                          return IconButton(
+                            onPressed: () => logic.toggleLike(item),
+                            icon: Icon(
+                              item.rate.value
+                                  ? Icons.thumb_up_alt
+                                  : Icons.thumb_up_off_alt,
+                              size: 24,
+                              color: Colors.grey,
+                            ),
+                          );
+                        }),
+                        Obx(() {
+                          return Text(
+                            item.rateCount.value > 0
+                                ? item.rateCount.toString()
+                                : "点赞",
+                            style: TextStyle(
+                              color: CustomColors.textLight,
+                              fontSize: 12,
+                            ),
+                          );
+                        }),
                       ],
                     ),
                   ],

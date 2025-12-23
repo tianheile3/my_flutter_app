@@ -1,216 +1,126 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/page/comment_list_page.dart';
-import 'package:flutter_study/page/gather_list_page.dart';
-import 'package:flutter_study/page/post_list_page.dart';
-import 'package:flutter_study/utils/custom_colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
-import '../api/response/current_user_info_entity.dart';
-import '../api/service/user_repository.dart';
-import '../base/base_state.dart';
+import '../../api/service/user_repository.dart';
+import '../../base/some_publish.dart';
+import '../../utils/custom_colors.dart';
+import '../comment_list_page.dart';
+import '../gather_list_page.dart';
+import '../post_list_page.dart';
+import 'logic.dart';
 
-const expandedHeight = 300.0;
-const collapsedToolbarHeight = 44.0;
-const appBarHeight = 44.0;
+class MineTabPage extends StatelessWidget {
+  MineTabPage({super.key});
 
-/// 我的 Tab 页面
-class MineTabPage extends BaseStatefulWidget {
-  const MineTabPage({super.key});
-
-  @override
-  BaseState<BaseStatefulWidget> createState() => _MinePageState();
-}
-
-class _MinePageState extends BaseState<MineTabPage>
-    with TickerProviderStateMixin {
-  LoadState _loadState = LoadState.refreshing; // 初始加载中
-  // 缓存屏幕宽度，避免重复计算
-  late double _screenWidth;
-  late double _statusBarHeight;
-  late TabController _outerTabController;
-  late TabController _innerTabController;
-
-  bool get _isPostTab => _tabList.isNotEmpty && _outerTabController.index >= 0
-      ? _tabList[_outerTabController.index].type != 1 &&
-            _tabList[_outerTabController.index].type != 2
-      : false;
-
-  // 替换原有的api调用，改为使用仓库类
-  final userRepo = UserRepository();
-
-  late CurrentUserInfoUser userInfo;
-  String bgUrl = "";
-  List<MineTabItem> _tabList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _outerTabController = TabController(length: _tabList.length, vsync: this);
-    _innerTabController = TabController(length: 3, vsync: this);
-
-    _outerTabController.addListener(_onOuterTabChanged);
-    _innerTabController.addListener(_onInnerTabChanged);
-    _getUserInfo();
-  }
-
-  void _onOuterTabChanged() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void _onInnerTabChanged() {
-    if (mounted && _isPostTab) {
-      setState(() {});
-    }
-  }
-
-  @override
-  void dispose() {
-    _outerTabController.removeListener(_onOuterTabChanged);
-    _innerTabController.removeListener(_onInnerTabChanged);
-    _outerTabController.dispose();
-    _innerTabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // 初始化屏幕宽度
-    _screenWidth = MediaQuery.of(context).size.width;
-    //状态栏高度
-    _statusBarHeight = MediaQuery.of(context).padding.top;
-  }
-
-  Future<void> _getUserInfo() async {
-    setState(() {
-      _loadState = LoadState.refreshing;
-    });
-    try {
-      final userInfo = await userRepo.getUserInfo();
-      if (userInfo == null) {
-        setState(() {
-          errorMessage = '初始化失败';
-          _loadState = LoadState.failed;
-        });
-      } else {
-        final bgUrl = await userRepo.getMobileBgUrl(userInfo.uid);
-        setState(() {
-          _loadState = LoadState.success;
-          this.userInfo = userInfo;
-          this.bgUrl = bgUrl;
-          _tabList = userRepo.getTabList(userInfo);
-          // 更新TabController长度
-          _outerTabController.removeListener(_onOuterTabChanged);
-          _outerTabController.dispose();
-          _outerTabController = TabController(
-            length: _tabList.length,
-            vsync: this,
-          );
-          _outerTabController.addListener(_onOuterTabChanged);
-        });
-      }
-    } catch (e) {
-      setState(() {
-        errorMessage = '初始化失败: $e';
-        _loadState = LoadState.failed;
-      });
-    }
-  }
+  final MineTabLogic logic = Get.put(MineTabLogic());
 
   @override
   Widget build(BuildContext context) {
-    // 加载状态显示加载界面
-    if (_loadState == LoadState.refreshing) {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(), // 加载指示器
-        ),
-      );
-    }
-    if (_loadState == LoadState.failed) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            errorMessage,
-            style: const TextStyle(color: Colors.red),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(onPressed: _getUserInfo, child: const Text('重试')),
-        ],
-      );
-    }
     return Scaffold(
-      body: NestedScrollView(
-        // 1. 外部 Sliver 区域
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          final slivers = [
-            SliverAppBar(
-              expandedHeight: expandedHeight,
-              toolbarHeight: collapsedToolbarHeight,
-              pinned: true,
-              automaticallyImplyLeading: false,
-              elevation: 0,
-              title: const SizedBox.shrink(),
-              backgroundColor: Colors.white,
-              flexibleSpace: _buildFlexibleSpace(),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: MiddleHeaderDelegate(
-                height: appBarHeight,
-                tabList: _tabList,
-                tabController: _outerTabController,
-              ),
-            ),
-          ];
-          // 如果当前是“动态”tab，添加内层 TabBar
-          if (_isPostTab) {
-            slivers.add(
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _InnerTabBarDelegate(
-                  tabController: _innerTabController,
-                  height: appBarHeight,
-                ),
+      body: Obx(() {
+        switch (logic.loadState.value) {
+          case LoadState.refreshing:
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(), // 加载指示器
               ),
             );
-          }
-          return slivers;
-        },
-        body: Builder(
-          builder: (context) {
-            if (_outerTabController.index < 0 || _tabList.isEmpty) {
-              return Container();
-            }
-            final currentTabType = _tabList[_outerTabController.index].type;
-            return Stack(
+          case LoadState.failed:
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 动态（帖子/点评/合集）
-                Offstage(
-                  offstage: !_isPostTab,
-                  child: IndexedStack(
-                    index: _innerTabController.index,
-                    children: [
-                      PostListPage(uid: userInfo.uid),
-                      CommentListPage(),
-                      GatherListPage(),
-                    ],
-                  ),
+                Text(
+                  logic.errorMessage.value,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
                 ),
-                // 点赞
-                Offstage(offstage: currentTabType != 1, child: _buildRate()),
-                // 收藏
-                Offstage(offstage: currentTabType != 2, child: _buildFav()),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: logic.onRefresh,
+                  child: const Text('重试'),
+                ),
               ],
             );
-          },
-        ),
-      ),
+          case LoadState.success:
+            return NestedScrollView(
+              // 1. 外部 Sliver 区域
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                final slivers = [
+                  SliverAppBar(
+                    expandedHeight: logic.expandedHeight,
+                    toolbarHeight: logic.collapsedToolbarHeight,
+                    pinned: true,
+                    automaticallyImplyLeading: false,
+                    elevation: 0,
+                    title: const SizedBox.shrink(),
+                    backgroundColor: Colors.white,
+                    flexibleSpace: _buildFlexibleSpace(),
+                  ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _MiddleHeaderDelegate(
+                      height: logic.appBarHeight,
+                      tabList: logic.tabList,
+                      tabController: logic.outerTabController,
+                    ),
+                  ),
+                ];
+                // 如果当前是“动态”tab，添加内层 TabBar
+                if (logic.isPostTab.value) {
+                  slivers.add(
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _InnerTabBarDelegate(
+                        tabController: logic.innerTabController,
+                        height: logic.appBarHeight,
+                      ),
+                    ),
+                  );
+                }
+                return slivers;
+              },
+              body: Builder(
+                builder: (context) {
+                  if (logic.outerTabIndex.value < 0 || logic.tabList.isEmpty) {
+                    return Container();
+                  }
+                  final currentTabType =
+                      logic.tabList[logic.outerTabIndex.value].type;
+                  return Obx(() {
+                    return Stack(
+                      children: [
+                        // 动态（帖子/点评/合集）
+                        Offstage(
+                          offstage: !logic.isPostTab.value,
+                          child: IndexedStack(
+                            index: logic.innerTabIndex.value,
+                            children: [
+                              PostListPage(uid: logic.userInfo.value?.uid ?? 0),
+                              CommentListPage(),
+                              GatherListPage(),
+                            ],
+                          ),
+                        ),
+                        // 点赞
+                        Offstage(
+                          offstage: currentTabType != 1,
+                          child: _buildRate(),
+                        ),
+                        // 收藏
+                        Offstage(
+                          offstage: currentTabType != 2,
+                          child: _buildFav(),
+                        ),
+                      ],
+                    );
+                  });
+                },
+              ),
+            );
+        }
+      }),
     );
   }
 
@@ -227,8 +137,10 @@ class _MinePageState extends BaseState<MineTabPage>
       builder: (context, constraints) {
         final currentHeight = constraints.maxHeight;
         final progress =
-            ((currentHeight - collapsedToolbarHeight - _statusBarHeight) /
-                    (expandedHeight - collapsedToolbarHeight))
+            ((currentHeight -
+                        logic.collapsedToolbarHeight -
+                        logic.statusBarHeight) /
+                    (logic.expandedHeight - logic.collapsedToolbarHeight))
                 .clamp(0.0, 1.0);
 
         return Stack(
@@ -239,9 +151,9 @@ class _MinePageState extends BaseState<MineTabPage>
               child: Opacity(
                 opacity: progress,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: expandedHeight,
-                    minHeight: expandedHeight,
+                  constraints: BoxConstraints(
+                    maxHeight: logic.expandedHeight,
+                    minHeight: logic.expandedHeight,
                   ),
                   child: SingleChildScrollView(
                     // 允许内容在高度不足时滚动
@@ -257,8 +169,8 @@ class _MinePageState extends BaseState<MineTabPage>
             Positioned(
               left: 0,
               right: 0,
-              top: _statusBarHeight,
-              height: collapsedToolbarHeight,
+              top: logic.statusBarHeight,
+              height: logic.collapsedToolbarHeight,
               child: Opacity(
                 opacity: 1 - progress,
                 child: _buildCollapsedContent(),
@@ -271,26 +183,26 @@ class _MinePageState extends BaseState<MineTabPage>
   }
 
   Widget _buildExpandedContent() {
-    final String sexImage = userInfo.gender == "male"
+    final String sexImage = logic.userInfo.value?.gender == "male"
         ? "assets/images/boy.png"
         : "assets/images/girl.png";
-    final String sex = userInfo.gender == "male" ? "男" : "女";
+    final String sex = logic.userInfo.value?.gender == "male" ? "男" : "女";
     return Stack(
       children: [
-        if (bgUrl.isNotEmpty)
+        if (logic.bgUrl.value.isNotEmpty)
           CachedNetworkImage(
-            imageUrl: bgUrl,
+            imageUrl: logic.bgUrl.value,
             fit: BoxFit.cover,
-            width: _screenWidth,
-            height: expandedHeight + _statusBarHeight,
+            width: logic.screenWidth,
+            height: logic.expandedHeight + logic.statusBarHeight,
             // 根据网格大小设置缓存尺寸
-            memCacheWidth: (_screenWidth * 2).toInt(),
-            memCacheHeight: (expandedHeight * 2).toInt(),
+            memCacheWidth: (logic.screenWidth * 2).toInt(),
+            memCacheHeight: (logic.expandedHeight * 2).toInt(),
           )
         else
           Container(
-            width: _screenWidth,
-            height: expandedHeight + _statusBarHeight,
+            width: logic.screenWidth,
+            height: logic.expandedHeight + logic.statusBarHeight,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/home_info_bg.png'),
@@ -315,7 +227,7 @@ class _MinePageState extends BaseState<MineTabPage>
                       ),
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: userInfo.avatar,
+                          imageUrl: logic.userInfo.value?.avatar ?? "",
                           fit: BoxFit.cover,
                           width: 76,
                           height: 76,
@@ -330,7 +242,7 @@ class _MinePageState extends BaseState<MineTabPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          userInfo.userName,
+                          logic.userInfo.value?.userName ?? "",
                           style: TextStyle(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
@@ -338,11 +250,11 @@ class _MinePageState extends BaseState<MineTabPage>
                           ),
                         ),
                         Text(
-                          "账号：${userInfo.uid}",
+                          "账号：${logic.userInfo.value?.uid}",
                           style: TextStyle(fontSize: 13, color: Colors.white),
                         ),
                         Text(
-                          "IP归属地：${userInfo.location}",
+                          "IP归属地：${logic.userInfo.value?.location}",
                           style: TextStyle(fontSize: 13, color: Colors.white),
                         ),
                       ],
@@ -351,7 +263,7 @@ class _MinePageState extends BaseState<MineTabPage>
                 ),
                 SizedBox(height: 9),
                 Text(
-                  userInfo.sign,
+                  logic.userInfo.value?.sign ?? "",
                   style: TextStyle(fontSize: 13, color: Colors.white),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
@@ -368,15 +280,15 @@ class _MinePageState extends BaseState<MineTabPage>
                     ),
                     SizedBox(width: 10),
                     Text(
-                      "V${userInfo.group.rank}",
+                      "V${logic.userInfo.value?.group.rank}",
                       style: TextStyle(
                         fontSize: 13,
-                        color: userRepo.getSexColor(userInfo),
+                        color: logic.userRepo.getSexColor(logic.userInfo.value),
                       ),
                     ),
                     SizedBox(width: 3),
                     Text(
-                      userInfo.group.name,
+                      logic.userInfo.value?.group.name ?? "",
                       style: TextStyle(fontSize: 13, color: Colors.white),
                     ),
                   ],
@@ -393,7 +305,7 @@ class _MinePageState extends BaseState<MineTabPage>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${userInfo.attendCount}关注 · ${userInfo.fansCount}粉丝",
+                      "${logic.userInfo.value?.attendCount}关注 · ${logic.userInfo.value?.fansCount}粉丝",
                       style: TextStyle(fontSize: 14, color: Colors.white),
                     ),
                     Row(
@@ -474,7 +386,7 @@ class _MinePageState extends BaseState<MineTabPage>
             children: [
               ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: userInfo.avatar,
+                  imageUrl: logic.userInfo.value?.avatar ?? "",
                   fit: BoxFit.cover,
                   width: 30,
                   height: 30,
@@ -484,7 +396,7 @@ class _MinePageState extends BaseState<MineTabPage>
               ),
               const SizedBox(width: 10),
               Text(
-                userInfo.userName,
+                logic.userInfo.value?.userName ?? "",
                 style: TextStyle(color: CustomColors.textDark, fontSize: 14),
               ),
             ],
@@ -516,12 +428,12 @@ class _MinePageState extends BaseState<MineTabPage>
 }
 
 // 修改自定义中间置顶布局的代理类
-class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
+class _MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double height; // 中间布局的固定高度
   final List<MineTabItem> tabList;
   final TabController tabController;
 
-  MiddleHeaderDelegate({
+  _MiddleHeaderDelegate({
     required this.height,
     required this.tabList,
     required this.tabController,
@@ -559,7 +471,7 @@ class MiddleHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   // 布局变化时是否重建（true=重建）
   @override
-  bool shouldRebuild(covariant MiddleHeaderDelegate oldDelegate) {
+  bool shouldRebuild(covariant _MiddleHeaderDelegate oldDelegate) {
     return oldDelegate.height != height ||
         oldDelegate.tabList != tabList ||
         oldDelegate.tabController != tabController;
