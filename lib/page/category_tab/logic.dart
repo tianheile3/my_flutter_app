@@ -1,10 +1,10 @@
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter_study/base/some_publish.dart';
 import 'package:flutter_study/route_config.dart';
 import 'package:get/get.dart';
 
 import '../../api/network_manager.dart';
 import '../../api/response/record_list_entity.dart';
+import '../../common/some_publish.dart';
 
 class CategoryTabLogic extends BaseController {
   final EasyRefreshController controller = EasyRefreshController(

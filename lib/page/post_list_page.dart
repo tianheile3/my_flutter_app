@@ -3,29 +3,31 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/base/base_state.dart';
 import 'package:flutter_study/models/extra_entity.dart';
-import 'package:flutter_study/utils/custom_colors.dart';
+import 'package:flutter_study/common/custom_colors.dart';
 import 'package:flutter_study/utils/images_utils.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/user_thread_entity.dart';
+import '../common/some_publish.dart';
 
-class PostListPage extends BaseStatefulWidget {
+class PostListPage extends StatefulWidget {
   final int uid;
 
   const PostListPage({super.key, required this.uid});
 
   @override
-  BaseState<BaseStatefulWidget> createState() => _PostListPage();
+  State<StatefulWidget> createState() => _PostListPage();
 }
 
-class _PostListPage extends BaseState<PostListPage>
-    with AutomaticKeepAliveClientMixin {
+class _PostListPage extends State<PostListPage>
+    with AutomaticKeepAliveClientMixin, LoggerMixin {
   LoadState _loadState = LoadState.refreshing; // 初始加载中
   final api = NetworkManager().getApiClient();
   int page = 1;
+  var errorMessage = "";
   List<UserThreadMyThreadList> items = [];
 
   final EasyRefreshController _controller = EasyRefreshController(

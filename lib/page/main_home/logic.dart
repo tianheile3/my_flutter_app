@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_study/common/some_publish.dart';
 import 'package:flutter_study/page/mine_tab/view.dart';
 import 'package:get/get.dart';
 
 import '../category_tab/view.dart';
 import '../home_tab/view.dart';
 
-class MainHomeLogic extends GetxController {
+class MainHomeLogic extends BaseController {
   final RxInt selectedIndex = 0.obs;
   final List<Widget?> tabPages = List<Widget?>.filled(3, null);
 

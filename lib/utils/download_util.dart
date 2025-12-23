@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 import 'package:flutter_study/utils/permission_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:saver_gallery/saver_gallery.dart';

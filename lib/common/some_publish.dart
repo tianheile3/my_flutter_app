@@ -1,4 +1,4 @@
-import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 import 'package:get/get.dart';
 
 import '../api/network_manager.dart';

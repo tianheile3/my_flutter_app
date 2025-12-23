@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import '../../utils/custom_colors.dart';
+import '../../common/custom_colors.dart';
 import '../network_manager.dart';
 import '../response/current_user_info_entity.dart';
 

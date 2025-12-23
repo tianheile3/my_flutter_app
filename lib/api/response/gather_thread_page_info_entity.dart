@@ -2,7 +2,7 @@ import 'package:flutter_study/generated/json/base/json_field.dart';
 import 'package:flutter_study/generated/json/gather_thread_page_info_entity.g.dart';
 import 'dart:convert';
 
-import 'package:flutter_study/base/rate_and_share.dart';
+import 'package:flutter_study/common/rate_and_share.dart';
 export 'package:flutter_study/generated/json/gather_thread_page_info_entity.g.dart';
 
 @JsonSerializable()

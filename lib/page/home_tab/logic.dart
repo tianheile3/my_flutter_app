@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import '../../api/response/second_config_entity.dart';
 import '../../api/response/user_second_recom_thread_entity.dart';
-import '../../base/some_publish.dart';
+import '../../common/some_publish.dart';
 import '../../models/banner.dart';
 import '../../models/extra_entity.dart';
 import '../../models/home_item.dart';
@@ -17,7 +17,7 @@ class HomeTabLogic extends BaseController {
     controlFinishLoad: true,
   );
 
-  final String sId = "marry22";
+  final String sId = "baby1";
   final int maxImageCount = 9;
   final double imageGridSpacing = 10;
   late double screenWidth;

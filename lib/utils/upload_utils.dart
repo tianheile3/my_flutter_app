@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/file_upload_entity.dart';

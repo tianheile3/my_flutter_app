@@ -1,9 +1,9 @@
-import 'package:flutter_study/base/some_publish.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../api/response/file_upload_entity.dart';
+import '../../common/some_publish.dart';
 import '../../utils/download_util.dart';
 import '../../utils/permission_utils.dart';
 import '../../utils/upload_utils.dart';
@@ -79,11 +79,9 @@ class TestLogic extends BaseController {
     // 并行执行，每个任务完成后立即刷新UI
     for (var item in needUploadItems) {
       // 不加 await，让任务异步并行执行
-      UploadUtils(item)
-          .doUpload()
-          .catchError((e) {
-            logger.d("单张上传失败：$e");
-          });
+      UploadUtils(item).doUpload().catchError((e) {
+        logger.d("单张上传失败：$e");
+      });
     }
   }
 }

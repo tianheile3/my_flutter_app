@@ -3,8 +3,8 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../base/some_publish.dart';
-import '../../utils/custom_colors.dart';
+import '../../common/some_publish.dart';
+import '../../common/custom_colors.dart';
 import 'logic.dart';
 
 class GatherPage extends StatelessWidget {

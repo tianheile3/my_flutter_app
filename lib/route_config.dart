@@ -2,6 +2,7 @@ import 'package:flutter_study/main.dart';
 import 'package:flutter_study/page/gather/view.dart';
 import 'package:flutter_study/page/login/view.dart';
 import 'package:flutter_study/page/main_home/view.dart';
+import 'package:flutter_study/page/post_thread/view.dart';
 import 'package:flutter_study/page/test/view.dart';
 import 'package:flutter_study/page/webview/view.dart';
 import 'package:get/get.dart';
@@ -27,6 +28,9 @@ class MyRouteConfig {
   //合集
   static const String gather = "/gather";
 
+  //发帖
+  static const String postThread = "/postThread";
+
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MyApp()),
     GetPage(name: login, page: () => LoginPage()),
@@ -34,7 +38,6 @@ class MyRouteConfig {
     GetPage(name: webview, page: () => WebviewPage()),
     GetPage(name: test, page: () => TestPage()),
     GetPage(name: gather, page: () => GatherPage()),
-    // GetPage(name: main, page: () => MyApp()),
-    // GetPage(name: main, page: () => MyApp()),
+    GetPage(name: postThread, page: () => PostThreadPage()),
   ];
 }

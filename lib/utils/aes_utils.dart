@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:encrypt/encrypt.dart';
-import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 
 class AESUtils with LoggerMixin {
   static String encrypt(String data, String secretKey) {

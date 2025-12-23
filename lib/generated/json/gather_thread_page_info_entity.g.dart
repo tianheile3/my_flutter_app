@@ -1,11 +1,11 @@
-import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
-import 'package:flutter_study/base/rate_and_share.dart';
-
+import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 
 GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(
-    Map<String, dynamic> json) {
-  final GatherThreadPageInfoEntity gatherThreadPageInfoEntity = GatherThreadPageInfoEntity();
+  Map<String, dynamic> json,
+) {
+  final GatherThreadPageInfoEntity gatherThreadPageInfoEntity =
+      GatherThreadPageInfoEntity();
   final int? code = jsonConvert.convert<int>(json['code']);
   if (code != null) {
     gatherThreadPageInfoEntity.code = code;
@@ -14,22 +14,24 @@ GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(
   if (message != null) {
     gatherThreadPageInfoEntity.message = message;
   }
-  final List<
-      GatherThreadPageInfoThreadList>? threadList = (json['thread_list'] as List<
-      dynamic>?)?.map(
-          (e) =>
-      jsonConvert.convert<GatherThreadPageInfoThreadList>(
-          e) as GatherThreadPageInfoThreadList).toList();
+  final List<GatherThreadPageInfoThreadList>? threadList =
+      (json['thread_list'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                jsonConvert.convert<GatherThreadPageInfoThreadList>(e)
+                    as GatherThreadPageInfoThreadList,
+          )
+          .toList();
   if (threadList != null) {
     gatherThreadPageInfoEntity.threadList = threadList;
   }
-  final GatherThreadPageInfoGatherInfo? gatherInfo = jsonConvert.convert<
-      GatherThreadPageInfoGatherInfo>(json['gather_info']);
+  final GatherThreadPageInfoGatherInfo? gatherInfo = jsonConvert
+      .convert<GatherThreadPageInfoGatherInfo>(json['gather_info']);
   if (gatherInfo != null) {
     gatherThreadPageInfoEntity.gatherInfo = gatherInfo;
   }
-  final GatherThreadPageInfoGatherUser? gatherUser = jsonConvert.convert<
-      GatherThreadPageInfoGatherUser>(json['gather_user']);
+  final GatherThreadPageInfoGatherUser? gatherUser = jsonConvert
+      .convert<GatherThreadPageInfoGatherUser>(json['gather_user']);
   if (gatherUser != null) {
     gatherThreadPageInfoEntity.gatherUser = gatherUser;
   }
@@ -46,7 +48,8 @@ GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(
     gatherThreadPageInfoEntity.perPage = perPage;
   }
   final String? currentCount = jsonConvert.convert<String>(
-      json['current_count']);
+    json['current_count'],
+  );
   if (currentCount != null) {
     gatherThreadPageInfoEntity.currentCount = currentCount;
   }
@@ -54,7 +57,8 @@ GatherThreadPageInfoEntity $GatherThreadPageInfoEntityFromJson(
 }
 
 Map<String, dynamic> $GatherThreadPageInfoEntityToJson(
-    GatherThreadPageInfoEntity entity) {
+  GatherThreadPageInfoEntity entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['code'] = entity.code;
   data['message'] = entity.message;
@@ -94,8 +98,10 @@ extension GatherThreadPageInfoEntityExtension on GatherThreadPageInfoEntity {
 }
 
 GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
-    Map<String, dynamic> json) {
-  final GatherThreadPageInfoThreadList gatherThreadPageInfoThreadList = GatherThreadPageInfoThreadList();
+  Map<String, dynamic> json,
+) {
+  final GatherThreadPageInfoThreadList gatherThreadPageInfoThreadList =
+      GatherThreadPageInfoThreadList();
   final String? isPrivate = jsonConvert.convert<String>(json['is_private']);
   if (isPrivate != null) {
     gatherThreadPageInfoThreadList.isPrivate = isPrivate;
@@ -132,8 +138,8 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
   if (subject != null) {
     gatherThreadPageInfoThreadList.subject = subject;
   }
-  final GatherThreadPageInfoThreadListAuthor? author = jsonConvert.convert<
-      GatherThreadPageInfoThreadListAuthor>(json['author']);
+  final GatherThreadPageInfoThreadListAuthor? author = jsonConvert
+      .convert<GatherThreadPageInfoThreadListAuthor>(json['author']);
   if (author != null) {
     gatherThreadPageInfoThreadList.author = author;
   }
@@ -174,17 +180,20 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
     gatherThreadPageInfoThreadList.closed = closed;
   }
   final String? lastPostTime = jsonConvert.convert<String>(
-      json['last_post_time']);
+    json['last_post_time'],
+  );
   if (lastPostTime != null) {
     gatherThreadPageInfoThreadList.lastPostTime = lastPostTime;
   }
   final String? lastPostAuthor = jsonConvert.convert<String>(
-      json['last_post_author']);
+    json['last_post_author'],
+  );
   if (lastPostAuthor != null) {
     gatherThreadPageInfoThreadList.lastPostAuthor = lastPostAuthor;
   }
   final String? lastPostAuthorUid = jsonConvert.convert<String>(
-      json['last_post_author_uid']);
+    json['last_post_author_uid'],
+  );
   if (lastPostAuthorUid != null) {
     gatherThreadPageInfoThreadList.lastPostAuthorUid = lastPostAuthorUid;
   }
@@ -213,8 +222,7 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
     gatherThreadPageInfoThreadList.createdAt = createdAt;
   }
   final List<dynamic>? threadTags = (json['thread_tags'] as List<dynamic>?)
-      ?.map(
-          (e) => e)
+      ?.map((e) => e)
       .toList();
   if (threadTags != null) {
     gatherThreadPageInfoThreadList.threadTags = threadTags;
@@ -224,22 +232,26 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
     gatherThreadPageInfoThreadList.holdVideo = holdVideo;
   }
   final String? searchSubject = jsonConvert.convert<String>(
-      json['search_subject']);
+    json['search_subject'],
+  );
   if (searchSubject != null) {
     gatherThreadPageInfoThreadList.searchSubject = searchSubject;
   }
   final String? searchContent = jsonConvert.convert<String>(
-      json['search_content']);
+    json['search_content'],
+  );
   if (searchContent != null) {
     gatherThreadPageInfoThreadList.searchContent = searchContent;
   }
   final String? ratePlusNumber = jsonConvert.convert<String>(
-      json['rate_plus_number']);
+    json['rate_plus_number'],
+  );
   if (ratePlusNumber != null) {
     gatherThreadPageInfoThreadList.ratePlusNumber = ratePlusNumber;
   }
   final String? topicListStick = jsonConvert.convert<String>(
-      json['topic_list_stick']);
+    json['topic_list_stick'],
+  );
   if (topicListStick != null) {
     gatherThreadPageInfoThreadList.topicListStick = topicListStick;
   }
@@ -252,14 +264,14 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
     gatherThreadPageInfoThreadList.tagStr = tagStr;
   }
   final List<dynamic>? attachments = (json['attachments'] as List<dynamic>?)
-      ?.map(
-          (e) => e)
+      ?.map((e) => e)
       .toList();
   if (attachments != null) {
     gatherThreadPageInfoThreadList.attachments = attachments;
   }
   final String? forumCategoryName = jsonConvert.convert<String>(
-      json['forum_category_name']);
+    json['forum_category_name'],
+  );
   if (forumCategoryName != null) {
     gatherThreadPageInfoThreadList.forumCategoryName = forumCategoryName;
   }
@@ -272,7 +284,8 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
     gatherThreadPageInfoThreadList.rateid = rateid;
   }
   final String? firstImageUrl = jsonConvert.convert<String>(
-      json['firstImageUrl']);
+    json['firstImageUrl'],
+  );
   if (firstImageUrl != null) {
     gatherThreadPageInfoThreadList.firstImageUrl = firstImageUrl;
   }
@@ -284,7 +297,8 @@ GatherThreadPageInfoThreadList $GatherThreadPageInfoThreadListFromJson(
 }
 
 Map<String, dynamic> $GatherThreadPageInfoThreadListToJson(
-    GatherThreadPageInfoThreadList entity) {
+  GatherThreadPageInfoThreadList entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['is_private'] = entity.isPrivate;
   data['cityid'] = entity.cityid;
@@ -331,7 +345,8 @@ Map<String, dynamic> $GatherThreadPageInfoThreadListToJson(
   return data;
 }
 
-extension GatherThreadPageInfoThreadListExtension on GatherThreadPageInfoThreadList {
+extension GatherThreadPageInfoThreadListExtension
+    on GatherThreadPageInfoThreadList {
   GatherThreadPageInfoThreadList copyWith({
     String? isPrivate,
     String? cityid,
@@ -422,9 +437,10 @@ extension GatherThreadPageInfoThreadListExtension on GatherThreadPageInfoThreadL
   }
 }
 
-GatherThreadPageInfoThreadListAuthor $GatherThreadPageInfoThreadListAuthorFromJson(
-    Map<String, dynamic> json) {
-  final GatherThreadPageInfoThreadListAuthor gatherThreadPageInfoThreadListAuthor = GatherThreadPageInfoThreadListAuthor();
+GatherThreadPageInfoThreadListAuthor
+$GatherThreadPageInfoThreadListAuthorFromJson(Map<String, dynamic> json) {
+  final GatherThreadPageInfoThreadListAuthor
+  gatherThreadPageInfoThreadListAuthor = GatherThreadPageInfoThreadListAuthor();
   final String? uid = jsonConvert.convert<String>(json['uid']);
   if (uid != null) {
     gatherThreadPageInfoThreadListAuthor.uid = uid;
@@ -458,7 +474,8 @@ GatherThreadPageInfoThreadListAuthor $GatherThreadPageInfoThreadListAuthorFromJs
     gatherThreadPageInfoThreadListAuthor.highVerify = highVerify;
   }
   final String? honourVerify = jsonConvert.convert<String>(
-      json['honour_verify']);
+    json['honour_verify'],
+  );
   if (honourVerify != null) {
     gatherThreadPageInfoThreadListAuthor.honourVerify = honourVerify;
   }
@@ -503,18 +520,21 @@ GatherThreadPageInfoThreadListAuthor $GatherThreadPageInfoThreadListAuthorFromJs
     gatherThreadPageInfoThreadListAuthor.isTenYear = isTenYear;
   }
   final bool? shiJiaShangJia = jsonConvert.convert<bool>(
-      json['shi_jia_shang_jia']);
+    json['shi_jia_shang_jia'],
+  );
   if (shiJiaShangJia != null) {
     gatherThreadPageInfoThreadListAuthor.shiJiaShangJia = shiJiaShangJia;
   }
   final String? shiJiaShangJiaDesc = jsonConvert.convert<String>(
-      json['shi_jia_shang_jia_desc']);
+    json['shi_jia_shang_jia_desc'],
+  );
   if (shiJiaShangJiaDesc != null) {
     gatherThreadPageInfoThreadListAuthor.shiJiaShangJiaDesc =
         shiJiaShangJiaDesc;
   }
-  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)?.map(
-          (e) => e).toList();
+  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)
+      ?.map((e) => e)
+      .toList();
   if (medals != null) {
     gatherThreadPageInfoThreadListAuthor.medals = medals;
   }
@@ -527,7 +547,8 @@ GatherThreadPageInfoThreadListAuthor $GatherThreadPageInfoThreadListAuthorFromJs
     gatherThreadPageInfoThreadListAuthor.cityname = cityname;
   }
   final String? originalAvatar = jsonConvert.convert<String>(
-      json['original_avatar']);
+    json['original_avatar'],
+  );
   if (originalAvatar != null) {
     gatherThreadPageInfoThreadListAuthor.originalAvatar = originalAvatar;
   }
@@ -544,17 +565,20 @@ GatherThreadPageInfoThreadListAuthor $GatherThreadPageInfoThreadListAuthorFromJs
     gatherThreadPageInfoThreadListAuthor.longitude = longitude;
   }
   final String? totalZanCount = jsonConvert.convert<String>(
-      json['total_zan_count']);
+    json['total_zan_count'],
+  );
   if (totalZanCount != null) {
     gatherThreadPageInfoThreadListAuthor.totalZanCount = totalZanCount;
   }
   final String? totalFansCount = jsonConvert.convert<String>(
-      json['total_fans_count']);
+    json['total_fans_count'],
+  );
   if (totalFansCount != null) {
     gatherThreadPageInfoThreadListAuthor.totalFansCount = totalFansCount;
   }
   final String? totalFavCount = jsonConvert.convert<String>(
-      json['total_fav_count']);
+    json['total_fav_count'],
+  );
   if (totalFavCount != null) {
     gatherThreadPageInfoThreadListAuthor.totalFavCount = totalFavCount;
   }
@@ -562,7 +586,8 @@ GatherThreadPageInfoThreadListAuthor $GatherThreadPageInfoThreadListAuthorFromJs
 }
 
 Map<String, dynamic> $GatherThreadPageInfoThreadListAuthorToJson(
-    GatherThreadPageInfoThreadListAuthor entity) {
+  GatherThreadPageInfoThreadListAuthor entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['uid'] = entity.uid;
   data['user_name'] = entity.userName;
@@ -598,7 +623,8 @@ Map<String, dynamic> $GatherThreadPageInfoThreadListAuthorToJson(
   return data;
 }
 
-extension GatherThreadPageInfoThreadListAuthorExtension on GatherThreadPageInfoThreadListAuthor {
+extension GatherThreadPageInfoThreadListAuthorExtension
+    on GatherThreadPageInfoThreadListAuthor {
   GatherThreadPageInfoThreadListAuthor copyWith({
     String? uid,
     String? userName,
@@ -668,8 +694,10 @@ extension GatherThreadPageInfoThreadListAuthorExtension on GatherThreadPageInfoT
 }
 
 GatherThreadPageInfoGatherInfo $GatherThreadPageInfoGatherInfoFromJson(
-    Map<String, dynamic> json) {
-  final GatherThreadPageInfoGatherInfo gatherThreadPageInfoGatherInfo = GatherThreadPageInfoGatherInfo();
+  Map<String, dynamic> json,
+) {
+  final GatherThreadPageInfoGatherInfo gatherThreadPageInfoGatherInfo =
+      GatherThreadPageInfoGatherInfo();
   final String? id = jsonConvert.convert<String>(json['id']);
   if (id != null) {
     gatherThreadPageInfoGatherInfo.id = id;
@@ -703,7 +731,8 @@ GatherThreadPageInfoGatherInfo $GatherThreadPageInfoGatherInfoFromJson(
     gatherThreadPageInfoGatherInfo.threads = threads;
   }
   final String? lastGatherAt = jsonConvert.convert<String>(
-      json['last_gather_at']);
+    json['last_gather_at'],
+  );
   if (lastGatherAt != null) {
     gatherThreadPageInfoGatherInfo.lastGatherAt = lastGatherAt;
   }
@@ -719,7 +748,8 @@ GatherThreadPageInfoGatherInfo $GatherThreadPageInfoGatherInfoFromJson(
 }
 
 Map<String, dynamic> $GatherThreadPageInfoGatherInfoToJson(
-    GatherThreadPageInfoGatherInfo entity) {
+  GatherThreadPageInfoGatherInfo entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['uid'] = entity.uid;
@@ -735,7 +765,8 @@ Map<String, dynamic> $GatherThreadPageInfoGatherInfoToJson(
   return data;
 }
 
-extension GatherThreadPageInfoGatherInfoExtension on GatherThreadPageInfoGatherInfo {
+extension GatherThreadPageInfoGatherInfoExtension
+    on GatherThreadPageInfoGatherInfo {
   GatherThreadPageInfoGatherInfo copyWith({
     String? id,
     String? uid,
@@ -765,8 +796,10 @@ extension GatherThreadPageInfoGatherInfoExtension on GatherThreadPageInfoGatherI
 }
 
 GatherThreadPageInfoGatherUser $GatherThreadPageInfoGatherUserFromJson(
-    Map<String, dynamic> json) {
-  final GatherThreadPageInfoGatherUser gatherThreadPageInfoGatherUser = GatherThreadPageInfoGatherUser();
+  Map<String, dynamic> json,
+) {
+  final GatherThreadPageInfoGatherUser gatherThreadPageInfoGatherUser =
+      GatherThreadPageInfoGatherUser();
   final String? uid = jsonConvert.convert<String>(json['uid']);
   if (uid != null) {
     gatherThreadPageInfoGatherUser.uid = uid;
@@ -800,7 +833,8 @@ GatherThreadPageInfoGatherUser $GatherThreadPageInfoGatherUserFromJson(
     gatherThreadPageInfoGatherUser.highVerify = highVerify;
   }
   final String? honourVerify = jsonConvert.convert<String>(
-      json['honour_verify']);
+    json['honour_verify'],
+  );
   if (honourVerify != null) {
     gatherThreadPageInfoGatherUser.honourVerify = honourVerify;
   }
@@ -845,17 +879,20 @@ GatherThreadPageInfoGatherUser $GatherThreadPageInfoGatherUserFromJson(
     gatherThreadPageInfoGatherUser.isTenYear = isTenYear;
   }
   final bool? shiJiaShangJia = jsonConvert.convert<bool>(
-      json['shi_jia_shang_jia']);
+    json['shi_jia_shang_jia'],
+  );
   if (shiJiaShangJia != null) {
     gatherThreadPageInfoGatherUser.shiJiaShangJia = shiJiaShangJia;
   }
   final String? shiJiaShangJiaDesc = jsonConvert.convert<String>(
-      json['shi_jia_shang_jia_desc']);
+    json['shi_jia_shang_jia_desc'],
+  );
   if (shiJiaShangJiaDesc != null) {
     gatherThreadPageInfoGatherUser.shiJiaShangJiaDesc = shiJiaShangJiaDesc;
   }
-  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)?.map(
-          (e) => e).toList();
+  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)
+      ?.map((e) => e)
+      .toList();
   if (medals != null) {
     gatherThreadPageInfoGatherUser.medals = medals;
   }
@@ -868,7 +905,8 @@ GatherThreadPageInfoGatherUser $GatherThreadPageInfoGatherUserFromJson(
     gatherThreadPageInfoGatherUser.cityname = cityname;
   }
   final String? originalAvatar = jsonConvert.convert<String>(
-      json['original_avatar']);
+    json['original_avatar'],
+  );
   if (originalAvatar != null) {
     gatherThreadPageInfoGatherUser.originalAvatar = originalAvatar;
   }
@@ -885,17 +923,20 @@ GatherThreadPageInfoGatherUser $GatherThreadPageInfoGatherUserFromJson(
     gatherThreadPageInfoGatherUser.longitude = longitude;
   }
   final String? totalZanCount = jsonConvert.convert<String>(
-      json['total_zan_count']);
+    json['total_zan_count'],
+  );
   if (totalZanCount != null) {
     gatherThreadPageInfoGatherUser.totalZanCount = totalZanCount;
   }
   final String? totalFansCount = jsonConvert.convert<String>(
-      json['total_fans_count']);
+    json['total_fans_count'],
+  );
   if (totalFansCount != null) {
     gatherThreadPageInfoGatherUser.totalFansCount = totalFansCount;
   }
   final String? totalFavCount = jsonConvert.convert<String>(
-      json['total_fav_count']);
+    json['total_fav_count'],
+  );
   if (totalFavCount != null) {
     gatherThreadPageInfoGatherUser.totalFavCount = totalFavCount;
   }
@@ -903,7 +944,8 @@ GatherThreadPageInfoGatherUser $GatherThreadPageInfoGatherUserFromJson(
 }
 
 Map<String, dynamic> $GatherThreadPageInfoGatherUserToJson(
-    GatherThreadPageInfoGatherUser entity) {
+  GatherThreadPageInfoGatherUser entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['uid'] = entity.uid;
   data['user_name'] = entity.userName;
@@ -939,7 +981,8 @@ Map<String, dynamic> $GatherThreadPageInfoGatherUserToJson(
   return data;
 }
 
-extension GatherThreadPageInfoGatherUserExtension on GatherThreadPageInfoGatherUser {
+extension GatherThreadPageInfoGatherUserExtension
+    on GatherThreadPageInfoGatherUser {
   GatherThreadPageInfoGatherUser copyWith({
     String? uid,
     String? userName,

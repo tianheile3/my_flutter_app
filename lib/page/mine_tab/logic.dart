@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_study/base/some_publish.dart';
 import 'package:get/get.dart';
 
 import '../../api/response/current_user_info_entity.dart';
 import '../../api/service/user_repository.dart';
+import '../../common/some_publish.dart';
 
 class MineTabLogic extends BaseController with GetTickerProviderStateMixin {
   final expandedHeight = 300.0;

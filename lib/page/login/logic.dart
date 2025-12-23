@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/service/auth_service.dart';
+import 'package:flutter_study/common/some_publish.dart';
 import 'package:flutter_study/route_config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-class LoginLogic extends GetxController {
+class LoginLogic extends BaseController {
   final TextEditingController usernameController = TextEditingController(
     text: "zhangcheng504",
   );

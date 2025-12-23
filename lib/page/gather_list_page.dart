@@ -1,25 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study/utils/custom_colors.dart';
+import 'package:flutter_study/common/custom_colors.dart';
 import 'package:get/get.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/my_gather_entity.dart';
-import '../base/base_state.dart';
+import '../common/some_publish.dart';
 import '../route_config.dart';
 
-class GatherListPage extends BaseStatefulWidget {
+class GatherListPage extends StatefulWidget {
   const GatherListPage({super.key});
 
   @override
-  BaseState<BaseStatefulWidget> createState() => _FavListPage();
+  State<StatefulWidget> createState() => _FavListPage();
 }
 
-class _FavListPage extends BaseState<GatherListPage>
+class _FavListPage extends State<GatherListPage>
     with AutomaticKeepAliveClientMixin {
   LoadState _loadState = LoadState.refreshing; // 初始加载中
 
   final api = NetworkManager().getApiClient();
+  var errorMessage = "";
 
   // 缓存屏幕宽度，避免重复计算
   late double _screenWidth;

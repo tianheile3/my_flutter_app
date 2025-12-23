@@ -6,8 +6,8 @@ import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_study/api/api_client.dart';
 import 'package:flutter_study/utils/auth_utils.dart';
-import 'package:flutter_study/utils/global_state.dart';
-import 'package:flutter_study/utils/logger_mixin.dart';
+import 'package:flutter_study/common/global_state.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 
 class NetworkManager with LoggerMixin {
   static final NetworkManager _instance = NetworkManager._internal();

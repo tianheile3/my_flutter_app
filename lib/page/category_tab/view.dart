@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 
 import '../../api/response/map_config_entity.dart';
 import '../../api/response/record_list_entity.dart';
-import '../../base/some_publish.dart';
-import '../../utils/custom_colors.dart';
+import '../../common/some_publish.dart';
+import '../../common/custom_colors.dart';
 import '../../utils/date_tools.dart';
 import 'logic.dart';
 

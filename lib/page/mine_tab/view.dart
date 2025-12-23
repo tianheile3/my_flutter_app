@@ -4,8 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../api/service/user_repository.dart';
-import '../../base/some_publish.dart';
-import '../../utils/custom_colors.dart';
+import '../../common/some_publish.dart';
+import '../../common/custom_colors.dart';
 import '../comment_list_page.dart';
 import '../gather_list_page.dart';
 import '../post_list_page.dart';

@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 
 import '../../api/response/second_config_entity.dart';
 import '../../api/response/user_second_recom_thread_entity.dart';
-import '../../base/some_publish.dart';
+import '../../common/some_publish.dart';
 import '../../models/home_item.dart';
 import '../../utils/common_utils.dart';
-import '../../utils/custom_colors.dart';
+import '../../common/custom_colors.dart';
 import '../../utils/date_tools.dart';
 import 'logic.dart';
 
@@ -26,7 +26,7 @@ class HomeTabPage extends StatelessWidget {
       width: itemWidth,
       child: InkWell(
         onTap: () {
-          Get.toNamed(MyRouteConfig.test);
+          Get.toNamed(MyRouteConfig.postThread);
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,

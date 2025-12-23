@@ -1,10 +1,11 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/network_manager.dart';
-import 'package:flutter_study/base/base_state.dart';
 import 'package:flutter_study/route_config.dart';
-import 'package:flutter_study/utils/global_state.dart';
+import 'package:flutter_study/common/global_state.dart';
 import 'package:get/get.dart';
+
+import 'common/some_publish.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,7 @@ class LoadingController extends GetxController {
       await GlobalState.instance.getLocalStorage();
 
       if (GlobalState.instance.cityName.isEmpty) {
-        GlobalState.instance.cityName = "jiaxing";
+        GlobalState.instance.cityName = "hangzhou";
       }
 
       final response = await NetworkManager().getApiClient().getSystemTime();

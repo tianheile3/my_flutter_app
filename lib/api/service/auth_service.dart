@@ -3,7 +3,7 @@ import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/utils/auth_utils.dart';
 
 import '../../utils/aes_utils.dart';
-import '../../utils/global_state.dart';
+import '../../common/global_state.dart';
 import '../response/token_entity.dart';
 
 class AuthService {

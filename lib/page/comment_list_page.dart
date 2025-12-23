@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../base/base_state.dart';
-
-class CommentListPage extends BaseStatefulWidget {
+class CommentListPage extends StatefulWidget {
   const CommentListPage({super.key});
 
   @override
-  BaseState<BaseStatefulWidget> createState() => _CommentListPage();
+  State<StatefulWidget> createState() => _CommentListPage();
 }
 
-class _CommentListPage extends BaseState<CommentListPage>
+class _CommentListPage extends State<CommentListPage>
     with AutomaticKeepAliveClientMixin {
   @override
   void initState() {

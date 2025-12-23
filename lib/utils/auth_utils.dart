@@ -1,7 +1,7 @@
 import 'package:flutter_study/utils/common_utils.dart';
-import 'package:flutter_study/utils/constants.dart';
+import 'package:flutter_study/common/constants.dart';
 import 'package:flutter_study/utils/crypto_utils.dart';
-import 'package:flutter_study/utils/global_state.dart';
+import 'package:flutter_study/common/global_state.dart';
 
 class AuthUtils {
   /// 构建 19楼 OAuth 登录所需的公共表单参数

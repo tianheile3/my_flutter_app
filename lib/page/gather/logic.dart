@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../api/response/gather_thread_page_info_entity.dart';
-import '../../base/some_publish.dart';
+import '../../common/some_publish.dart';
 import '../../models/extra_entity.dart';
 import '../../utils/common_utils.dart';
-import '../../utils/custom_colors.dart';
+import '../../common/custom_colors.dart';
 import '../../utils/images_utils.dart';
 
 class GatherLogic extends BaseController {

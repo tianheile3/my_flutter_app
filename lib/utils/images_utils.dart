@@ -1,4 +1,4 @@
-import 'package:flutter_study/utils/constants.dart';
+import 'package:flutter_study/common/constants.dart';
 
 class ImageUtils {
   static String imgToAtt3Size(String? url, String imgSize) {

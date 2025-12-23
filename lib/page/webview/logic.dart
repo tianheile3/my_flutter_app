@@ -1,6 +1,7 @@
-import 'package:flutter_study/base/some_publish.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../common/some_publish.dart';
 
 class WebviewLogic extends BaseController {
   late final WebViewController controller = WebViewController();
