@@ -2,14 +2,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../api/response/file_upload_entity.dart';
 import '../../common/some_publish.dart';
+import '../../models/media_model.dart';
 import '../../utils/download_util.dart';
 import '../../utils/permission_utils.dart';
 import '../../utils/upload_utils.dart';
 
 class TestLogic extends BaseController {
-  final RxList<FileUploadFile> images = <FileUploadFile>[].obs;
+  final RxList<MediaModel> images = <MediaModel>[].obs;
   final _picker = ImagePicker();
 
   void saveFile() {
@@ -45,9 +45,9 @@ class TestLogic extends BaseController {
     if (await PermissionUtils.requestImagePermission()) {
       List<XFile> result = await _picker.pickMultiImage(limit: 9);
       for (var image in result) {
-        final entity = FileUploadFile();
-        entity.path = image.path;
-        entity.status.value = "loading";
+        final entity = MediaModel();
+        entity.cover = image.path;
+        entity.status.value = "uploading";
         images.add(entity);
       }
     }
@@ -60,7 +60,9 @@ class TestLogic extends BaseController {
   Future<void> uploadImageWithUpdateTogether() async {
     if (images.isEmpty) return;
     // 1. 筛选需要上传的图片（排除已上传的）
-    final needUploadItems = images.where((item) => item.aid.isEmpty).toList();
+    final needUploadItems = images
+        .where((item) => item.file?.aid.isEmpty ?? true)
+        .toList();
     if (needUploadItems.isEmpty) return;
     // 2. 批量生成上传任务（不立即执行）
     final uploadTasks = needUploadItems
@@ -73,7 +75,9 @@ class TestLogic extends BaseController {
   Future<void> uploadImage() async {
     if (images.isEmpty) return;
     // 1. 筛选需要上传的图片（排除已上传的）
-    final needUploadItems = images.where((item) => item.aid.isEmpty).toList();
+    final needUploadItems = images
+        .where((item) => item.file?.aid.isEmpty ?? true)
+        .toList();
     if (needUploadItems.isEmpty) return;
 
     // 并行执行，每个任务完成后立即刷新UI

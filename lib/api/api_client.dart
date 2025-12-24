@@ -7,6 +7,7 @@ import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
+import 'package:flutter_study/api/response/publish_thread_entity.dart';
 import 'package:flutter_study/api/response/record_list_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
@@ -100,4 +101,7 @@ abstract class ApiClient {
 
   @POST("/api/user/fileUpload")
   Future<FileUploadEntity?> fileUpload(@Body() FormData data);
+
+  @POST("/api/thread/publishThread")
+  Future<PublishThreadEntity?> publishThread(@Body() FormData data);
 }

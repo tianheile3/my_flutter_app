@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_study/generated/json/base/json_field.dart';
 import 'package:flutter_study/generated/json/file_upload_entity.g.dart';
-import 'package:get/get.dart';
 
 export 'package:flutter_study/generated/json/file_upload_entity.g.dart';
 
@@ -51,9 +50,6 @@ class FileUploadFile {
   late String fileUri;
   @JSONField(name: 'file_name')
   late String fileName;
-
-  String path = ""; //本地uri
-  RxString status = "success".obs; //状态，success,fail,uploading
 
   FileUploadFile();
 

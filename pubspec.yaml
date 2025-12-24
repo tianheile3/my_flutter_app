@@ -31,6 +31,7 @@ dependencies:
   saver_gallery: ^4.1.0 #图片保存
   flutter_image_compress: ^2.4.0 # 图片压缩
   get: ^4.7.3 #getX
+  dotted_border: ^3.1.0 #虚线边框等
 
 dev_dependencies:
   flutter_test:

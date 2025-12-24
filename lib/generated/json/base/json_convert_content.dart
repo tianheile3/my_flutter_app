@@ -12,6 +12,7 @@ import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
+import 'package:flutter_study/api/response/publish_thread_entity.dart';
 import 'package:flutter_study/api/response/record_list_entity.dart';
 import 'package:flutter_study/api/response/second_config_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
@@ -245,6 +246,105 @@ class JsonConvert {
       return data.map<MyGatherGatherList>((Map<String, dynamic> e) =>
           MyGatherGatherList.fromJson(e)).toList() as M;
     }
+    if (<PublishThreadEntity>[] is M) {
+      return data.map<PublishThreadEntity>((Map<String, dynamic> e) =>
+          PublishThreadEntity.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThread>[] is M) {
+      return data.map<PublishThreadThread>((Map<String, dynamic> e) =>
+          PublishThreadThread.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadAuthor>[] is M) {
+      return data.map<PublishThreadThreadAuthor>((Map<String, dynamic> e) =>
+          PublishThreadThreadAuthor.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadAuthorGroup>[] is M) {
+      return data
+          .map<PublishThreadThreadAuthorGroup>((
+          Map<String, dynamic> e) => PublishThreadThreadAuthorGroup.fromJson(e))
+          .toList() as M;
+    }
+    if (<PublishThreadThreadAuthorMedals>[] is M) {
+      return data.map<PublishThreadThreadAuthorMedals>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadAuthorMedals.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadTopicTag>[] is M) {
+      return data.map<PublishThreadThreadTopicTag>((Map<String, dynamic> e) =>
+          PublishThreadThreadTopicTag.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadFirstPost>[] is M) {
+      return data.map<PublishThreadThreadFirstPost>((Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPost.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadFirstPostAuthor>[] is M) {
+      return data.map<PublishThreadThreadFirstPostAuthor>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAuthor.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadFirstPostAuthorGroup>[] is M) {
+      return data.map<PublishThreadThreadFirstPostAuthorGroup>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAuthorGroup.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadFirstPostAuthorMedals>[] is M) {
+      return data.map<PublishThreadThreadFirstPostAuthorMedals>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAuthorMedals.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadFirstPostAttachment>[] is M) {
+      return data.map<PublishThreadThreadFirstPostAttachment>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAttachment.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadLastPost>[] is M) {
+      return data.map<PublishThreadThreadLastPost>((Map<String, dynamic> e) =>
+          PublishThreadThreadLastPost.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadLastPostAuthor>[] is M) {
+      return data.map<PublishThreadThreadLastPostAuthor>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAuthor.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadLastPostAuthorGroup>[] is M) {
+      return data.map<PublishThreadThreadLastPostAuthorGroup>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAuthorGroup.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadLastPostAuthorMedals>[] is M) {
+      return data.map<PublishThreadThreadLastPostAuthorMedals>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAuthorMedals.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadThreadLastPostAttachment>[] is M) {
+      return data.map<PublishThreadThreadLastPostAttachment>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAttachment.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadPost>[] is M) {
+      return data.map<PublishThreadPost>((Map<String, dynamic> e) =>
+          PublishThreadPost.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadPostAuthor>[] is M) {
+      return data.map<PublishThreadPostAuthor>((Map<String, dynamic> e) =>
+          PublishThreadPostAuthor.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadPostAuthorGroup>[] is M) {
+      return data.map<PublishThreadPostAuthorGroup>((Map<String, dynamic> e) =>
+          PublishThreadPostAuthorGroup.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadPostAuthorMedals>[] is M) {
+      return data.map<PublishThreadPostAuthorMedals>((Map<String, dynamic> e) =>
+          PublishThreadPostAuthorMedals.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadPostAttachment>[] is M) {
+      return data.map<PublishThreadPostAttachment>((Map<String, dynamic> e) =>
+          PublishThreadPostAttachment.fromJson(e)).toList() as M;
+    }
+    if (<PublishThreadCoinScore>[] is M) {
+      return data.map<PublishThreadCoinScore>((Map<String, dynamic> e) =>
+          PublishThreadCoinScore.fromJson(e)).toList() as M;
+    }
     if (<RecordListEntity>[] is M) {
       return data.map<RecordListEntity>((Map<String, dynamic> e) =>
           RecordListEntity.fromJson(e)).toList() as M;
@@ -439,6 +539,44 @@ class JsonConvertClassCollection {
     (MobileBgUrlEntity).toString(): MobileBgUrlEntity.fromJson,
     (MyGatherEntity).toString(): MyGatherEntity.fromJson,
     (MyGatherGatherList).toString(): MyGatherGatherList.fromJson,
+    (PublishThreadEntity).toString(): PublishThreadEntity.fromJson,
+    (PublishThreadThread).toString(): PublishThreadThread.fromJson,
+    (PublishThreadThreadAuthor).toString(): PublishThreadThreadAuthor.fromJson,
+    (PublishThreadThreadAuthorGroup).toString(): PublishThreadThreadAuthorGroup
+        .fromJson,
+    (PublishThreadThreadAuthorMedals)
+        .toString(): PublishThreadThreadAuthorMedals.fromJson,
+    (PublishThreadThreadTopicTag).toString(): PublishThreadThreadTopicTag
+        .fromJson,
+    (PublishThreadThreadFirstPost).toString(): PublishThreadThreadFirstPost
+        .fromJson,
+    (PublishThreadThreadFirstPostAuthor)
+        .toString(): PublishThreadThreadFirstPostAuthor.fromJson,
+    (PublishThreadThreadFirstPostAuthorGroup)
+        .toString(): PublishThreadThreadFirstPostAuthorGroup.fromJson,
+    (PublishThreadThreadFirstPostAuthorMedals)
+        .toString(): PublishThreadThreadFirstPostAuthorMedals.fromJson,
+    (PublishThreadThreadFirstPostAttachment)
+        .toString(): PublishThreadThreadFirstPostAttachment.fromJson,
+    (PublishThreadThreadLastPost).toString(): PublishThreadThreadLastPost
+        .fromJson,
+    (PublishThreadThreadLastPostAuthor)
+        .toString(): PublishThreadThreadLastPostAuthor.fromJson,
+    (PublishThreadThreadLastPostAuthorGroup)
+        .toString(): PublishThreadThreadLastPostAuthorGroup.fromJson,
+    (PublishThreadThreadLastPostAuthorMedals)
+        .toString(): PublishThreadThreadLastPostAuthorMedals.fromJson,
+    (PublishThreadThreadLastPostAttachment)
+        .toString(): PublishThreadThreadLastPostAttachment.fromJson,
+    (PublishThreadPost).toString(): PublishThreadPost.fromJson,
+    (PublishThreadPostAuthor).toString(): PublishThreadPostAuthor.fromJson,
+    (PublishThreadPostAuthorGroup).toString(): PublishThreadPostAuthorGroup
+        .fromJson,
+    (PublishThreadPostAuthorMedals).toString(): PublishThreadPostAuthorMedals
+        .fromJson,
+    (PublishThreadPostAttachment).toString(): PublishThreadPostAttachment
+        .fromJson,
+    (PublishThreadCoinScore).toString(): PublishThreadCoinScore.fromJson,
     (RecordListEntity).toString(): RecordListEntity.fromJson,
     (RecordListData).toString(): RecordListData.fromJson,
     (RecordListDataItems).toString(): RecordListDataItems.fromJson,

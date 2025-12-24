@@ -59,12 +59,12 @@ class TestPage extends StatelessWidget {
                     onTap: () {},
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: item.path.isEmpty
+                      child: item.cover.isEmpty
                           ? Stack(
                               alignment: Alignment.center,
                               children: [
                                 CachedNetworkImage(
-                                  imageUrl: item.origUrl,
+                                  imageUrl: item.file!.origUrl,
                                   width: double.infinity,
                                   height: double.infinity,
                                   fit: BoxFit.cover,
@@ -78,14 +78,14 @@ class TestPage extends StatelessWidget {
                               alignment: Alignment.center,
                               children: [
                                 Image.file(
-                                  File(item.path),
+                                  File(item.cover),
                                   width: double.infinity,
                                   height: double.infinity,
                                   fit: BoxFit.cover,
                                 ),
                                 Obx(() {
                                   return Icon(
-                                    item.status.value == "loading"
+                                    item.status.value == "uploading"
                                         ? Icons.file_upload
                                         : (item.status.value == "fail"
                                               ? Icons.close

@@ -14,5 +14,6 @@ class CustomColors {
   static const Color badge = Color(0xFFF2624E);
   static const Color tabBg = Color(0xFFF4F6F8);
   static const Color hintColor = Color(0xFFD4D4D4);
+  static const Color addImageBorder = Color(0xFFF9F9F9);
 
 }

@@ -215,55 +215,60 @@ class HomeTabPage extends StatelessWidget {
                         child: CarouselSlider.builder(
                           itemCount: banner.bannerList.length,
                           itemBuilder: (context, index, realIndex) {
-                            return Stack(
-                              children: [
-                                CachedNetworkImage(
-                                  imageUrl: banner.bannerList[index].imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  memCacheWidth: (logic.screenWidth * 2)
-                                      .toInt(),
-                                  memCacheHeight: 400,
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 12,
-                                      horizontal: 16,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.black.withValues(alpha: 0.6),
-                                        ],
+                            return InkWell(
+                              onTap: () {
+                                Get.toNamed(MyRouteConfig.test);
+                              },
+                              child: Stack(
+                                children: [
+                                  CachedNetworkImage(
+                                    imageUrl: banner.bannerList[index].imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    memCacheWidth: (logic.screenWidth * 2)
+                                        .toInt(),
+                                    memCacheHeight: 400,
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 12,
+                                        horizontal: 16,
                                       ),
-                                    ),
-                                    child: Text(
-                                      banner.bannerList[index].subject,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        shadows: [
-                                          Shadow(
-                                            offset: Offset(1, 1),
-                                            blurRadius: 2,
-                                            color: Colors.black54,
-                                          ),
-                                        ],
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withValues(alpha: 0.6),
+                                          ],
+                                        ),
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                      child: Text(
+                                        banner.bannerList[index].subject,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(1, 1),
+                                              blurRadius: 2,
+                                              color: Colors.black54,
+                                            ),
+                                          ],
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             );
                           },
                           options: CarouselOptions(

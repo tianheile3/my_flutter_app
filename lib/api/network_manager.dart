@@ -5,9 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_study/api/api_client.dart';
-import 'package:flutter_study/utils/auth_utils.dart';
 import 'package:flutter_study/common/global_state.dart';
 import 'package:flutter_study/common/logger_mixin.dart';
+import 'package:flutter_study/utils/auth_utils.dart';
 
 class NetworkManager with LoggerMixin {
   static final NetworkManager _instance = NetworkManager._internal();
@@ -15,7 +15,7 @@ class NetworkManager with LoggerMixin {
   factory NetworkManager() => _instance;
 
   late Dio _dio;
-  final String baseUrl = "https://jiaxing.19lou.com"; // 默认 Base URL
+  final String baseUrl = "https://www.19lou.com"; // 默认 Base URL
 
   NetworkManager._internal() {
     _dio = Dio(
@@ -24,6 +24,12 @@ class NetworkManager with LoggerMixin {
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         responseType: ResponseType.json,
+        headers: {
+          "User-Agent": "nineteenlou/CS_Android_Client/Mi9 Pro 5G 11 9.6.2",
+          "Connection": "keep-alive",
+          "Accept-Encoding": "gzip",
+          "Charset": "UTF-8",
+        },
       ),
     );
     setCanCapturePackages(_dio);

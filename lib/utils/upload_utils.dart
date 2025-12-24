@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_study/common/logger_mixin.dart';
+import 'package:flutter_study/models/media_model.dart';
 
 import '../api/network_manager.dart';
 import '../api/response/file_upload_entity.dart';
@@ -15,15 +16,15 @@ class UploadUtils with LoggerMixin {
   int chunk = 1;
   String fileId = "";
 
-  late FileUploadFile item;
+  late MediaModel item;
   late final int chunks;
   late String fileBase64;
 
   UploadUtils(this.item);
 
   Future<void> doUpload() async {
-    item.status.value = "loading";
-    final List<String> slices = await sliceFileToBase64(file: File(item.path));
+    item.status.value = "uploading";
+    final List<String> slices = await sliceFileToBase64(file: File(item.cover));
     if (slices.isEmpty) return;
     chunks = slices.length;
     while (chunk <= chunks) {
@@ -36,9 +37,12 @@ class UploadUtils with LoggerMixin {
         fileId = result.chunk!.fileId;
         chunk++;
       } else if (result.file != null) {
-        item.aid = result.file!.aid;
-        item.middleUrl = result.file!.middleUrl;
-        item.origUrl = result.file!.origUrl;
+        var imageData = FileUploadFile();
+        imageData.aid = result.file!.aid;
+        imageData.middleUrl = result.file!.middleUrl;
+        imageData.origUrl = result.file!.origUrl;
+
+        item.file = imageData;
         item.status.value = "success";
         break;
       }
