@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_study/models/media_model.dart';
 import 'package:flutter_study/utils/media_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,6 +10,7 @@ import '../../common/some_publish.dart';
 import '../../utils/auth_utils.dart';
 import '../../utils/permission_utils.dart';
 import '../../utils/upload_utils.dart';
+import '../../widget/add_link_dialog.dart';
 import 'state.dart';
 
 class PostThreadLogic extends BaseController {
@@ -197,5 +198,12 @@ class PostThreadLogic extends BaseController {
       value,
       contentType: DioMediaType("text", "plain", {"charset": "UTF-8"}),
     );
+  }
+
+  Future<void> showLinkDialog(BuildContext context) async {
+    final data = await AddLinkDialog.showLinkDialog(context);
+    if (data != null) {
+      logger.d(data.toString());
+    }
   }
 }

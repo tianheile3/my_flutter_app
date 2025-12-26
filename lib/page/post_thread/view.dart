@@ -58,7 +58,7 @@ class PostThreadPage extends StatelessWidget {
               ),
             ),
           ),
-          _buildBottomWidget(),
+          _buildBottomWidget(context),
         ],
       ),
     );
@@ -261,7 +261,7 @@ class PostThreadPage extends StatelessWidget {
     });
   }
 
-  Widget _buildBottomWidget() {
+  Widget _buildBottomWidget(BuildContext context) {
     return Container(
       height: 50,
       decoration: BoxDecoration(
@@ -280,7 +280,13 @@ class PostThreadPage extends StatelessWidget {
           // 好友
           _buildItem(icon: Icons.person, label: '好友', onTap: () {}),
           // 链接
-          _buildItem(icon: Icons.link, label: '链接', onTap: () {}),
+          _buildItem(
+            icon: Icons.link,
+            label: '链接',
+            onTap: () {
+              logic.showLinkDialog(context);
+            },
+          ),
         ],
       ),
     );
