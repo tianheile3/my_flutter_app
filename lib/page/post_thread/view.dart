@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/common/custom_colors.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../models/media_model.dart';
@@ -143,9 +142,9 @@ class PostThreadPage extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           if (item.itemType == 2) {
-            logic.pickFromGallery();
+            logic.pickImageFromGallery();
           } else {
-            Fluttertoast.showToast(msg: "上传视频");
+            logic.pickVideoFromGallery();
           }
         },
         child: Center(
@@ -177,7 +176,7 @@ class PostThreadPage extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Stack(
-          alignment: Alignment.center,
+          alignment: Alignment.bottomRight,
           children: [
             Image.file(
               File(item.cover),
@@ -201,7 +200,36 @@ class PostThreadPage extends StatelessWidget {
   }
 
   Widget _buildVideoItem(MediaModel item) {
-    return Container();
+    return GestureDetector(
+      onTap: () {},
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Image.file(
+              File(item.cover),
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Icon(Icons.play_circle, size: 30, color: Colors.white),
+            ),
+            Obx(() {
+              return Icon(
+                item.status.value == "uploading"
+                    ? Icons.cloud_upload
+                    : (item.status.value == "fail" ? Icons.close : Icons.done),
+                size: 25,
+                color: Colors.white,
+              );
+            }),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildGatherButton() {
@@ -246,7 +274,7 @@ class PostThreadPage extends StatelessWidget {
             icon: Icons.cloud_upload,
             label: '上传',
             onTap: () {
-              logic.uploadImage();
+              logic.uploadMedia();
             },
           ),
           // 好友

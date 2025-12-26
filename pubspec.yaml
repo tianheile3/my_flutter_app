@@ -30,8 +30,9 @@ dependencies:
   image_picker: ^1.2.1 # 图片选择
   saver_gallery: ^4.1.0 #图片保存
   flutter_image_compress: ^2.4.0 # 图片压缩
-  get: ^4.7.3 #getX
-  dotted_border: ^3.1.0 #虚线边框等
+  get: ^4.7.3 # getX
+  dotted_border: ^3.1.0 # 虚线边框等
+  video_compress: ^3.1.4 # 视频相关 获取缩略图，视频信息，压缩等
 
 dev_dependencies:
   flutter_test:

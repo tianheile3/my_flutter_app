@@ -54,4 +54,22 @@ class PermissionUtils {
 
     return false;
   }
+
+  static Future<bool> requestVideoPermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return false;
+    }
+    if (Platform.isAndroid) {
+      final deviceInfo = await DeviceInfoPlugin().androidInfo;
+      final sdkInt = deviceInfo.version.sdkInt;
+
+      return sdkInt >= 33
+          ? await Permission.videos.request().isGranted
+          : await Permission.storage.request().isGranted;
+    } else if (Platform.isIOS) {
+      return await Permission.videos.request().isGranted;
+    }
+
+    return false;
+  }
 }

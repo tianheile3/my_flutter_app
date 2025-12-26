@@ -5,7 +5,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/models/extra_entity.dart';
 import 'package:flutter_study/common/custom_colors.dart';
-import 'package:flutter_study/utils/images_utils.dart';
+import 'package:flutter_study/utils/media_utils.dart';
 import 'package:flutter_study/common/logger_mixin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -95,7 +95,7 @@ class _PostListPage extends State<PostListPage>
         final extra = ExtraEntity.fromJson(json.decode(item.extra));
         final List<String> imgList = extra.imageUrls.split(",");
         if (imgList.isNotEmpty) {
-          item.firstImageUrl = ImageUtils.imgToAtt3Size(imgList[0], "m300x");
+          item.firstImageUrl = MediaUtils.imgToAtt3Size(imgList[0], "m300x");
         }
         item.picNum = extra.picNum;
         if (imgList.isNotEmpty && extra.holdVideo) {

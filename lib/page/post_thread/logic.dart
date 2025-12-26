@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_study/models/media_model.dart';
+import 'package:flutter_study/utils/media_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_utils/get_utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../common/some_publish.dart';
@@ -40,23 +42,56 @@ class PostThreadLogic extends BaseController {
   }
 
   // 选择图片（相册）
-  Future<void> pickFromGallery() async {
+  Future<void> pickImageFromGallery() async {
     var limit = state.maxNum - _getImageNum();
     if (limit <= 0) {
+      Fluttertoast.showToast(msg: "图片添加已达上限");
       return;
     }
     final temp = _getImages();
+    final video = _getVideo();
     if (await PermissionUtils.requestImagePermission()) {
       List<XFile> result = await _picker.pickMultiImage(limit: limit);
       state.imageList.clear();
+      if (video != null) {
+        state.imageList.add(video);
+      }
       state.imageList.addAll(temp);
       for (int i = 0; i < result.length && i < limit; i++) {
         final entity = MediaModel();
         entity.cover = result[i].path;
-        entity.status.value = "uploading";
         state.imageList.add(entity);
       }
       _initAdd();
+    }
+  }
+
+  // 从相册选择视频
+  Future<void> pickVideoFromGallery() async {
+    if (state.hasVideo) {
+      Fluttertoast.showToast(msg: "只能添加一个视频");
+      return;
+    }
+    final temp = _getImages();
+    if (await PermissionUtils.requestImagePermission()) {
+      final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
+      state.imageList.clear();
+      if (video != null) {
+        var thumbnailPath = await MediaUtils.getFileThumbnail(video.path) ?? "";
+
+        final entity = MediaModel(itemType: 1);
+        entity.cover = thumbnailPath;
+        state.imageList.add(entity);
+        state.hasVideo = true;
+
+        state.imageList.addAll(temp);
+        _initAdd();
+
+        var mediaInfo = await MediaUtils.compress(video.path);
+        if (mediaInfo != null) {
+          _getVideo()?.videoUrl = mediaInfo.path!;
+        }
+      }
     }
   }
 
@@ -68,7 +103,11 @@ class PostThreadLogic extends BaseController {
     return state.imageList.where((item) => item.itemType == 0).toList();
   }
 
-  Future<void> uploadImage() async {
+  MediaModel? _getVideo() {
+    return state.imageList.firstWhereOrNull((item) => item.itemType == 1);
+  }
+
+  Future<void> uploadMedia() async {
     if (state.imageList.isEmpty) return;
     // 1. 筛选需要上传的图片（排除已上传的）
     final needUploadItems = state.imageList
@@ -89,16 +128,23 @@ class PostThreadLogic extends BaseController {
     if (state.isPost) {
       return false;
     }
-    if (state.hasVideo && state.videoData == null) {
-      Fluttertoast.showToast(msg: "视频正在上传 请稍等");
-      return false;
+    if (state.hasVideo) {
+      final video = _getVideo();
+      if (video?.file == null) {
+        Fluttertoast.showToast(msg: "视频正在上传 请稍等");
+        return false;
+      }
     }
     if (state.imageList.isNotEmpty) {
       for (final entry in state.imageList.asMap().entries) {
         final index = entry.key;
         final value = entry.value;
-        if (value.itemType == 0 && value.status.value != "success") {
+        if (value.itemType == 0 && value.file == null) {
           Fluttertoast.showToast(msg: "第$index张图片上传失败，请重新上传");
+          return false;
+        }
+        if (value.itemType == 1 && value.file == null) {
+          Fluttertoast.showToast(msg: "视频上传失败，请重新上传");
           return false;
         }
       }
@@ -116,7 +162,7 @@ class PostThreadLogic extends BaseController {
   }
 
   Future<void> doPost() async {
-    if (_checkAll()) {
+    if (!_checkAll()) {
       return;
     }
     final params = AuthUtils.buildCommonFormParams();
@@ -127,8 +173,12 @@ class PostThreadLogic extends BaseController {
       ...params,
     });
     var images = _getImages();
-    if (images.isNotEmpty) {
+    var video = _getVideo();
+    if (images.isNotEmpty || state.hasVideo) {
       formData.fields.add(MapEntry("fileType", "2"));
+      if (video != null) {
+        formData.fields.add(MapEntry("file", video.file!.aid));
+      }
       for (var item in images) {
         formData.fields.add(MapEntry("file", item.file!.aid));
       }

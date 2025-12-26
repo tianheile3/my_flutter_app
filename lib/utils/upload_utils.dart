@@ -24,7 +24,9 @@ class UploadUtils with LoggerMixin {
 
   Future<void> doUpload() async {
     item.status.value = "uploading";
-    final List<String> slices = await sliceFileToBase64(file: File(item.cover));
+    final List<String> slices = await sliceFileToBase64(
+      file: File(item.itemType == 0 ? item.cover : item.videoUrl),
+    );
     if (slices.isEmpty) return;
     chunks = slices.length;
     while (chunk <= chunks) {

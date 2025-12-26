@@ -9,7 +9,7 @@ import '../../common/some_publish.dart';
 import '../../models/extra_entity.dart';
 import '../../utils/common_utils.dart';
 import '../../common/custom_colors.dart';
-import '../../utils/images_utils.dart';
+import '../../utils/media_utils.dart';
 
 class GatherLogic extends BaseController {
   final EasyRefreshController controller = EasyRefreshController(
@@ -110,7 +110,7 @@ class GatherLogic extends BaseController {
         final extra = ExtraEntity.fromJson(json.decode(item.extra));
         final imgList = extra.imageUrls.split(",");
         if (imgList.isNotEmpty) {
-          item.firstImageUrl = ImageUtils.imgToAtt3Size(imgList[0], "m300x");
+          item.firstImageUrl = MediaUtils.imgToAtt3Size(imgList[0], "m300x");
         }
         item.picNum = extra.picNum;
         item.rateCount.value = extra.ratePlusNumber;

@@ -1,6 +1,7 @@
 import 'package:flutter_study/common/constants.dart';
+import 'package:video_compress/video_compress.dart';
 
-class ImageUtils {
+class MediaUtils {
   static String imgToAtt3Size(String? url, String imgSize) {
     if (url == null || url.isEmpty) {
       return "";
@@ -33,5 +34,19 @@ class ImageUtils {
         url.endsWith('.gif') ||
         url.endsWith('.mp4') ||
         url.endsWith('.mp4.png');
+  }
+
+  static Future<String?> getFileThumbnail(String path) async {
+    final thumbnailFile = await VideoCompress.getFileThumbnail(
+      path,
+      quality: 100,
+      position: 1000,
+    );
+    return thumbnailFile.path;
+  }
+
+  static Future<MediaInfo?> compress(String path) async {
+    MediaInfo? mediaInfo = await VideoCompress.compressVideo(path);
+    return mediaInfo;
   }
 }
