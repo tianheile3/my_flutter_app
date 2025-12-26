@@ -3,6 +3,8 @@ import 'package:flutter_study/route_config.dart';
 import 'package:get/get.dart';
 
 import '../../api/network_manager.dart';
+import '../../api/response/fav_board_and_forum_entity.dart';
+import '../../api/response/map_config_entity.dart';
 import '../../api/response/record_list_entity.dart';
 import '../../common/some_publish.dart';
 
@@ -15,11 +17,15 @@ class CategoryTabLogic extends BaseController {
   final infoApi = NetworkManager().withOtherBaseUrl(
     "https://infoapi.19lou.com",
   );
-  final int cityId = 330400;
+
+  // final int cityId = 330400; //jiaxing
+  final int cityId = 330100; //hangzhou
 
   var page = 1;
   Rx<LoadState> loadState = LoadState.refreshing.obs;
   final RxList<dynamic> items = <dynamic>[].obs;
+  bool infoCheck = false;
+  bool hasForum = false;
 
   @override
   void onInit() {
@@ -34,22 +40,49 @@ class CategoryTabLogic extends BaseController {
     controller.resetFooter();
 
     try {
-      final request1 = _getMapConfig();
-      final request2 = _getRecordList(true);
-      final results = await Future.wait([request1, request2]);
+      final result = await _getMapConfig();
+      items.addAll(result);
 
-      final result1 = results[0];
-      if (result1 != null) {
-        items.addAll(result1);
+      final List<Future> tasks = [];
+      final List<String> taskTypes = [];
+      if (hasForum) {
+        tasks.add(_getMyForum());
+        taskTypes.add("forum");
       }
-      final result2 = results[1];
-      if (result2 != null &&
-          (result2 as List<RecordListDataItems>).isNotEmpty) {
-        if (items.isNotEmpty) {
-          items.add(1);
+      if (infoCheck) {
+        tasks.add(_getRecordList());
+        taskTypes.add("record");
+      }
+      if (tasks.isNotEmpty) {
+        final results = await Future.wait(tasks);
+        for (int i = 0; i < results.length; i++) {
+          final res = results[i];
+          switch (taskTypes[i]) {
+            case 'forum':
+              if (res is FavBoardAndForumEntity) {
+                for (var item in items) {
+                  if (item is MapConfigGroupList && item.displayType == 5) {
+                    item.forums.clear();
+                    item.forums.addAll(res.returnList);
+                  }
+                }
+              }
+              break;
+            case 'record':
+              if (res is RecordListEntity && res.data.items.isNotEmpty) {
+                if (items.isNotEmpty) {
+                  items.add(1);
+                }
+                items.add("1");
+                items.addAll(res.data.items);
+                bool noMore = res.data.currentPage >= res.data.maxPage;
+                setFinishState(noMore, true);
+              } else {
+                controller.finishRefresh(IndicatorResult.fail);
+              }
+              break;
+          }
         }
-        items.add("1");
-        items.addAll(result2);
       }
       loadState.value = LoadState.success;
     } catch (e) {
@@ -60,13 +93,19 @@ class CategoryTabLogic extends BaseController {
   }
 
   Future<void> onLoadMore() async {
+    if (!infoCheck) {
+      controller.finishLoad(IndicatorResult.noMore);
+      return;
+    }
     try {
-      final result = await _getRecordList(false);
+      final result = await _getRecordList();
       if (result == null) {
         controller.finishLoad(IndicatorResult.fail);
         return;
       }
-      items.addAll(result);
+      items.addAll(result.data.items);
+      bool noMore = result.data.currentPage >= result.data.maxPage;
+      setFinishState(noMore, false);
     } catch (e) {
       logger.d("加载失败$e");
       controller.finishLoad(IndicatorResult.fail);
@@ -76,7 +115,11 @@ class CategoryTabLogic extends BaseController {
   Future<List<dynamic>> _getMapConfig() async {
     final List<dynamic> list = [];
     final res = await api.getSiteMapConfig();
-    if (res != null && res.groupList.isNotEmpty) {
+    if (res == null) {
+      return list;
+    }
+    infoCheck = res.infoCheck;
+    if (res.groupList.isNotEmpty) {
       res.groupList.removeWhere(
         (item) =>
             item.hide == 1 || (item.displayType != 5 && item.itemList.isEmpty),
@@ -89,30 +132,32 @@ class CategoryTabLogic extends BaseController {
           list.add(1);
         }
         list.add(item);
+        if (item.displayType == 5 && item.hide == 0) {
+          hasForum = true;
+        }
       }
     }
     return list;
   }
 
-  Future<List<RecordListDataItems>?> _getRecordList(bool isRefresh) async {
-    final res = await infoApi.recordList(page: page);
-    if (res != null && res.code == 200) {
-      setFinishState(res, isRefresh);
-      page++;
-      return res.data.items;
-    } else {
-      if (isRefresh) {
-        controller.finishRefresh(IndicatorResult.fail);
-      } else {
-        controller.finishLoad(IndicatorResult.fail);
-      }
+  Future<FavBoardAndForumEntity?> _getMyForum() async {
+    final res = await api.getFavBoardAndForumByType();
+    if (res != null && res.code == 1) {
+      return res;
     }
     return null;
   }
 
-  void setFinishState(RecordListEntity res, bool isRefresh) {
-    bool noMore = res.data.currentPage >= res.data.maxPage;
-    logger.d("noMore:$noMore");
+  Future<RecordListEntity?> _getRecordList() async {
+    final res = await infoApi.recordList(page: page, cityId: cityId);
+    if (res != null && res.code == 200) {
+      page++;
+      return res;
+    }
+    return null;
+  }
+
+  void setFinishState(bool noMore, bool isRefresh) {
     if (isRefresh) {
       controller.finishRefresh(IndicatorResult.success);
       if (noMore) {

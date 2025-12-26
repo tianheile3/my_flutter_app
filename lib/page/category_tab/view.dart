@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../api/response/map_config_entity.dart';
 import '../../api/response/record_list_entity.dart';
-import '../../common/some_publish.dart';
 import '../../common/custom_colors.dart';
+import '../../common/some_publish.dart';
 import '../../utils/date_tools.dart';
 import 'logic.dart';
 
@@ -18,7 +19,6 @@ class CategoryTabPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(title: const Text("发现")),
       body: Obx(() {
         switch (logic.loadState.value) {
@@ -61,8 +61,15 @@ class CategoryTabPage extends StatelessWidget {
                         return _type1Widget(item);
                       } else if (item.displayType == 2) {
                         return _type2Widget(item);
-                      } else {
+                      } else if (item.displayType == 3) {
                         return _type3Widget(item);
+                      } else if (item.displayType == 4) {
+                        return _type4Widget(item);
+                      } else if (item.displayType == 5) {
+                        //板块
+                        return _type5Widget(item);
+                      } else {
+                        return SizedBox.shrink();
                       }
                     } else if (item is RecordListDataItems) {
                       return _recordList(item);
@@ -83,8 +90,59 @@ class CategoryTabPage extends StatelessWidget {
   }
 
   Widget _type1Widget(MapConfigGroupList bean) {
-    //不知
-    return Container(color: Colors.red, width: 100, height: 100);
+    return GridView.builder(
+      shrinkWrap: true,
+      itemCount: bean.itemList.length,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 1.8,
+      ),
+      itemBuilder: (context, index) {
+        final item = bean.itemList[index];
+        return InkWell(
+          onTap: () {
+            logic.toDetail(item.link);
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: item.iconUrl,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.fill,
+                  memCacheWidth: 250,
+                  memCacheHeight: 250,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    item.name,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    item.desc,
+                    style: TextStyle(fontSize: 12, color: Colors.white),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _type2Widget(MapConfigGroupList bean) {
@@ -210,6 +268,98 @@ class CategoryTabPage extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _type4Widget(MapConfigGroupList bean) {
+    return SizedBox.shrink();
+  }
+
+  Widget _type5Widget(MapConfigGroupList bean) {
+    //人生几件事
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  bean.name,
+                  style: TextStyle(
+                    color: CustomColors.textDark,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Fluttertoast.showToast(msg: "更多");
+                  },
+                  child: Text(
+                    "更多",
+                    style: TextStyle(
+                      color: CustomColors.textLight,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            GridView.builder(
+              shrinkWrap: true,
+              itemCount: bean.forums.length > 8 ? 8 : bean.forums.length,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 1,
+              ),
+              itemBuilder: (context, index) {
+                final item = bean.forums[index];
+                return InkWell(
+                  onTap: () {},
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: CachedNetworkImage(
+                            imageUrl: item.cover,
+                            width: 52,
+                            height: 52,
+                            memCacheWidth: 100,
+                            memCacheHeight: 100,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          item.name,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: CustomColors.textDark,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

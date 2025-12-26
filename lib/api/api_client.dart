@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/fav_board_and_forum_entity.dart';
 import 'package:flutter_study/api/response/file_upload_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_study/api/response/my_gather_entity.dart';
 import 'package:flutter_study/api/response/publish_thread_entity.dart';
 import 'package:flutter_study/api/response/record_list_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
+import 'package:flutter_study/api/response/thread_page_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
 import 'package:flutter_study/api/response/user_comment_list_entity.dart';
 import 'package:flutter_study/api/response/user_second_recom_thread_entity.dart';
@@ -87,11 +89,29 @@ abstract class ApiClient {
 
   @GET("/record/list")
   Future<RecordListEntity?> recordList({
-    @Query("cityId") int cityId = 330400,
+    @Query("cityId") required int cityId,
     @Query("page") int page = 1,
     @Query("pageSize") int pageSize = 10,
     @Query("pass") int pass = 0,
     @Query("limitDateTime") int limitDateTime = 0,
+  });
+
+  @GET("/api/board/getFavBoardAndForumByType")
+  Future<FavBoardAndForumEntity?> getFavBoardAndForumByType({
+    @Query("page") int page = 1,
+    @Query("perPage") int perPage = 30,
+    @Query("favType") int favType = 0,
+  });
+
+  @GET("/api/thread/getThreadPage")
+  Future<ThreadPageEntity?> getThreadPage({
+    @Query("page") int page = 1,
+    @Query("perPage") int perPage = 20,
+    @Query("fid") required String fid,
+    @Query("tag") int tag = 0,
+    @Query("listType") String listType = "all",
+    @Query("onlyStick") bool onlyStick = true,
+    @Query("withoutStick") bool withoutStick = true,
   });
 
   //-----------------------------------以下post----------------------------------

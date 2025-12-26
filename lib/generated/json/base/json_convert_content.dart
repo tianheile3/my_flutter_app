@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
+import 'package:flutter_study/api/response/fav_board_and_forum_entity.dart';
 import 'package:flutter_study/api/response/file_upload_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_study/api/response/publish_thread_entity.dart';
 import 'package:flutter_study/api/response/record_list_entity.dart';
 import 'package:flutter_study/api/response/second_config_entity.dart';
 import 'package:flutter_study/api/response/system_time_entity.dart';
+import 'package:flutter_study/api/response/thread_page_entity.dart';
 import 'package:flutter_study/api/response/token_entity.dart';
 import 'package:flutter_study/api/response/user_comment_list_entity.dart';
 import 'package:flutter_study/api/response/user_second_recom_thread_entity.dart';
@@ -178,6 +180,14 @@ class JsonConvert {
     if (<EncryptKeyEntity>[] is M) {
       return data.map<EncryptKeyEntity>((Map<String, dynamic> e) =>
           EncryptKeyEntity.fromJson(e)).toList() as M;
+    }
+    if (<FavBoardAndForumEntity>[] is M) {
+      return data.map<FavBoardAndForumEntity>((Map<String, dynamic> e) =>
+          FavBoardAndForumEntity.fromJson(e)).toList() as M;
+    }
+    if (<FavBoardAndForumReturnList>[] is M) {
+      return data.map<FavBoardAndForumReturnList>((Map<String, dynamic> e) =>
+          FavBoardAndForumReturnList.fromJson(e)).toList() as M;
     }
     if (<FileUploadEntity>[] is M) {
       return data.map<FileUploadEntity>((Map<String, dynamic> e) =>
@@ -420,6 +430,114 @@ class JsonConvert {
       return data.map<SystemTimeEntity>((Map<String, dynamic> e) =>
           SystemTimeEntity.fromJson(e)).toList() as M;
     }
+    if (<ThreadPageEntity>[] is M) {
+      return data.map<ThreadPageEntity>((Map<String, dynamic> e) =>
+          ThreadPageEntity.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageForumInfo>[] is M) {
+      return data.map<ThreadPageForumInfo>((Map<String, dynamic> e) =>
+          ThreadPageForumInfo.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageForumInfoTagsList>[] is M) {
+      return data.map<ThreadPageForumInfoTagsList>((Map<String, dynamic> e) =>
+          ThreadPageForumInfoTagsList.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageForumInfoRecursionForumList>[] is M) {
+      return data.map<ThreadPageForumInfoRecursionForumList>((
+          Map<String, dynamic> e) =>
+          ThreadPageForumInfoRecursionForumList.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageForumInfoCircleCategory>[] is M) {
+      return data.map<ThreadPageForumInfoCircleCategory>((
+          Map<String, dynamic> e) =>
+          ThreadPageForumInfoCircleCategory.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadList>[] is M) {
+      return data.map<ThreadPageThreadList>((Map<String, dynamic> e) =>
+          ThreadPageThreadList.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListAuthor>[] is M) {
+      return data.map<ThreadPageThreadListAuthor>((Map<String, dynamic> e) =>
+          ThreadPageThreadListAuthor.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListAuthorGroup>[] is M) {
+      return data.map<ThreadPageThreadListAuthorGroup>((
+          Map<String, dynamic> e) =>
+          ThreadPageThreadListAuthorGroup.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListFirstPost>[] is M) {
+      return data.map<ThreadPageThreadListFirstPost>((Map<String, dynamic> e) =>
+          ThreadPageThreadListFirstPost.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListFirstPostAuthor>[] is M) {
+      return data.map<ThreadPageThreadListFirstPostAuthor>((
+          Map<String, dynamic> e) =>
+          ThreadPageThreadListFirstPostAuthor.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListFirstPostAuthorGroup>[] is M) {
+      return data.map<ThreadPageThreadListFirstPostAuthorGroup>((
+          Map<String, dynamic> e) =>
+          ThreadPageThreadListFirstPostAuthorGroup.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListTopicTag>[] is M) {
+      return data.map<ThreadPageThreadListTopicTag>((Map<String, dynamic> e) =>
+          ThreadPageThreadListTopicTag.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListBusinessTag>[] is M) {
+      return data.map<ThreadPageThreadListBusinessTag>((
+          Map<String, dynamic> e) =>
+          ThreadPageThreadListBusinessTag.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageThreadListZanInfo>[] is M) {
+      return data.map<ThreadPageThreadListZanInfo>((Map<String, dynamic> e) =>
+          ThreadPageThreadListZanInfo.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadList>[] is M) {
+      return data.map<ThreadPageStickThreadList>((Map<String, dynamic> e) =>
+          ThreadPageStickThreadList.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListAuthor>[] is M) {
+      return data.map<ThreadPageStickThreadListAuthor>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListAuthor.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListAuthorGroup>[] is M) {
+      return data.map<ThreadPageStickThreadListAuthorGroup>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListAuthorGroup.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListFirstPost>[] is M) {
+      return data.map<ThreadPageStickThreadListFirstPost>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListFirstPost.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListFirstPostAuthor>[] is M) {
+      return data.map<ThreadPageStickThreadListFirstPostAuthor>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListFirstPostAuthor.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListFirstPostAuthorGroup>[] is M) {
+      return data
+          .map<ThreadPageStickThreadListFirstPostAuthorGroup>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListFirstPostAuthorGroup.fromJson(e))
+          .toList() as M;
+    }
+    if (<ThreadPageStickThreadListFirstPostRateInfo>[] is M) {
+      return data.map<ThreadPageStickThreadListFirstPostRateInfo>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListFirstPostRateInfo.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListTopicTag>[] is M) {
+      return data.map<ThreadPageStickThreadListTopicTag>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListTopicTag.fromJson(e)).toList() as M;
+    }
+    if (<ThreadPageStickThreadListZanInfo>[] is M) {
+      return data.map<ThreadPageStickThreadListZanInfo>((
+          Map<String, dynamic> e) =>
+          ThreadPageStickThreadListZanInfo.fromJson(e)).toList() as M;
+    }
     if (<TokenEntity>[] is M) {
       return data.map<TokenEntity>((Map<String, dynamic> e) =>
           TokenEntity.fromJson(e)).toList() as M;
@@ -518,6 +636,9 @@ class JsonConvertClassCollection {
     (CurrentUserInfoUserGroup).toString(): CurrentUserInfoUserGroup.fromJson,
     (CurrentUserInfoUserMedals).toString(): CurrentUserInfoUserMedals.fromJson,
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
+    (FavBoardAndForumEntity).toString(): FavBoardAndForumEntity.fromJson,
+    (FavBoardAndForumReturnList).toString(): FavBoardAndForumReturnList
+        .fromJson,
     (FileUploadEntity).toString(): FileUploadEntity.fromJson,
     (FileUploadFile).toString(): FileUploadFile.fromJson,
     (FileUploadChunk).toString(): FileUploadChunk.fromJson,
@@ -603,6 +724,48 @@ class JsonConvertClassCollection {
     (SecondConfigConfigInfoPicTurnListThreadAuthor)
         .toString(): SecondConfigConfigInfoPicTurnListThreadAuthor.fromJson,
     (SystemTimeEntity).toString(): SystemTimeEntity.fromJson,
+    (ThreadPageEntity).toString(): ThreadPageEntity.fromJson,
+    (ThreadPageForumInfo).toString(): ThreadPageForumInfo.fromJson,
+    (ThreadPageForumInfoTagsList).toString(): ThreadPageForumInfoTagsList
+        .fromJson,
+    (ThreadPageForumInfoRecursionForumList)
+        .toString(): ThreadPageForumInfoRecursionForumList.fromJson,
+    (ThreadPageForumInfoCircleCategory)
+        .toString(): ThreadPageForumInfoCircleCategory.fromJson,
+    (ThreadPageThreadList).toString(): ThreadPageThreadList.fromJson,
+    (ThreadPageThreadListAuthor).toString(): ThreadPageThreadListAuthor
+        .fromJson,
+    (ThreadPageThreadListAuthorGroup)
+        .toString(): ThreadPageThreadListAuthorGroup.fromJson,
+    (ThreadPageThreadListFirstPost).toString(): ThreadPageThreadListFirstPost
+        .fromJson,
+    (ThreadPageThreadListFirstPostAuthor)
+        .toString(): ThreadPageThreadListFirstPostAuthor.fromJson,
+    (ThreadPageThreadListFirstPostAuthorGroup)
+        .toString(): ThreadPageThreadListFirstPostAuthorGroup.fromJson,
+    (ThreadPageThreadListTopicTag).toString(): ThreadPageThreadListTopicTag
+        .fromJson,
+    (ThreadPageThreadListBusinessTag)
+        .toString(): ThreadPageThreadListBusinessTag.fromJson,
+    (ThreadPageThreadListZanInfo).toString(): ThreadPageThreadListZanInfo
+        .fromJson,
+    (ThreadPageStickThreadList).toString(): ThreadPageStickThreadList.fromJson,
+    (ThreadPageStickThreadListAuthor)
+        .toString(): ThreadPageStickThreadListAuthor.fromJson,
+    (ThreadPageStickThreadListAuthorGroup)
+        .toString(): ThreadPageStickThreadListAuthorGroup.fromJson,
+    (ThreadPageStickThreadListFirstPost)
+        .toString(): ThreadPageStickThreadListFirstPost.fromJson,
+    (ThreadPageStickThreadListFirstPostAuthor)
+        .toString(): ThreadPageStickThreadListFirstPostAuthor.fromJson,
+    (ThreadPageStickThreadListFirstPostAuthorGroup)
+        .toString(): ThreadPageStickThreadListFirstPostAuthorGroup.fromJson,
+    (ThreadPageStickThreadListFirstPostRateInfo)
+        .toString(): ThreadPageStickThreadListFirstPostRateInfo.fromJson,
+    (ThreadPageStickThreadListTopicTag)
+        .toString(): ThreadPageStickThreadListTopicTag.fromJson,
+    (ThreadPageStickThreadListZanInfo)
+        .toString(): ThreadPageStickThreadListZanInfo.fromJson,
     (TokenEntity).toString(): TokenEntity.fromJson,
     (UserCommentListEntity).toString(): UserCommentListEntity.fromJson,
     (UserCommentListComments).toString(): UserCommentListComments.fromJson,
