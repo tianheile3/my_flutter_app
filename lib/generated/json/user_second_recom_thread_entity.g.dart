@@ -1,6 +1,5 @@
 import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 import 'package:flutter_study/api/response/user_second_recom_thread_entity.dart';
-import 'package:flutter_study/models/home_item.dart';
 
 
 UserSecondRecomThreadEntity $UserSecondRecomThreadEntityFromJson(
