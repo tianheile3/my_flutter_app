@@ -225,9 +225,9 @@ class CategoryTabLogic extends BaseController {
   }
 
   void toDetail(String url) {
-    var tid = isForum(url);
-    if (tid != null && tid.isNotEmpty) {
-      Get.toNamed(MyRouteConfig.forum, arguments: {"tid": tid});
+    var fid = isForum(url);
+    if (fid != null && fid.isNotEmpty) {
+      Get.toNamed(MyRouteConfig.forum, arguments: {"fid": fid});
     } else {
       Get.toNamed(MyRouteConfig.webview, arguments: {"url": url});
     }

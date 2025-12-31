@@ -117,7 +117,7 @@ class HomeTabPage extends StatelessWidget {
                   }
                   children.add(
                     Text(
-                      "${CommonUtils.getMillon(entity.views)}浏览",
+                      "${CommonUtils.getMillion(entity.views)}浏览",
                       style: TextStyle(
                         fontSize: 12,
                         color: CustomColors.textLight,

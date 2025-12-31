@@ -1,28 +1,32 @@
-import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 import 'package:flutter_study/api/response/user_second_recom_thread_entity.dart';
-
+import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 
 UserSecondRecomThreadEntity $UserSecondRecomThreadEntityFromJson(
-    Map<String, dynamic> json) {
-  final UserSecondRecomThreadEntity userSecondRecomThreadEntity = UserSecondRecomThreadEntity();
-  final List<
-      UserSecondRecomThreadRecomThreadList>? recomThreadList = (json['recom_thread_list'] as List<
-      dynamic>?)?.map(
-          (e) =>
-      jsonConvert.convert<UserSecondRecomThreadRecomThreadList>(
-          e) as UserSecondRecomThreadRecomThreadList).toList();
+  Map<String, dynamic> json,
+) {
+  final UserSecondRecomThreadEntity userSecondRecomThreadEntity =
+      UserSecondRecomThreadEntity();
+  final List<UserSecondRecomThreadRecomThreadList>? recomThreadList =
+      (json['recom_thread_list'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                jsonConvert.convert<UserSecondRecomThreadRecomThreadList>(e)
+                    as UserSecondRecomThreadRecomThreadList,
+          )
+          .toList();
   if (recomThreadList != null) {
     userSecondRecomThreadEntity.recomThreadList = recomThreadList;
   }
-  final List<
-      dynamic>? stickRecomThreadList = (json['stick_recom_thread_list'] as List<
-      dynamic>?)?.map(
-          (e) => e).toList();
+  final List<dynamic>? stickRecomThreadList =
+      (json['stick_recom_thread_list'] as List<dynamic>?)
+          ?.map((e) => e)
+          .toList();
   if (stickRecomThreadList != null) {
     userSecondRecomThreadEntity.stickRecomThreadList = stickRecomThreadList;
   }
-  final List<dynamic>? advList = (json['adv_list'] as List<dynamic>?)?.map(
-          (e) => e).toList();
+  final List<dynamic>? advList = (json['adv_list'] as List<dynamic>?)
+      ?.map((e) => e)
+      .toList();
   if (advList != null) {
     userSecondRecomThreadEntity.advList = advList;
   }
@@ -46,10 +50,12 @@ UserSecondRecomThreadEntity $UserSecondRecomThreadEntityFromJson(
 }
 
 Map<String, dynamic> $UserSecondRecomThreadEntityToJson(
-    UserSecondRecomThreadEntity entity) {
+  UserSecondRecomThreadEntity entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
-  data['recom_thread_list'] =
-      entity.recomThreadList.map((v) => v.toJson()).toList();
+  data['recom_thread_list'] = entity.recomThreadList
+      .map((v) => v.toJson())
+      .toList();
   data['stick_recom_thread_list'] = entity.stickRecomThreadList;
   data['adv_list'] = entity.advList;
   data['total_count'] = entity.totalCount;
@@ -80,9 +86,10 @@ extension UserSecondRecomThreadEntityExtension on UserSecondRecomThreadEntity {
   }
 }
 
-UserSecondRecomThreadRecomThreadList $UserSecondRecomThreadRecomThreadListFromJson(
-    Map<String, dynamic> json) {
-  final UserSecondRecomThreadRecomThreadList userSecondRecomThreadRecomThreadList = UserSecondRecomThreadRecomThreadList();
+UserSecondRecomThreadRecomThreadList
+$UserSecondRecomThreadRecomThreadListFromJson(Map<String, dynamic> json) {
+  final UserSecondRecomThreadRecomThreadList
+  userSecondRecomThreadRecomThreadList = UserSecondRecomThreadRecomThreadList();
   final String? cityid = jsonConvert.convert<String>(json['cityid']);
   if (cityid != null) {
     userSecondRecomThreadRecomThreadList.cityid = cityid;
@@ -153,17 +160,20 @@ UserSecondRecomThreadRecomThreadList $UserSecondRecomThreadRecomThreadListFromJs
     userSecondRecomThreadRecomThreadList.closed = closed;
   }
   final String? lastPostTime = jsonConvert.convert<String>(
-      json['last_post_time']);
+    json['last_post_time'],
+  );
   if (lastPostTime != null) {
     userSecondRecomThreadRecomThreadList.lastPostTime = lastPostTime;
   }
   final String? lastPostAuthor = jsonConvert.convert<String>(
-      json['last_post_author']);
+    json['last_post_author'],
+  );
   if (lastPostAuthor != null) {
     userSecondRecomThreadRecomThreadList.lastPostAuthor = lastPostAuthor;
   }
   final String? lastPostAuthorUid = jsonConvert.convert<String>(
-      json['last_post_author_uid']);
+    json['last_post_author_uid'],
+  );
   if (lastPostAuthorUid != null) {
     userSecondRecomThreadRecomThreadList.lastPostAuthorUid = lastPostAuthorUid;
   }
@@ -187,56 +197,67 @@ UserSecondRecomThreadRecomThreadList $UserSecondRecomThreadRecomThreadListFromJs
   if (updatedAt != null) {
     userSecondRecomThreadRecomThreadList.updatedAt = updatedAt;
   }
-  final List<
-      UserSecondRecomThreadRecomThreadListRecommendListTag>? recommendListTag = (json['recommend_list_tag'] as List<
-      dynamic>?)?.map(
-          (e) =>
-      jsonConvert.convert<
-          UserSecondRecomThreadRecomThreadListRecommendListTag>(
-          e) as UserSecondRecomThreadRecomThreadListRecommendListTag).toList();
+  final List<UserSecondRecomThreadRecomThreadListRecommendListTag>?
+  recommendListTag = (json['recommend_list_tag'] as List<dynamic>?)
+      ?.map(
+        (e) =>
+            jsonConvert.convert<
+                  UserSecondRecomThreadRecomThreadListRecommendListTag
+                >(e)
+                as UserSecondRecomThreadRecomThreadListRecommendListTag,
+      )
+      .toList();
   if (recommendListTag != null) {
     userSecondRecomThreadRecomThreadList.recommendListTag = recommendListTag;
   }
   final String? recommendSubject = jsonConvert.convert<String>(
-      json['recommend_subject']);
+    json['recommend_subject'],
+  );
   if (recommendSubject != null) {
     userSecondRecomThreadRecomThreadList.recommendSubject = recommendSubject;
   }
   final String? recommendContent = jsonConvert.convert<String>(
-      json['recommend_content']);
+    json['recommend_content'],
+  );
   if (recommendContent != null) {
     userSecondRecomThreadRecomThreadList.recommendContent = recommendContent;
   }
   final String? recommendImages = jsonConvert.convert<String>(
-      json['recommend_images']);
+    json['recommend_images'],
+  );
   if (recommendImages != null) {
     userSecondRecomThreadRecomThreadList.recommendImages = recommendImages;
   }
   final String? recommendImageShowType = jsonConvert.convert<String>(
-      json['recommend_image_show_type']);
+    json['recommend_image_show_type'],
+  );
   if (recommendImageShowType != null) {
     userSecondRecomThreadRecomThreadList.recommendImageShowType =
         recommendImageShowType;
   }
   final String? recommendVideoShowType = jsonConvert.convert<String>(
-      json['recommend_video_show_type']);
+    json['recommend_video_show_type'],
+  );
   if (recommendVideoShowType != null) {
     userSecondRecomThreadRecomThreadList.recommendVideoShowType =
         recommendVideoShowType;
   }
   final String? recommendShowType = jsonConvert.convert<String>(
-      json['recommend_show_type']);
+    json['recommend_show_type'],
+  );
   if (recommendShowType != null) {
     userSecondRecomThreadRecomThreadList.recommendShowType = recommendShowType;
   }
   final String? recommendSourceType = jsonConvert.convert<String>(
-      json['recommend_source_type']);
+    json['recommend_source_type'],
+  );
   if (recommendSourceType != null) {
     userSecondRecomThreadRecomThreadList.recommendSourceType =
         recommendSourceType;
   }
   final String? recommendUrl = jsonConvert.convert<String>(
-      json['recommend_url']);
+    json['recommend_url'],
+  );
   if (recommendUrl != null) {
     userSecondRecomThreadRecomThreadList.recommendUrl = recommendUrl;
   }
@@ -253,13 +274,13 @@ UserSecondRecomThreadRecomThreadList $UserSecondRecomThreadRecomThreadListFromJs
     userSecondRecomThreadRecomThreadList.videoAddr = videoAddr;
   }
   final String? videoAddrPic = jsonConvert.convert<String>(
-      json['video_addr_pic']);
+    json['video_addr_pic'],
+  );
   if (videoAddrPic != null) {
     userSecondRecomThreadRecomThreadList.videoAddrPic = videoAddrPic;
   }
   final List<dynamic>? threadTags = (json['thread_tags'] as List<dynamic>?)
-      ?.map(
-          (e) => e)
+      ?.map((e) => e)
       .toList();
   if (threadTags != null) {
     userSecondRecomThreadRecomThreadList.threadTags = threadTags;
@@ -278,12 +299,14 @@ UserSecondRecomThreadRecomThreadList $UserSecondRecomThreadRecomThreadListFromJs
     userSecondRecomThreadRecomThreadList.recBid = recBid;
   }
   final String? stickPosition = jsonConvert.convert<String>(
-      json['stick_position']);
+    json['stick_position'],
+  );
   if (stickPosition != null) {
     userSecondRecomThreadRecomThreadList.stickPosition = stickPosition;
   }
-  final List<String>? images = (json['images'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? images = (json['images'] as List<dynamic>?)
+      ?.map((e) => jsonConvert.convert<String>(e) as String)
+      .toList();
   if (images != null) {
     userSecondRecomThreadRecomThreadList.images = images;
   }
@@ -291,7 +314,8 @@ UserSecondRecomThreadRecomThreadList $UserSecondRecomThreadRecomThreadListFromJs
 }
 
 Map<String, dynamic> $UserSecondRecomThreadRecomThreadListToJson(
-    UserSecondRecomThreadRecomThreadList entity) {
+  UserSecondRecomThreadRecomThreadList entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['cityid'] = entity.cityid;
   data['cityname'] = entity.cityname;
@@ -318,8 +342,9 @@ Map<String, dynamic> $UserSecondRecomThreadRecomThreadListToJson(
   data['url'] = entity.url;
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
-  data['recommend_list_tag'] =
-      entity.recommendListTag.map((v) => v.toJson()).toList();
+  data['recommend_list_tag'] = entity.recommendListTag
+      .map((v) => v.toJson())
+      .toList();
   data['recommend_subject'] = entity.recommendSubject;
   data['recommend_content'] = entity.recommendContent;
   data['recommend_images'] = entity.recommendImages;
@@ -341,7 +366,8 @@ Map<String, dynamic> $UserSecondRecomThreadRecomThreadListToJson(
   return data;
 }
 
-extension UserSecondRecomThreadRecomThreadListExtension on UserSecondRecomThreadRecomThreadList {
+extension UserSecondRecomThreadRecomThreadListExtension
+    on UserSecondRecomThreadRecomThreadList {
   UserSecondRecomThreadRecomThreadList copyWith({
     String? cityid,
     String? cityname,
@@ -368,8 +394,8 @@ extension UserSecondRecomThreadRecomThreadListExtension on UserSecondRecomThread
     String? url,
     String? createdAt,
     String? updatedAt,
-    List<
-        UserSecondRecomThreadRecomThreadListRecommendListTag>? recommendListTag,
+    List<UserSecondRecomThreadRecomThreadListRecommendListTag>?
+    recommendListTag,
     String? recommendSubject,
     String? recommendContent,
     String? recommendImages,
@@ -419,10 +445,10 @@ extension UserSecondRecomThreadRecomThreadListExtension on UserSecondRecomThread
       ..recommendSubject = recommendSubject ?? this.recommendSubject
       ..recommendContent = recommendContent ?? this.recommendContent
       ..recommendImages = recommendImages ?? this.recommendImages
-      ..recommendImageShowType = recommendImageShowType ??
-          this.recommendImageShowType
-      ..recommendVideoShowType = recommendVideoShowType ??
-          this.recommendVideoShowType
+      ..recommendImageShowType =
+          recommendImageShowType ?? this.recommendImageShowType
+      ..recommendVideoShowType =
+          recommendVideoShowType ?? this.recommendVideoShowType
       ..recommendShowType = recommendShowType ?? this.recommendShowType
       ..recommendSourceType = recommendSourceType ?? this.recommendSourceType
       ..recommendUrl = recommendUrl ?? this.recommendUrl
@@ -439,9 +465,11 @@ extension UserSecondRecomThreadRecomThreadListExtension on UserSecondRecomThread
   }
 }
 
-UserSecondRecomThreadRecomThreadListAuthor $UserSecondRecomThreadRecomThreadListAuthorFromJson(
-    Map<String, dynamic> json) {
-  final UserSecondRecomThreadRecomThreadListAuthor userSecondRecomThreadRecomThreadListAuthor = UserSecondRecomThreadRecomThreadListAuthor();
+UserSecondRecomThreadRecomThreadListAuthor
+$UserSecondRecomThreadRecomThreadListAuthorFromJson(Map<String, dynamic> json) {
+  final UserSecondRecomThreadRecomThreadListAuthor
+  userSecondRecomThreadRecomThreadListAuthor =
+      UserSecondRecomThreadRecomThreadListAuthor();
   final String? uid = jsonConvert.convert<String>(json['uid']);
   if (uid != null) {
     userSecondRecomThreadRecomThreadListAuthor.uid = uid;
@@ -475,7 +503,8 @@ UserSecondRecomThreadRecomThreadListAuthor $UserSecondRecomThreadRecomThreadList
     userSecondRecomThreadRecomThreadListAuthor.highVerify = highVerify;
   }
   final String? honourVerify = jsonConvert.convert<String>(
-      json['honour_verify']);
+    json['honour_verify'],
+  );
   if (honourVerify != null) {
     userSecondRecomThreadRecomThreadListAuthor.honourVerify = honourVerify;
   }
@@ -520,18 +549,21 @@ UserSecondRecomThreadRecomThreadListAuthor $UserSecondRecomThreadRecomThreadList
     userSecondRecomThreadRecomThreadListAuthor.isTenYear = isTenYear;
   }
   final bool? shiJiaShangJia = jsonConvert.convert<bool>(
-      json['shi_jia_shang_jia']);
+    json['shi_jia_shang_jia'],
+  );
   if (shiJiaShangJia != null) {
     userSecondRecomThreadRecomThreadListAuthor.shiJiaShangJia = shiJiaShangJia;
   }
   final String? shiJiaShangJiaDesc = jsonConvert.convert<String>(
-      json['shi_jia_shang_jia_desc']);
+    json['shi_jia_shang_jia_desc'],
+  );
   if (shiJiaShangJiaDesc != null) {
     userSecondRecomThreadRecomThreadListAuthor.shiJiaShangJiaDesc =
         shiJiaShangJiaDesc;
   }
-  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)?.map(
-          (e) => e).toList();
+  final List<dynamic>? medals = (json['medals'] as List<dynamic>?)
+      ?.map((e) => e)
+      .toList();
   if (medals != null) {
     userSecondRecomThreadRecomThreadListAuthor.medals = medals;
   }
@@ -544,7 +576,8 @@ UserSecondRecomThreadRecomThreadListAuthor $UserSecondRecomThreadRecomThreadList
     userSecondRecomThreadRecomThreadListAuthor.cityname = cityname;
   }
   final String? originalAvatar = jsonConvert.convert<String>(
-      json['original_avatar']);
+    json['original_avatar'],
+  );
   if (originalAvatar != null) {
     userSecondRecomThreadRecomThreadListAuthor.originalAvatar = originalAvatar;
   }
@@ -561,17 +594,20 @@ UserSecondRecomThreadRecomThreadListAuthor $UserSecondRecomThreadRecomThreadList
     userSecondRecomThreadRecomThreadListAuthor.longitude = longitude;
   }
   final String? totalZanCount = jsonConvert.convert<String>(
-      json['total_zan_count']);
+    json['total_zan_count'],
+  );
   if (totalZanCount != null) {
     userSecondRecomThreadRecomThreadListAuthor.totalZanCount = totalZanCount;
   }
   final String? totalFansCount = jsonConvert.convert<String>(
-      json['total_fans_count']);
+    json['total_fans_count'],
+  );
   if (totalFansCount != null) {
     userSecondRecomThreadRecomThreadListAuthor.totalFansCount = totalFansCount;
   }
   final String? totalFavCount = jsonConvert.convert<String>(
-      json['total_fav_count']);
+    json['total_fav_count'],
+  );
   if (totalFavCount != null) {
     userSecondRecomThreadRecomThreadListAuthor.totalFavCount = totalFavCount;
   }
@@ -579,7 +615,8 @@ UserSecondRecomThreadRecomThreadListAuthor $UserSecondRecomThreadRecomThreadList
 }
 
 Map<String, dynamic> $UserSecondRecomThreadRecomThreadListAuthorToJson(
-    UserSecondRecomThreadRecomThreadListAuthor entity) {
+  UserSecondRecomThreadRecomThreadListAuthor entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['uid'] = entity.uid;
   data['user_name'] = entity.userName;
@@ -615,7 +652,8 @@ Map<String, dynamic> $UserSecondRecomThreadRecomThreadListAuthorToJson(
   return data;
 }
 
-extension UserSecondRecomThreadRecomThreadListAuthorExtension on UserSecondRecomThreadRecomThreadListAuthor {
+extension UserSecondRecomThreadRecomThreadListAuthorExtension
+    on UserSecondRecomThreadRecomThreadListAuthor {
   UserSecondRecomThreadRecomThreadListAuthor copyWith({
     String? uid,
     String? userName,
@@ -684,9 +722,13 @@ extension UserSecondRecomThreadRecomThreadListAuthorExtension on UserSecondRecom
   }
 }
 
-UserSecondRecomThreadRecomThreadListRecommendListTag $UserSecondRecomThreadRecomThreadListRecommendListTagFromJson(
-    Map<String, dynamic> json) {
-  final UserSecondRecomThreadRecomThreadListRecommendListTag userSecondRecomThreadRecomThreadListRecommendListTag = UserSecondRecomThreadRecomThreadListRecommendListTag();
+UserSecondRecomThreadRecomThreadListRecommendListTag
+$UserSecondRecomThreadRecomThreadListRecommendListTagFromJson(
+  Map<String, dynamic> json,
+) {
+  final UserSecondRecomThreadRecomThreadListRecommendListTag
+  userSecondRecomThreadRecomThreadListRecommendListTag =
+      UserSecondRecomThreadRecomThreadListRecommendListTag();
   final String? id = jsonConvert.convert<String>(json['id']);
   if (id != null) {
     userSecondRecomThreadRecomThreadListRecommendListTag.id = id;
@@ -702,9 +744,10 @@ UserSecondRecomThreadRecomThreadListRecommendListTag $UserSecondRecomThreadRecom
   return userSecondRecomThreadRecomThreadListRecommendListTag;
 }
 
-Map<String,
-    dynamic> $UserSecondRecomThreadRecomThreadListRecommendListTagToJson(
-    UserSecondRecomThreadRecomThreadListRecommendListTag entity) {
+Map<String, dynamic>
+$UserSecondRecomThreadRecomThreadListRecommendListTagToJson(
+  UserSecondRecomThreadRecomThreadListRecommendListTag entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['name'] = entity.name;
@@ -712,7 +755,8 @@ Map<String,
   return data;
 }
 
-extension UserSecondRecomThreadRecomThreadListRecommendListTagExtension on UserSecondRecomThreadRecomThreadListRecommendListTag {
+extension UserSecondRecomThreadRecomThreadListRecommendListTagExtension
+    on UserSecondRecomThreadRecomThreadListRecommendListTag {
   UserSecondRecomThreadRecomThreadListRecommendListTag copyWith({
     String? id,
     String? name,
@@ -725,9 +769,13 @@ extension UserSecondRecomThreadRecomThreadListRecommendListTagExtension on UserS
   }
 }
 
-UserSecondRecomThreadRecomThreadListZanInfo $UserSecondRecomThreadRecomThreadListZanInfoFromJson(
-    Map<String, dynamic> json) {
-  final UserSecondRecomThreadRecomThreadListZanInfo userSecondRecomThreadRecomThreadListZanInfo = UserSecondRecomThreadRecomThreadListZanInfo();
+UserSecondRecomThreadRecomThreadListZanInfo
+$UserSecondRecomThreadRecomThreadListZanInfoFromJson(
+  Map<String, dynamic> json,
+) {
+  final UserSecondRecomThreadRecomThreadListZanInfo
+  userSecondRecomThreadRecomThreadListZanInfo =
+      UserSecondRecomThreadRecomThreadListZanInfo();
   final String? timeStamp = jsonConvert.convert<String>(json['time_stamp']);
   if (timeStamp != null) {
     userSecondRecomThreadRecomThreadListZanInfo.timeStamp = timeStamp;
@@ -745,7 +793,8 @@ UserSecondRecomThreadRecomThreadListZanInfo $UserSecondRecomThreadRecomThreadLis
     userSecondRecomThreadRecomThreadListZanInfo.objectId = objectId;
   }
   final String? relationObjectIds = jsonConvert.convert<String>(
-      json['relation_object_ids']);
+    json['relation_object_ids'],
+  );
   if (relationObjectIds != null) {
     userSecondRecomThreadRecomThreadListZanInfo.relationObjectIds =
         relationObjectIds;
@@ -758,7 +807,8 @@ UserSecondRecomThreadRecomThreadListZanInfo $UserSecondRecomThreadRecomThreadLis
 }
 
 Map<String, dynamic> $UserSecondRecomThreadRecomThreadListZanInfoToJson(
-    UserSecondRecomThreadRecomThreadListZanInfo entity) {
+  UserSecondRecomThreadRecomThreadListZanInfo entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['time_stamp'] = entity.timeStamp;
   data['uid'] = entity.uid;
@@ -769,7 +819,8 @@ Map<String, dynamic> $UserSecondRecomThreadRecomThreadListZanInfoToJson(
   return data;
 }
 
-extension UserSecondRecomThreadRecomThreadListZanInfoExtension on UserSecondRecomThreadRecomThreadListZanInfo {
+extension UserSecondRecomThreadRecomThreadListZanInfoExtension
+    on UserSecondRecomThreadRecomThreadListZanInfo {
   UserSecondRecomThreadRecomThreadListZanInfo copyWith({
     String? timeStamp,
     String? uid,

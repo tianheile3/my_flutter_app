@@ -1,5 +1,6 @@
-import 'package:flutter_study/generated/json/base/json_convert_content.dart';
+import 'package:flutter_study/api/response/fav_board_and_forum_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
+import 'package:flutter_study/generated/json/base/json_convert_content.dart';
 
 MapConfigEntity $MapConfigEntityFromJson(Map<String, dynamic> json) {
   final MapConfigEntity mapConfigEntity = MapConfigEntity();
@@ -11,12 +12,14 @@ MapConfigEntity $MapConfigEntityFromJson(Map<String, dynamic> json) {
   if (message != null) {
     mapConfigEntity.message = message;
   }
-  final List<MapConfigGroupList>? groupList = (json['group_list'] as List<
-      dynamic>?)
-      ?.map(
-          (e) =>
-      jsonConvert.convert<MapConfigGroupList>(e) as MapConfigGroupList)
-      .toList();
+  final List<MapConfigGroupList>? groupList =
+      (json['group_list'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                jsonConvert.convert<MapConfigGroupList>(e)
+                    as MapConfigGroupList,
+          )
+          .toList();
   if (groupList != null) {
     mapConfigEntity.groupList = groupList;
   }
@@ -69,13 +72,27 @@ MapConfigGroupList $MapConfigGroupListFromJson(Map<String, dynamic> json) {
   if (hide != null) {
     mapConfigGroupList.hide = hide;
   }
-  final List<MapConfigGroupListItemList>? itemList = (json['item_list'] as List<
-      dynamic>?)?.map(
-          (e) =>
-      jsonConvert.convert<MapConfigGroupListItemList>(
-          e) as MapConfigGroupListItemList).toList();
+  final List<MapConfigGroupListItemList>? itemList =
+      (json['item_list'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                jsonConvert.convert<MapConfigGroupListItemList>(e)
+                    as MapConfigGroupListItemList,
+          )
+          .toList();
   if (itemList != null) {
     mapConfigGroupList.itemList = itemList;
+  }
+  final List<FavBoardAndForumReturnList>? forums =
+      (json['forums'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                jsonConvert.convert<FavBoardAndForumReturnList>(e)
+                    as FavBoardAndForumReturnList,
+          )
+          .toList();
+  if (forums != null) {
+    mapConfigGroupList.forums = forums;
   }
   return mapConfigGroupList;
 }
@@ -87,6 +104,7 @@ Map<String, dynamic> $MapConfigGroupListToJson(MapConfigGroupList entity) {
   data['display_type'] = entity.displayType;
   data['hide'] = entity.hide;
   data['item_list'] = entity.itemList.map((v) => v.toJson()).toList();
+  data['forums'] = entity.forums.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -97,19 +115,23 @@ extension MapConfigGroupListExtension on MapConfigGroupList {
     int? displayType,
     int? hide,
     List<MapConfigGroupListItemList>? itemList,
+    List<FavBoardAndForumReturnList>? forums,
   }) {
     return MapConfigGroupList()
       ..displayOrder = displayOrder ?? this.displayOrder
       ..name = name ?? this.name
       ..displayType = displayType ?? this.displayType
       ..hide = hide ?? this.hide
-      ..itemList = itemList ?? this.itemList;
+      ..itemList = itemList ?? this.itemList
+      ..forums = forums ?? this.forums;
   }
 }
 
 MapConfigGroupListItemList $MapConfigGroupListItemListFromJson(
-    Map<String, dynamic> json) {
-  final MapConfigGroupListItemList mapConfigGroupListItemList = MapConfigGroupListItemList();
+  Map<String, dynamic> json,
+) {
+  final MapConfigGroupListItemList mapConfigGroupListItemList =
+      MapConfigGroupListItemList();
   final String? id = jsonConvert.convert<String>(json['id']);
   if (id != null) {
     mapConfigGroupListItemList.id = id;
@@ -131,7 +153,8 @@ MapConfigGroupListItemList $MapConfigGroupListItemListFromJson(
     mapConfigGroupListItemList.operatorUid = operatorUid;
   }
   final String? operatorName = jsonConvert.convert<String>(
-      json['operator_name']);
+    json['operator_name'],
+  );
   if (operatorName != null) {
     mapConfigGroupListItemList.operatorName = operatorName;
   }
@@ -159,7 +182,8 @@ MapConfigGroupListItemList $MapConfigGroupListItemListFromJson(
 }
 
 Map<String, dynamic> $MapConfigGroupListItemListToJson(
-    MapConfigGroupListItemList entity) {
+  MapConfigGroupListItemList entity,
+) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['id'] = entity.id;
   data['name'] = entity.name;

@@ -80,7 +80,7 @@ class CommonUtils {
   }
 
   /// 格式化数字为万单位（如12000 → 1.2万，9999 → 9999）
-  static String getMillon(String param) {
+  static String getMillion(String param) {
     try {
       int num = int.parse(param);
       if (num > 10000) {
