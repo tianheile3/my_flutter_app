@@ -131,7 +131,7 @@ class ForumPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 顶部俱乐部信息
-          Padding(
+          Container(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

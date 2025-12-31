@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter_study/api/api_client.dart';
+import 'package:flutter_study/api/network_manager.dart';
 import 'package:flutter_study/common/some_publish.dart';
 import 'package:flutter_study/models/extra_entity.dart';
 import 'package:flutter_study/utils/date_tools.dart';
@@ -15,14 +17,18 @@ class ForumLogic extends BaseController {
     controlFinishLoad: true,
   );
 
+  late final ApiClient otherApi;
+
   @override
   void onInit() {
     super.onInit();
     var map = Get.arguments;
     state.fid = map['fid'] ?? "";
+    state.host = map['host'] ?? "www.19lou.com";
     if (state.fid.isEmpty) {
       return;
     }
+    otherApi = NetworkManager().withOtherBaseUrl("https://${state.host}");
     onRefresh();
   }
 
@@ -59,7 +65,7 @@ class ForumLogic extends BaseController {
   }
 
   Future<void> getData(bool isRefresh) async {
-    final res = await api.getThreadPage(fid: state.fid, page: state.page);
+    final res = await otherApi.getThreadPage(fid: state.fid, page: state.page);
     if (res == null) {
       return;
     }
@@ -103,7 +109,7 @@ class ForumLogic extends BaseController {
   // 计算SliverAppBar的动态高度
   void _calculateAppBarHeight() {
     // 基本俱乐部信息高度（AppBar标题高度 + 俱乐部信息内容高度）
-    const double baseHeight = 56.0 + 97.0; // 56.0是AppBar标题高度，97.0是俱乐部信息内容高度
+    const double baseHeight = 56.0 + 96.0; // 56.0是AppBar标题高度，97.0是俱乐部信息内容高度
     // 每条置顶帖高度
     const double stickyPostHeight = 38.0;
     // 置顶帖区域高度

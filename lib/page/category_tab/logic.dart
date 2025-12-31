@@ -225,22 +225,20 @@ class CategoryTabLogic extends BaseController {
   }
 
   void toDetail(String url) {
-    var fid = isForum(url);
-    if (fid != null && fid.isNotEmpty) {
-      Get.toNamed(MyRouteConfig.forum, arguments: {"fid": fid});
-    } else {
-      Get.toNamed(MyRouteConfig.webview, arguments: {"url": url});
-    }
-  }
-
-  String? isForum(String url) {
     RegExp forumRegExp = RegExp(
       forumRegex,
       caseSensitive: false, // 关闭大小写敏感，等价于/js的/i修饰符
       multiLine: false, // 单行匹配（URL通常为单行，无需多行模式）
     );
     RegExpMatch? matchResult = forumRegExp.firstMatch(url);
-    return matchResult?.group(3);
+    String host = matchResult?.group(1) ?? "";
+    String fid = matchResult?.group(3) ?? "";
+
+    if (host.isNotEmpty && fid.isNotEmpty) {
+      Get.toNamed(MyRouteConfig.forum, arguments: {"fid": fid, "host": host});
+    } else {
+      Get.toNamed(MyRouteConfig.webview, arguments: {"url": url});
+    }
   }
 
   @override

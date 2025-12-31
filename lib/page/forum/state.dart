@@ -6,6 +6,7 @@ import '../../common/some_publish.dart';
 
 class ForumState {
   late String fid;
+  late String host;
   String cityName = GlobalState.instance.cityName;
 
   // 置顶帖展开/收缩状态
