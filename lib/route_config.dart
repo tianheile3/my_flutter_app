@@ -1,4 +1,5 @@
 import 'package:flutter_study/main.dart';
+import 'package:flutter_study/page/forum/view.dart';
 import 'package:flutter_study/page/gather/view.dart';
 import 'package:flutter_study/page/login/view.dart';
 import 'package:flutter_study/page/main_home/view.dart';
@@ -31,6 +32,9 @@ class MyRouteConfig {
   //发帖
   static const String postThread = "/postThread";
 
+  //板块
+  static const String forum = "/forum";
+
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MyApp()),
     GetPage(name: login, page: () => LoginPage()),
@@ -39,5 +43,6 @@ class MyRouteConfig {
     GetPage(name: test, page: () => TestPage()),
     GetPage(name: gather, page: () => GatherPage()),
     GetPage(name: postThread, page: () => PostThreadPage()),
+    GetPage(name: forum, page: () => ForumPage()),
   ];
 }

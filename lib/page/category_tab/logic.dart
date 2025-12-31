@@ -20,6 +20,8 @@ class CategoryTabLogic extends BaseController {
 
   // final int cityId = 330400; //jiaxing
   final int cityId = 330100; //hangzhou
+  final String forumRegex =
+      r"\/\/([a-zA-Z0-9]+\.[a-zA-Z0-9]+\.com)\/(wap\/)?forum-([1-9][0-9]*)-([1-9][0-9]*)\.html([\?&](.*))?";
 
   var page = 1;
   Rx<LoadState> loadState = LoadState.refreshing.obs;
@@ -223,7 +225,22 @@ class CategoryTabLogic extends BaseController {
   }
 
   void toDetail(String url) {
-    Get.toNamed(MyRouteConfig.webview, arguments: {"url": url});
+    var tid = isForum(url);
+    if (tid != null && tid.isNotEmpty) {
+      Get.toNamed(MyRouteConfig.forum, arguments: {"tid": tid});
+    } else {
+      Get.toNamed(MyRouteConfig.webview, arguments: {"url": url});
+    }
+  }
+
+  String? isForum(String url) {
+    RegExp forumRegExp = RegExp(
+      forumRegex,
+      caseSensitive: false, // 关闭大小写敏感，等价于/js的/i修饰符
+      multiLine: false, // 单行匹配（URL通常为单行，无需多行模式）
+    );
+    RegExpMatch? matchResult = forumRegExp.firstMatch(url);
+    return matchResult?.group(3);
   }
 
   @override
