@@ -82,7 +82,7 @@ class NetworkManager with LoggerMixin {
           error: true,
           logPrint: (msg) {
             // 完整打印日志，避免被截断
-            logger.d("Dio Log: $msg");
+            // logger.d("Dio Log: $msg");
           },
         ),
       );
