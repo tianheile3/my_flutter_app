@@ -6,4 +6,11 @@
             <certificates src="user" />
         </trust-anchors>
     </base-config>
+    <!-- 允许Debug模式下的明文流量（仅调试环境） -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
 </network-security-config>

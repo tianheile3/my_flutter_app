@@ -9,6 +9,8 @@ import 'package:flutter_study/common/global_state.dart';
 import 'package:flutter_study/common/logger_mixin.dart';
 import 'package:flutter_study/utils/auth_utils.dart';
 
+const int timeOut = 15;
+
 class NetworkManager with LoggerMixin {
   static final NetworkManager _instance = NetworkManager._internal();
 
@@ -16,13 +18,15 @@ class NetworkManager with LoggerMixin {
 
   late Dio _dio;
   final String baseUrl = "https://www.19lou.com"; // 默认 Base URL
+  //需要抓包时，设置为true
+  final bool needCapturePackages = false;
 
   NetworkManager._internal() {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: timeOut),
+        receiveTimeout: const Duration(seconds: timeOut),
         responseType: ResponseType.json,
         headers: {
           "User-Agent": "nineteenlou/CS_Android_Client/Mi9 Pro 5G 11 9.6.2",
@@ -56,8 +60,8 @@ class NetworkManager with LoggerMixin {
     final tempDio = Dio(
       BaseOptions(
         baseUrl: newBaseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: timeOut),
+        receiveTimeout: const Duration(seconds: timeOut),
         responseType: ResponseType.json,
       ),
     );
@@ -69,7 +73,18 @@ class NetworkManager with LoggerMixin {
     // 调试模式下加日志
     if (kDebugMode) {
       tempDio.interceptors.add(
-        LogInterceptor(responseBody: true, requestBody: true, request: true),
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,
+          responseHeader: true,
+          responseBody: true,
+          error: true,
+          logPrint: (msg) {
+            // 完整打印日志，避免被截断
+            logger.d("Dio Log: $msg");
+          },
+        ),
       );
     }
 
@@ -78,7 +93,7 @@ class NetworkManager with LoggerMixin {
 
   // 禁用 HTTPS 证书校验（抓包/测试环境用）
   void setCanCapturePackages(Dio dio) {
-    if (!kDebugMode) {
+    if (!kDebugMode || !needCapturePackages) {
       return;
     }
     dio.httpClientAdapter = IOHttpClientAdapter(
