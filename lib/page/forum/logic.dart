@@ -28,6 +28,7 @@ class ForumLogic extends BaseController {
     if (state.fid.isEmpty) {
       return;
     }
+    state.statusBarHeight = Get.mediaQuery.padding.top;
     otherApi = NetworkManager().withOtherBaseUrl("https://${state.host}");
     onRefresh();
   }
@@ -108,8 +109,8 @@ class ForumLogic extends BaseController {
 
   // 计算SliverAppBar的动态高度
   void _calculateAppBarHeight() {
-    // 基本俱乐部信息高度（AppBar标题高度 + 俱乐部信息内容高度）
-    const double baseHeight = 56.0 + 96.0; // 56.0是AppBar标题高度，97.0是俱乐部信息内容高度
+    // 基本信息区域实际高度（移除了固定高度，重新计算实际内容高度）
+    const double baseHeight = 96.0;
     // 每条置顶帖高度
     const double stickyPostHeight = 38.0;
     // 置顶帖区域高度
@@ -123,7 +124,11 @@ class ForumLogic extends BaseController {
       }
       stickyAreaHeight += state.showStickPosts.length * stickyPostHeight;
     }
-    state.appBarHeight.value = baseHeight + stickyAreaHeight;
+    // 添加状态栏高度到总高度中
+    // state.appBarHeight.value =
+    //     baseHeight + stickyAreaHeight + state.statusBarHeight + 25;
+    state.appBarHeight.value =
+        baseHeight + stickyAreaHeight + 27.5 + 25;
   }
 
   void switchExpand() {

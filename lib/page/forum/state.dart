@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_study/common/global_state.dart';
 import 'package:get/get.dart';
 
@@ -5,6 +6,8 @@ import '../../api/response/thread_page_entity.dart';
 import '../../common/some_publish.dart';
 
 class ForumState {
+  late final double statusBarHeight;
+  final toolbarHeight = kToolbarHeight;
   late String fid;
   late String host;
   String cityName = GlobalState.instance.cityName;

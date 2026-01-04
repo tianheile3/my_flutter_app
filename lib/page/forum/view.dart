@@ -55,6 +55,10 @@ class ForumPage extends StatelessWidget {
                       expandedHeight: state.appBarHeight.value,
                       floating: false,
                       pinned: true,
+                      // 移除 elevation 避免阴影
+                      elevation: 0,
+                      // 设置 toolbarHeight 确保一致性
+                      toolbarHeight: state.toolbarHeight,
                       flexibleSpace: FlexibleSpaceBar(
                         background: _buildForumInfo(),
                       ),
@@ -131,13 +135,12 @@ class ForumPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 顶部俱乐部信息
-          Container(
+          Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 56.0),
-                // 为AppBar标题留出空间
+                SizedBox(height: state.statusBarHeight + 25.0), // 使用动态状态栏高度
                 // 俱乐部名称和徽章
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
