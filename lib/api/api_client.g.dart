@@ -389,7 +389,7 @@ class _ApiClient implements ApiClient {
 
   @override
   Future<RecordListEntity?> recordList({
-    int cityId = 330400,
+    required int cityId,
     int page = 1,
     int pageSize = 10,
     int pass = 0,
@@ -505,6 +505,43 @@ class _ApiClient implements ApiClient {
             ))));
     final value =
         _result.data == null ? null : ThreadPageEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<MessageEntity?> getList({
+    int limit = 30,
+    required bool nextNew,
+    String? nextDate,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'limit': limit,
+      r'nextNew': nextNew,
+      r'nextDate': nextDate,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<MessageEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/msg/getList',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : MessageEntity.fromJson(_result.data!);
     return value;
   }
 

@@ -6,6 +6,7 @@ import 'package:flutter_study/api/response/file_upload_entity.dart';
 import 'package:flutter_study/api/response/gather_thread_page_info_entity.dart';
 import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
+import 'package:flutter_study/api/response/message_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
 import 'package:flutter_study/api/response/publish_thread_entity.dart';
@@ -112,6 +113,13 @@ abstract class ApiClient {
     @Query("listType") String listType = "all",
     @Query("onlyStick") bool onlyStick = true,
     @Query("withoutStick") bool withoutStick = true,
+  });
+
+  @GET("/api/msg/getList")
+  Future<MessageEntity?> getList({
+    @Query("limit") int limit,
+    @Query("nextNew") required bool nextNew,
+    @Query("nextDate") String? nextDate,
   });
 
   //-----------------------------------以下post----------------------------------

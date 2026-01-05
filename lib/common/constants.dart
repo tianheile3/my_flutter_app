@@ -20,4 +20,7 @@ abstract class Constants {
   static const String ATT3_HOST = "att3.citysbs.com/";
 
   static const String GUID = "19LouAPP-30f8-0a12-ffff-ffffca01fdf4";
+
+  static const String REGHttpOrS = "^https?://.*";
+  static const String BASE_AVATAR = "https://avatar2.citysbs.com/m";
 }

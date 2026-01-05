@@ -63,4 +63,52 @@ class DateTools {
       return startTime;
     }
   }
+
+  static String getChatTime(String time) {
+    try {
+      // 解析输入的时间字符串
+      DateTime date = DateTime.parse(time);
+
+      // 获取当前时间
+      DateTime now = DateTime.now().toUtc().add(Duration(hours: 8)); // GMT+8
+
+      int currentYear = now.year;
+      int currentMonth = now.month;
+      int currentDay = now.day;
+
+      // 提取输入时间的年月日
+      int inputYear = date.year;
+      int inputMonth = date.month;
+      int inputDay = date.day;
+
+      // 检查时间是否合法
+      if (_isTimeLegal(time)) {
+        if (inputYear == currentYear) {
+          if (inputMonth == currentMonth && inputDay == currentDay) {
+            // 今天：显示 HH:mm
+            return DateFormat('HH:mm').format(date);
+          } else {
+            // 今年非今天：显示 MM-dd
+            return DateFormat('MM-dd').format(date);
+          }
+        } else {
+          // 非今年：显示 yyyy-MM-dd
+          return DateFormat('yyyy-MM-dd').format(date);
+        }
+      }
+      return time;
+    } catch (e) {
+      // 如果解析失败，返回原时间字符串
+      return time;
+    }
+  }
+
+  static bool _isTimeLegal(String time) {
+    try {
+      DateTime.parse(time);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

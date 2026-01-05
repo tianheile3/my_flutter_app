@@ -931,6 +931,12 @@ ThreadPageThreadList $ThreadPageThreadListFromJson(Map<String, dynamic> json) {
   if (advStatus != null) {
     threadPageThreadList.advStatus = advStatus;
   }
+  final List<String>? images = (json['images'] as List<dynamic>?)
+      ?.map((e) => jsonConvert.convert<String>(e) as String)
+      .toList();
+  if (images != null) {
+    threadPageThreadList.images = images;
+  }
   return threadPageThreadList;
 }
 
@@ -979,6 +985,7 @@ Map<String, dynamic> $ThreadPageThreadListToJson(ThreadPageThreadList entity) {
   data['search_subject'] = entity.searchSubject;
   data['search_content'] = entity.searchContent;
   data['adv_status'] = entity.advStatus;
+  data['images'] = entity.images;
   return data;
 }
 
@@ -1027,6 +1034,7 @@ extension ThreadPageThreadListExtension on ThreadPageThreadList {
     String? searchSubject,
     String? searchContent,
     String? advStatus,
+    List<String>? images,
   }) {
     return ThreadPageThreadList()
       ..author = author ?? this.author
@@ -1071,7 +1079,8 @@ extension ThreadPageThreadListExtension on ThreadPageThreadList {
       ..zanInfo = zanInfo ?? this.zanInfo
       ..searchSubject = searchSubject ?? this.searchSubject
       ..searchContent = searchContent ?? this.searchContent
-      ..advStatus = advStatus ?? this.advStatus;
+      ..advStatus = advStatus ?? this.advStatus
+      ..images = images ?? this.images;
   }
 }
 
