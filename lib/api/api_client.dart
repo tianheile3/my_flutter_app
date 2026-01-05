@@ -117,7 +117,7 @@ abstract class ApiClient {
 
   @GET("/api/msg/getList")
   Future<MessageEntity?> getList({
-    @Query("limit") int limit,
+    @Query("limit") int limit = 30,
     @Query("nextNew") required bool nextNew,
     @Query("nextDate") String? nextDate,
   });

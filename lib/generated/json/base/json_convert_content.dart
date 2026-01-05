@@ -6,8 +6,8 @@
 import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter_study/api/response/common/author_entity.dart';
 import 'package:flutter_study/api/response/common/business_tag_entity.dart';
-import 'package:flutter_study/api/response/common/medal_entity.dart';
 import 'package:flutter_study/api/response/common/topic_tag_entity.dart';
+import 'package:flutter_study/api/response/common/user_entity.dart';
 import 'package:flutter_study/api/response/common/zan_info_entity.dart';
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
@@ -18,6 +18,7 @@ import 'package:flutter_study/api/response/is_rated_batch_entity.dart';
 import 'package:flutter_study/api/response/map_config_entity.dart';
 import 'package:flutter_study/api/response/message_entity.dart';
 import 'package:flutter_study/api/response/mobile_bg_url_entity.dart';
+import 'package:flutter_study/api/response/msg_group_entity.dart';
 import 'package:flutter_study/api/response/my_gather_entity.dart';
 import 'package:flutter_study/api/response/publish_thread_entity.dart';
 import 'package:flutter_study/api/response/record_list_entity.dart';
@@ -34,9 +35,7 @@ JsonConvert jsonConvert = JsonConvert();
 
 typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);
 typedef EnumConvertFunction<T> = T Function(String value);
-typedef ConvertExceptionHandler =
-    void Function(Object error, StackTrace stackTrace);
-
+typedef ConvertExceptionHandler = void Function(Object error, StackTrace stackTrace);
 extension MapSafeExt<K, V> on Map<K, V> {
   T? getOrNull<T>(K? key) {
     if (!containsKey(key) || key == null) {
@@ -88,10 +87,8 @@ class JsonConvert {
     }
   }
 
-  List<T?>? convertList<T>(
-    List<dynamic>? value, {
-    EnumConvertFunction? enumConvert,
-  }) {
+  List<T?>? convertList<T>(List<dynamic>? value,
+      {EnumConvertFunction? enumConvert}) {
     if (value == null) {
       return null;
     }
@@ -108,17 +105,14 @@ class JsonConvert {
     }
   }
 
-  List<T>? convertListNotNull<T>(
-    dynamic value, {
-    EnumConvertFunction? enumConvert,
-  }) {
+  List<T>? convertListNotNull<T>(dynamic value,
+      {EnumConvertFunction? enumConvert}) {
     if (value == null) {
       return null;
     }
     try {
-      return (value as List<dynamic>)
-          .map((dynamic e) => _asT<T>(e, enumConvert: enumConvert)!)
-          .toList();
+      return (value as List<dynamic>).map((dynamic e) =>
+      _asT<T>(e, enumConvert: enumConvert)!).toList();
     } catch (e, stackTrace) {
       debugPrint('asT<$T> $e $stackTrace');
       if (onError != null) {
@@ -128,10 +122,8 @@ class JsonConvert {
     }
   }
 
-  T? _asT<T extends Object?>(
-    dynamic value, {
-    EnumConvertFunction? enumConvert,
-  }) {
+  T? _asT<T extends Object?>(dynamic value,
+      {EnumConvertFunction? enumConvert}) {
     final String type = T.toString();
     final String valueS = value.toString();
     if (enumConvert != null) {
@@ -169,8 +161,7 @@ class JsonConvert {
         }
       } else {
         throw UnimplementedError(
-          '$type unimplemented,you can try running the app again',
-        );
+            '$type unimplemented,you can try running the app again');
       }
     }
   }
@@ -178,811 +169,429 @@ class JsonConvert {
   //list is returned by type
   static M? _getListChildType<M>(List<Map<String, dynamic>> data) {
     if (<AuthorEntity>[] is M) {
-      return data
-              .map<AuthorEntity>(
-                (Map<String, dynamic> e) => AuthorEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<AuthorEntity>((Map<String, dynamic> e) =>
+          AuthorEntity.fromJson(e)).toList() as M;
     }
     if (<AuthorGroup>[] is M) {
-      return data
-              .map<AuthorGroup>(
-                (Map<String, dynamic> e) => AuthorGroup.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<AuthorGroup>((Map<String, dynamic> e) =>
+          AuthorGroup.fromJson(e)).toList() as M;
     }
     if (<BusinessTagEntity>[] is M) {
-      return data
-              .map<BusinessTagEntity>(
-                (Map<String, dynamic> e) => BusinessTagEntity.fromJson(e),
-              )
-              .toList()
-          as M;
-    }
-    if (<MedalEntity>[] is M) {
-      return data
-              .map<MedalEntity>(
-                (Map<String, dynamic> e) => MedalEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<BusinessTagEntity>((Map<String, dynamic> e) =>
+          BusinessTagEntity.fromJson(e)).toList() as M;
     }
     if (<TopicTagEntity>[] is M) {
-      return data
-              .map<TopicTagEntity>(
-                (Map<String, dynamic> e) => TopicTagEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<TopicTagEntity>((Map<String, dynamic> e) =>
+          TopicTagEntity.fromJson(e)).toList() as M;
+    }
+    if (<UserEntity>[] is M) {
+      return data.map<UserEntity>((Map<String, dynamic> e) =>
+          UserEntity.fromJson(e)).toList() as M;
+    }
+    if (<UserMedals>[] is M) {
+      return data.map<UserMedals>((Map<String, dynamic> e) =>
+          UserMedals.fromJson(e)).toList() as M;
     }
     if (<ZanInfoEntity>[] is M) {
-      return data
-              .map<ZanInfoEntity>(
-                (Map<String, dynamic> e) => ZanInfoEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ZanInfoEntity>((Map<String, dynamic> e) =>
+          ZanInfoEntity.fromJson(e)).toList() as M;
     }
     if (<CurrentUserInfoEntity>[] is M) {
-      return data
-              .map<CurrentUserInfoEntity>(
-                (Map<String, dynamic> e) => CurrentUserInfoEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<CurrentUserInfoEntity>((Map<String, dynamic> e) =>
+          CurrentUserInfoEntity.fromJson(e)).toList() as M;
     }
     if (<CurrentUserInfoUser>[] is M) {
-      return data
-              .map<CurrentUserInfoUser>(
-                (Map<String, dynamic> e) => CurrentUserInfoUser.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<CurrentUserInfoUser>((Map<String, dynamic> e) =>
+          CurrentUserInfoUser.fromJson(e)).toList() as M;
     }
     if (<CurrentUserInfoUserGroup>[] is M) {
-      return data
-              .map<CurrentUserInfoUserGroup>(
-                (Map<String, dynamic> e) =>
-                    CurrentUserInfoUserGroup.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<CurrentUserInfoUserGroup>((Map<String, dynamic> e) =>
+          CurrentUserInfoUserGroup.fromJson(e)).toList() as M;
     }
     if (<CurrentUserInfoUserMedals>[] is M) {
-      return data
-              .map<CurrentUserInfoUserMedals>(
-                (Map<String, dynamic> e) =>
-                    CurrentUserInfoUserMedals.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<CurrentUserInfoUserMedals>((Map<String, dynamic> e) =>
+          CurrentUserInfoUserMedals.fromJson(e)).toList() as M;
     }
     if (<EncryptKeyEntity>[] is M) {
-      return data
-              .map<EncryptKeyEntity>(
-                (Map<String, dynamic> e) => EncryptKeyEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<EncryptKeyEntity>((Map<String, dynamic> e) =>
+          EncryptKeyEntity.fromJson(e)).toList() as M;
     }
     if (<FavBoardAndForumEntity>[] is M) {
-      return data
-              .map<FavBoardAndForumEntity>(
-                (Map<String, dynamic> e) => FavBoardAndForumEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<FavBoardAndForumEntity>((Map<String, dynamic> e) =>
+          FavBoardAndForumEntity.fromJson(e)).toList() as M;
     }
     if (<FavBoardAndForumReturnList>[] is M) {
-      return data
-              .map<FavBoardAndForumReturnList>(
-                (Map<String, dynamic> e) =>
-                    FavBoardAndForumReturnList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<FavBoardAndForumReturnList>((Map<String, dynamic> e) =>
+          FavBoardAndForumReturnList.fromJson(e)).toList() as M;
     }
     if (<FileUploadEntity>[] is M) {
-      return data
-              .map<FileUploadEntity>(
-                (Map<String, dynamic> e) => FileUploadEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<FileUploadEntity>((Map<String, dynamic> e) =>
+          FileUploadEntity.fromJson(e)).toList() as M;
     }
     if (<FileUploadFile>[] is M) {
-      return data
-              .map<FileUploadFile>(
-                (Map<String, dynamic> e) => FileUploadFile.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<FileUploadFile>((Map<String, dynamic> e) =>
+          FileUploadFile.fromJson(e)).toList() as M;
     }
     if (<FileUploadChunk>[] is M) {
-      return data
-              .map<FileUploadChunk>(
-                (Map<String, dynamic> e) => FileUploadChunk.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<FileUploadChunk>((Map<String, dynamic> e) =>
+          FileUploadChunk.fromJson(e)).toList() as M;
     }
     if (<GatherThreadPageInfoEntity>[] is M) {
-      return data
-              .map<GatherThreadPageInfoEntity>(
-                (Map<String, dynamic> e) =>
-                    GatherThreadPageInfoEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<GatherThreadPageInfoEntity>((Map<String, dynamic> e) =>
+          GatherThreadPageInfoEntity.fromJson(e)).toList() as M;
     }
     if (<GatherThreadPageInfoThreadList>[] is M) {
       return data
-              .map<GatherThreadPageInfoThreadList>(
-                (Map<String, dynamic> e) =>
-                    GatherThreadPageInfoThreadList.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<GatherThreadPageInfoThreadList>((
+          Map<String, dynamic> e) => GatherThreadPageInfoThreadList.fromJson(e))
+          .toList() as M;
     }
     if (<GatherThreadPageInfoThreadListAuthor>[] is M) {
-      return data
-              .map<GatherThreadPageInfoThreadListAuthor>(
-                (Map<String, dynamic> e) =>
-                    GatherThreadPageInfoThreadListAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<GatherThreadPageInfoThreadListAuthor>((
+          Map<String, dynamic> e) =>
+          GatherThreadPageInfoThreadListAuthor.fromJson(e)).toList() as M;
     }
     if (<GatherThreadPageInfoGatherInfo>[] is M) {
       return data
-              .map<GatherThreadPageInfoGatherInfo>(
-                (Map<String, dynamic> e) =>
-                    GatherThreadPageInfoGatherInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<GatherThreadPageInfoGatherInfo>((
+          Map<String, dynamic> e) => GatherThreadPageInfoGatherInfo.fromJson(e))
+          .toList() as M;
     }
     if (<GatherThreadPageInfoGatherUser>[] is M) {
       return data
-              .map<GatherThreadPageInfoGatherUser>(
-                (Map<String, dynamic> e) =>
-                    GatherThreadPageInfoGatherUser.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<GatherThreadPageInfoGatherUser>((
+          Map<String, dynamic> e) => GatherThreadPageInfoGatherUser.fromJson(e))
+          .toList() as M;
     }
     if (<IsRatedBatchEntity>[] is M) {
-      return data
-              .map<IsRatedBatchEntity>(
-                (Map<String, dynamic> e) => IsRatedBatchEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<IsRatedBatchEntity>((Map<String, dynamic> e) =>
+          IsRatedBatchEntity.fromJson(e)).toList() as M;
     }
     if (<MapConfigEntity>[] is M) {
-      return data
-              .map<MapConfigEntity>(
-                (Map<String, dynamic> e) => MapConfigEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MapConfigEntity>((Map<String, dynamic> e) =>
+          MapConfigEntity.fromJson(e)).toList() as M;
     }
     if (<MapConfigGroupList>[] is M) {
-      return data
-              .map<MapConfigGroupList>(
-                (Map<String, dynamic> e) => MapConfigGroupList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MapConfigGroupList>((Map<String, dynamic> e) =>
+          MapConfigGroupList.fromJson(e)).toList() as M;
     }
     if (<MapConfigGroupListItemList>[] is M) {
-      return data
-              .map<MapConfigGroupListItemList>(
-                (Map<String, dynamic> e) =>
-                    MapConfigGroupListItemList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MapConfigGroupListItemList>((Map<String, dynamic> e) =>
+          MapConfigGroupListItemList.fromJson(e)).toList() as M;
     }
     if (<MessageEntity>[] is M) {
-      return data
-              .map<MessageEntity>(
-                (Map<String, dynamic> e) => MessageEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MessageEntity>((Map<String, dynamic> e) =>
+          MessageEntity.fromJson(e)).toList() as M;
     }
     if (<MessageMsgList>[] is M) {
-      return data
-              .map<MessageMsgList>(
-                (Map<String, dynamic> e) => MessageMsgList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MessageMsgList>((Map<String, dynamic> e) =>
+          MessageMsgList.fromJson(e)).toList() as M;
     }
     if (<MessageMsgListDialogInfo>[] is M) {
-      return data
-              .map<MessageMsgListDialogInfo>(
-                (Map<String, dynamic> e) =>
-                    MessageMsgListDialogInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MessageMsgListDialogInfo>((Map<String, dynamic> e) =>
+          MessageMsgListDialogInfo.fromJson(e)).toList() as M;
     }
     if (<MessageMsgListLastContent>[] is M) {
-      return data
-              .map<MessageMsgListLastContent>(
-                (Map<String, dynamic> e) =>
-                    MessageMsgListLastContent.fromJson(e),
-              )
-              .toList()
-          as M;
-    }
-    if (<MessageMsgListLastContentFromUser>[] is M) {
-      return data
-              .map<MessageMsgListLastContentFromUser>(
-                (Map<String, dynamic> e) =>
-                    MessageMsgListLastContentFromUser.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MessageMsgListLastContent>((Map<String, dynamic> e) =>
+          MessageMsgListLastContent.fromJson(e)).toList() as M;
     }
     if (<MessageMsgListLastContentContentObj>[] is M) {
-      return data
-              .map<MessageMsgListLastContentContentObj>(
-                (Map<String, dynamic> e) =>
-                    MessageMsgListLastContentContentObj.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MessageMsgListLastContentContentObj>((
+          Map<String, dynamic> e) =>
+          MessageMsgListLastContentContentObj.fromJson(e)).toList() as M;
     }
     if (<MessageMsgListLastContentContentObjExt>[] is M) {
-      return data
-              .map<MessageMsgListLastContentContentObjExt>(
-                (Map<String, dynamic> e) =>
-                    MessageMsgListLastContentContentObjExt.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MessageMsgListLastContentContentObjExt>((
+          Map<String, dynamic> e) =>
+          MessageMsgListLastContentContentObjExt.fromJson(e)).toList() as M;
     }
     if (<MobileBgUrlEntity>[] is M) {
-      return data
-              .map<MobileBgUrlEntity>(
-                (Map<String, dynamic> e) => MobileBgUrlEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MobileBgUrlEntity>((Map<String, dynamic> e) =>
+          MobileBgUrlEntity.fromJson(e)).toList() as M;
+    }
+    if (<MsgGroupEntity>[] is M) {
+      return data.map<MsgGroupEntity>((Map<String, dynamic> e) =>
+          MsgGroupEntity.fromJson(e)).toList() as M;
     }
     if (<MyGatherEntity>[] is M) {
-      return data
-              .map<MyGatherEntity>(
-                (Map<String, dynamic> e) => MyGatherEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MyGatherEntity>((Map<String, dynamic> e) =>
+          MyGatherEntity.fromJson(e)).toList() as M;
     }
     if (<MyGatherGatherList>[] is M) {
-      return data
-              .map<MyGatherGatherList>(
-                (Map<String, dynamic> e) => MyGatherGatherList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<MyGatherGatherList>((Map<String, dynamic> e) =>
+          MyGatherGatherList.fromJson(e)).toList() as M;
     }
     if (<PublishThreadEntity>[] is M) {
-      return data
-              .map<PublishThreadEntity>(
-                (Map<String, dynamic> e) => PublishThreadEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadEntity>((Map<String, dynamic> e) =>
+          PublishThreadEntity.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThread>[] is M) {
-      return data
-              .map<PublishThreadThread>(
-                (Map<String, dynamic> e) => PublishThreadThread.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThread>((Map<String, dynamic> e) =>
+          PublishThreadThread.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadAuthor>[] is M) {
-      return data
-              .map<PublishThreadThreadAuthor>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadAuthor>((Map<String, dynamic> e) =>
+          PublishThreadThreadAuthor.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadAuthorGroup>[] is M) {
       return data
-              .map<PublishThreadThreadAuthorGroup>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadAuthorGroup.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<PublishThreadThreadAuthorGroup>((
+          Map<String, dynamic> e) => PublishThreadThreadAuthorGroup.fromJson(e))
+          .toList() as M;
     }
     if (<PublishThreadThreadAuthorMedals>[] is M) {
-      return data
-              .map<PublishThreadThreadAuthorMedals>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadAuthorMedals.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadAuthorMedals>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadAuthorMedals.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadTopicTag>[] is M) {
-      return data
-              .map<PublishThreadThreadTopicTag>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadTopicTag.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadTopicTag>((Map<String, dynamic> e) =>
+          PublishThreadThreadTopicTag.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadFirstPost>[] is M) {
-      return data
-              .map<PublishThreadThreadFirstPost>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadFirstPost.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadFirstPost>((Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPost.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadFirstPostAuthor>[] is M) {
-      return data
-              .map<PublishThreadThreadFirstPostAuthor>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadFirstPostAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadFirstPostAuthor>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAuthor.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadFirstPostAuthorGroup>[] is M) {
-      return data
-              .map<PublishThreadThreadFirstPostAuthorGroup>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadFirstPostAuthorGroup.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadFirstPostAuthorGroup>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAuthorGroup.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadFirstPostAuthorMedals>[] is M) {
-      return data
-              .map<PublishThreadThreadFirstPostAuthorMedals>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadFirstPostAuthorMedals.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadFirstPostAuthorMedals>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAuthorMedals.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadFirstPostAttachment>[] is M) {
-      return data
-              .map<PublishThreadThreadFirstPostAttachment>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadFirstPostAttachment.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadFirstPostAttachment>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadFirstPostAttachment.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadLastPost>[] is M) {
-      return data
-              .map<PublishThreadThreadLastPost>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadLastPost.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadLastPost>((Map<String, dynamic> e) =>
+          PublishThreadThreadLastPost.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadLastPostAuthor>[] is M) {
-      return data
-              .map<PublishThreadThreadLastPostAuthor>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadLastPostAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadLastPostAuthor>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAuthor.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadLastPostAuthorGroup>[] is M) {
-      return data
-              .map<PublishThreadThreadLastPostAuthorGroup>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadLastPostAuthorGroup.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadLastPostAuthorGroup>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAuthorGroup.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadLastPostAuthorMedals>[] is M) {
-      return data
-              .map<PublishThreadThreadLastPostAuthorMedals>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadLastPostAuthorMedals.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadLastPostAuthorMedals>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAuthorMedals.fromJson(e)).toList() as M;
     }
     if (<PublishThreadThreadLastPostAttachment>[] is M) {
-      return data
-              .map<PublishThreadThreadLastPostAttachment>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadThreadLastPostAttachment.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadThreadLastPostAttachment>((
+          Map<String, dynamic> e) =>
+          PublishThreadThreadLastPostAttachment.fromJson(e)).toList() as M;
     }
     if (<PublishThreadPost>[] is M) {
-      return data
-              .map<PublishThreadPost>(
-                (Map<String, dynamic> e) => PublishThreadPost.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadPost>((Map<String, dynamic> e) =>
+          PublishThreadPost.fromJson(e)).toList() as M;
     }
     if (<PublishThreadPostAuthor>[] is M) {
-      return data
-              .map<PublishThreadPostAuthor>(
-                (Map<String, dynamic> e) => PublishThreadPostAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadPostAuthor>((Map<String, dynamic> e) =>
+          PublishThreadPostAuthor.fromJson(e)).toList() as M;
     }
     if (<PublishThreadPostAuthorGroup>[] is M) {
-      return data
-              .map<PublishThreadPostAuthorGroup>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadPostAuthorGroup.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadPostAuthorGroup>((Map<String, dynamic> e) =>
+          PublishThreadPostAuthorGroup.fromJson(e)).toList() as M;
     }
     if (<PublishThreadPostAuthorMedals>[] is M) {
-      return data
-              .map<PublishThreadPostAuthorMedals>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadPostAuthorMedals.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadPostAuthorMedals>((Map<String, dynamic> e) =>
+          PublishThreadPostAuthorMedals.fromJson(e)).toList() as M;
     }
     if (<PublishThreadPostAttachment>[] is M) {
-      return data
-              .map<PublishThreadPostAttachment>(
-                (Map<String, dynamic> e) =>
-                    PublishThreadPostAttachment.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadPostAttachment>((Map<String, dynamic> e) =>
+          PublishThreadPostAttachment.fromJson(e)).toList() as M;
     }
     if (<PublishThreadCoinScore>[] is M) {
-      return data
-              .map<PublishThreadCoinScore>(
-                (Map<String, dynamic> e) => PublishThreadCoinScore.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<PublishThreadCoinScore>((Map<String, dynamic> e) =>
+          PublishThreadCoinScore.fromJson(e)).toList() as M;
     }
     if (<RecordListEntity>[] is M) {
-      return data
-              .map<RecordListEntity>(
-                (Map<String, dynamic> e) => RecordListEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<RecordListEntity>((Map<String, dynamic> e) =>
+          RecordListEntity.fromJson(e)).toList() as M;
     }
     if (<RecordListData>[] is M) {
-      return data
-              .map<RecordListData>(
-                (Map<String, dynamic> e) => RecordListData.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<RecordListData>((Map<String, dynamic> e) =>
+          RecordListData.fromJson(e)).toList() as M;
     }
     if (<RecordListDataItems>[] is M) {
-      return data
-              .map<RecordListDataItems>(
-                (Map<String, dynamic> e) => RecordListDataItems.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<RecordListDataItems>((Map<String, dynamic> e) =>
+          RecordListDataItems.fromJson(e)).toList() as M;
     }
     if (<RecordListDataItemsJobRecord>[] is M) {
-      return data
-              .map<RecordListDataItemsJobRecord>(
-                (Map<String, dynamic> e) =>
-                    RecordListDataItemsJobRecord.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<RecordListDataItemsJobRecord>((Map<String, dynamic> e) =>
+          RecordListDataItemsJobRecord.fromJson(e)).toList() as M;
     }
     if (<SecondConfigEntity>[] is M) {
-      return data
-              .map<SecondConfigEntity>(
-                (Map<String, dynamic> e) => SecondConfigEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigEntity>((Map<String, dynamic> e) =>
+          SecondConfigEntity.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfo>[] is M) {
-      return data
-              .map<SecondConfigConfigInfo>(
-                (Map<String, dynamic> e) => SecondConfigConfigInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfo>((Map<String, dynamic> e) =>
+          SecondConfigConfigInfo.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoAppPortalInfo>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoAppPortalInfo>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoAppPortalInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoAppPortalInfo>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoAppPortalInfo.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoMiniAppPortalInfo>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoMiniAppPortalInfo>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoMiniAppPortalInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoMiniAppPortalInfo>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoMiniAppPortalInfo.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoFilterpfInfo>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoFilterpfInfo>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoFilterpfInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoFilterpfInfo>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoFilterpfInfo.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoPicPositionInfo>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoPicPositionInfo>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoPicPositionInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoPicPositionInfo>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoPicPositionInfo.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoReMerchantInfo>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoReMerchantInfo>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoReMerchantInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoReMerchantInfo>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoReMerchantInfo.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoPicTurnList>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoPicTurnList>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoPicTurnList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoPicTurnList>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoPicTurnList.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoPicTurnListAuthor>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoPicTurnListAuthor>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoPicTurnListAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoPicTurnListAuthor>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoPicTurnListAuthor.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoPicTurnListThread>[] is M) {
-      return data
-              .map<SecondConfigConfigInfoPicTurnListThread>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoPicTurnListThread.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SecondConfigConfigInfoPicTurnListThread>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoPicTurnListThread.fromJson(e)).toList() as M;
     }
     if (<SecondConfigConfigInfoPicTurnListThreadAuthor>[] is M) {
       return data
-              .map<SecondConfigConfigInfoPicTurnListThreadAuthor>(
-                (Map<String, dynamic> e) =>
-                    SecondConfigConfigInfoPicTurnListThreadAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<SecondConfigConfigInfoPicTurnListThreadAuthor>((
+          Map<String, dynamic> e) =>
+          SecondConfigConfigInfoPicTurnListThreadAuthor.fromJson(e))
+          .toList() as M;
     }
     if (<SystemTimeEntity>[] is M) {
-      return data
-              .map<SystemTimeEntity>(
-                (Map<String, dynamic> e) => SystemTimeEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<SystemTimeEntity>((Map<String, dynamic> e) =>
+          SystemTimeEntity.fromJson(e)).toList() as M;
     }
     if (<ThreadPageEntity>[] is M) {
-      return data
-              .map<ThreadPageEntity>(
-                (Map<String, dynamic> e) => ThreadPageEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ThreadPageEntity>((Map<String, dynamic> e) =>
+          ThreadPageEntity.fromJson(e)).toList() as M;
     }
     if (<ThreadPageForumInfo>[] is M) {
-      return data
-              .map<ThreadPageForumInfo>(
-                (Map<String, dynamic> e) => ThreadPageForumInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ThreadPageForumInfo>((Map<String, dynamic> e) =>
+          ThreadPageForumInfo.fromJson(e)).toList() as M;
     }
     if (<ThreadPageForumInfoRecursionForumList>[] is M) {
-      return data
-              .map<ThreadPageForumInfoRecursionForumList>(
-                (Map<String, dynamic> e) =>
-                    ThreadPageForumInfoRecursionForumList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ThreadPageForumInfoRecursionForumList>((
+          Map<String, dynamic> e) =>
+          ThreadPageForumInfoRecursionForumList.fromJson(e)).toList() as M;
     }
     if (<ThreadPageForumInfoCircleCategory>[] is M) {
-      return data
-              .map<ThreadPageForumInfoCircleCategory>(
-                (Map<String, dynamic> e) =>
-                    ThreadPageForumInfoCircleCategory.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ThreadPageForumInfoCircleCategory>((
+          Map<String, dynamic> e) =>
+          ThreadPageForumInfoCircleCategory.fromJson(e)).toList() as M;
     }
     if (<ThreadPageThreadList>[] is M) {
-      return data
-              .map<ThreadPageThreadList>(
-                (Map<String, dynamic> e) => ThreadPageThreadList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ThreadPageThreadList>((Map<String, dynamic> e) =>
+          ThreadPageThreadList.fromJson(e)).toList() as M;
     }
     if (<ThreadPageThreadListFirstPost>[] is M) {
-      return data
-              .map<ThreadPageThreadListFirstPost>(
-                (Map<String, dynamic> e) =>
-                    ThreadPageThreadListFirstPost.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ThreadPageThreadListFirstPost>((Map<String, dynamic> e) =>
+          ThreadPageThreadListFirstPost.fromJson(e)).toList() as M;
     }
     if (<TokenEntity>[] is M) {
-      return data
-              .map<TokenEntity>(
-                (Map<String, dynamic> e) => TokenEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<TokenEntity>((Map<String, dynamic> e) =>
+          TokenEntity.fromJson(e)).toList() as M;
     }
     if (<UserCommentListEntity>[] is M) {
-      return data
-              .map<UserCommentListEntity>(
-                (Map<String, dynamic> e) => UserCommentListEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserCommentListEntity>((Map<String, dynamic> e) =>
+          UserCommentListEntity.fromJson(e)).toList() as M;
     }
     if (<UserCommentListComments>[] is M) {
-      return data
-              .map<UserCommentListComments>(
-                (Map<String, dynamic> e) => UserCommentListComments.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserCommentListComments>((Map<String, dynamic> e) =>
+          UserCommentListComments.fromJson(e)).toList() as M;
     }
     if (<UserCommentListCommentsBoardInfo>[] is M) {
-      return data
-              .map<UserCommentListCommentsBoardInfo>(
-                (Map<String, dynamic> e) =>
-                    UserCommentListCommentsBoardInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserCommentListCommentsBoardInfo>((
+          Map<String, dynamic> e) =>
+          UserCommentListCommentsBoardInfo.fromJson(e)).toList() as M;
     }
     if (<UserCommentListCommentsBoardInfoPicUrlsList>[] is M) {
       return data
-              .map<UserCommentListCommentsBoardInfoPicUrlsList>(
-                (Map<String, dynamic> e) =>
-                    UserCommentListCommentsBoardInfoPicUrlsList.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<UserCommentListCommentsBoardInfoPicUrlsList>((
+          Map<String, dynamic> e) =>
+          UserCommentListCommentsBoardInfoPicUrlsList.fromJson(e))
+          .toList() as M;
     }
     if (<UserSecondRecomThreadEntity>[] is M) {
-      return data
-              .map<UserSecondRecomThreadEntity>(
-                (Map<String, dynamic> e) =>
-                    UserSecondRecomThreadEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserSecondRecomThreadEntity>((Map<String, dynamic> e) =>
+          UserSecondRecomThreadEntity.fromJson(e)).toList() as M;
     }
     if (<UserSecondRecomThreadRecomThreadList>[] is M) {
-      return data
-              .map<UserSecondRecomThreadRecomThreadList>(
-                (Map<String, dynamic> e) =>
-                    UserSecondRecomThreadRecomThreadList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserSecondRecomThreadRecomThreadList>((
+          Map<String, dynamic> e) =>
+          UserSecondRecomThreadRecomThreadList.fromJson(e)).toList() as M;
     }
     if (<UserSecondRecomThreadRecomThreadListAuthor>[] is M) {
-      return data
-              .map<UserSecondRecomThreadRecomThreadListAuthor>(
-                (Map<String, dynamic> e) =>
-                    UserSecondRecomThreadRecomThreadListAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserSecondRecomThreadRecomThreadListAuthor>((
+          Map<String, dynamic> e) =>
+          UserSecondRecomThreadRecomThreadListAuthor.fromJson(e)).toList() as M;
     }
     if (<UserSecondRecomThreadRecomThreadListRecommendListTag>[] is M) {
       return data
-              .map<UserSecondRecomThreadRecomThreadListRecommendListTag>(
-                (Map<String, dynamic> e) =>
-                    UserSecondRecomThreadRecomThreadListRecommendListTag.fromJson(
-                      e,
-                    ),
-              )
-              .toList()
-          as M;
+          .map<UserSecondRecomThreadRecomThreadListRecommendListTag>((
+          Map<String, dynamic> e) =>
+          UserSecondRecomThreadRecomThreadListRecommendListTag.fromJson(e))
+          .toList() as M;
     }
     if (<UserSecondRecomThreadRecomThreadListZanInfo>[] is M) {
       return data
-              .map<UserSecondRecomThreadRecomThreadListZanInfo>(
-                (Map<String, dynamic> e) =>
-                    UserSecondRecomThreadRecomThreadListZanInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+          .map<UserSecondRecomThreadRecomThreadListZanInfo>((
+          Map<String, dynamic> e) =>
+          UserSecondRecomThreadRecomThreadListZanInfo.fromJson(e))
+          .toList() as M;
     }
     if (<UserThreadEntity>[] is M) {
-      return data
-              .map<UserThreadEntity>(
-                (Map<String, dynamic> e) => UserThreadEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserThreadEntity>((Map<String, dynamic> e) =>
+          UserThreadEntity.fromJson(e)).toList() as M;
     }
     if (<UserThreadMyThreadList>[] is M) {
-      return data
-              .map<UserThreadMyThreadList>(
-                (Map<String, dynamic> e) => UserThreadMyThreadList.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserThreadMyThreadList>((Map<String, dynamic> e) =>
+          UserThreadMyThreadList.fromJson(e)).toList() as M;
     }
     if (<UserThreadMyThreadListAuthor>[] is M) {
-      return data
-              .map<UserThreadMyThreadListAuthor>(
-                (Map<String, dynamic> e) =>
-                    UserThreadMyThreadListAuthor.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserThreadMyThreadListAuthor>((Map<String, dynamic> e) =>
+          UserThreadMyThreadListAuthor.fromJson(e)).toList() as M;
     }
     if (<UserThreadMyThreadListZanInfo>[] is M) {
-      return data
-              .map<UserThreadMyThreadListZanInfo>(
-                (Map<String, dynamic> e) =>
-                    UserThreadMyThreadListZanInfo.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<UserThreadMyThreadListZanInfo>((Map<String, dynamic> e) =>
+          UserThreadMyThreadListZanInfo.fromJson(e)).toList() as M;
     }
     if (<ExtraEntity>[] is M) {
-      return data
-              .map<ExtraEntity>(
-                (Map<String, dynamic> e) => ExtraEntity.fromJson(e),
-              )
-              .toList()
-          as M;
+      return data.map<ExtraEntity>((Map<String, dynamic> e) =>
+          ExtraEntity.fromJson(e)).toList() as M;
     }
 
     debugPrint("$M not found");
@@ -996,8 +605,7 @@ class JsonConvert {
     }
     if (json is List) {
       return _getListChildType<M>(
-        json.map((dynamic e) => e as Map<String, dynamic>).toList(),
-      );
+          json.map((dynamic e) => e as Map<String, dynamic>).toList());
     } else {
       return jsonConvert.convert<M>(json);
     }
@@ -1009,8 +617,9 @@ class JsonConvertClassCollection {
     (AuthorEntity).toString(): AuthorEntity.fromJson,
     (AuthorGroup).toString(): AuthorGroup.fromJson,
     (BusinessTagEntity).toString(): BusinessTagEntity.fromJson,
-    (MedalEntity).toString(): MedalEntity.fromJson,
     (TopicTagEntity).toString(): TopicTagEntity.fromJson,
+    (UserEntity).toString(): UserEntity.fromJson,
+    (UserMedals).toString(): UserMedals.fromJson,
     (ZanInfoEntity).toString(): ZanInfoEntity.fromJson,
     (CurrentUserInfoEntity).toString(): CurrentUserInfoEntity.fromJson,
     (CurrentUserInfoUser).toString(): CurrentUserInfoUser.fromJson,
@@ -1018,135 +627,135 @@ class JsonConvertClassCollection {
     (CurrentUserInfoUserMedals).toString(): CurrentUserInfoUserMedals.fromJson,
     (EncryptKeyEntity).toString(): EncryptKeyEntity.fromJson,
     (FavBoardAndForumEntity).toString(): FavBoardAndForumEntity.fromJson,
-    (FavBoardAndForumReturnList).toString():
-        FavBoardAndForumReturnList.fromJson,
+    (FavBoardAndForumReturnList).toString(): FavBoardAndForumReturnList
+        .fromJson,
     (FileUploadEntity).toString(): FileUploadEntity.fromJson,
     (FileUploadFile).toString(): FileUploadFile.fromJson,
     (FileUploadChunk).toString(): FileUploadChunk.fromJson,
-    (GatherThreadPageInfoEntity).toString():
-        GatherThreadPageInfoEntity.fromJson,
-    (GatherThreadPageInfoThreadList).toString():
-        GatherThreadPageInfoThreadList.fromJson,
-    (GatherThreadPageInfoThreadListAuthor).toString():
-        GatherThreadPageInfoThreadListAuthor.fromJson,
-    (GatherThreadPageInfoGatherInfo).toString():
-        GatherThreadPageInfoGatherInfo.fromJson,
-    (GatherThreadPageInfoGatherUser).toString():
-        GatherThreadPageInfoGatherUser.fromJson,
+    (GatherThreadPageInfoEntity).toString(): GatherThreadPageInfoEntity
+        .fromJson,
+    (GatherThreadPageInfoThreadList).toString(): GatherThreadPageInfoThreadList
+        .fromJson,
+    (GatherThreadPageInfoThreadListAuthor)
+        .toString(): GatherThreadPageInfoThreadListAuthor.fromJson,
+    (GatherThreadPageInfoGatherInfo).toString(): GatherThreadPageInfoGatherInfo
+        .fromJson,
+    (GatherThreadPageInfoGatherUser).toString(): GatherThreadPageInfoGatherUser
+        .fromJson,
     (IsRatedBatchEntity).toString(): IsRatedBatchEntity.fromJson,
     (MapConfigEntity).toString(): MapConfigEntity.fromJson,
     (MapConfigGroupList).toString(): MapConfigGroupList.fromJson,
-    (MapConfigGroupListItemList).toString():
-        MapConfigGroupListItemList.fromJson,
+    (MapConfigGroupListItemList).toString(): MapConfigGroupListItemList
+        .fromJson,
     (MessageEntity).toString(): MessageEntity.fromJson,
     (MessageMsgList).toString(): MessageMsgList.fromJson,
     (MessageMsgListDialogInfo).toString(): MessageMsgListDialogInfo.fromJson,
     (MessageMsgListLastContent).toString(): MessageMsgListLastContent.fromJson,
-    (MessageMsgListLastContentFromUser).toString():
-        MessageMsgListLastContentFromUser.fromJson,
-    (MessageMsgListLastContentContentObj).toString():
-        MessageMsgListLastContentContentObj.fromJson,
-    (MessageMsgListLastContentContentObjExt).toString():
-        MessageMsgListLastContentContentObjExt.fromJson,
+    (MessageMsgListLastContentContentObj)
+        .toString(): MessageMsgListLastContentContentObj.fromJson,
+    (MessageMsgListLastContentContentObjExt)
+        .toString(): MessageMsgListLastContentContentObjExt.fromJson,
     (MobileBgUrlEntity).toString(): MobileBgUrlEntity.fromJson,
+    (MsgGroupEntity).toString(): MsgGroupEntity.fromJson,
     (MyGatherEntity).toString(): MyGatherEntity.fromJson,
     (MyGatherGatherList).toString(): MyGatherGatherList.fromJson,
     (PublishThreadEntity).toString(): PublishThreadEntity.fromJson,
     (PublishThreadThread).toString(): PublishThreadThread.fromJson,
     (PublishThreadThreadAuthor).toString(): PublishThreadThreadAuthor.fromJson,
-    (PublishThreadThreadAuthorGroup).toString():
-        PublishThreadThreadAuthorGroup.fromJson,
-    (PublishThreadThreadAuthorMedals).toString():
-        PublishThreadThreadAuthorMedals.fromJson,
-    (PublishThreadThreadTopicTag).toString():
-        PublishThreadThreadTopicTag.fromJson,
-    (PublishThreadThreadFirstPost).toString():
-        PublishThreadThreadFirstPost.fromJson,
-    (PublishThreadThreadFirstPostAuthor).toString():
-        PublishThreadThreadFirstPostAuthor.fromJson,
-    (PublishThreadThreadFirstPostAuthorGroup).toString():
-        PublishThreadThreadFirstPostAuthorGroup.fromJson,
-    (PublishThreadThreadFirstPostAuthorMedals).toString():
-        PublishThreadThreadFirstPostAuthorMedals.fromJson,
-    (PublishThreadThreadFirstPostAttachment).toString():
-        PublishThreadThreadFirstPostAttachment.fromJson,
-    (PublishThreadThreadLastPost).toString():
-        PublishThreadThreadLastPost.fromJson,
-    (PublishThreadThreadLastPostAuthor).toString():
-        PublishThreadThreadLastPostAuthor.fromJson,
-    (PublishThreadThreadLastPostAuthorGroup).toString():
-        PublishThreadThreadLastPostAuthorGroup.fromJson,
-    (PublishThreadThreadLastPostAuthorMedals).toString():
-        PublishThreadThreadLastPostAuthorMedals.fromJson,
-    (PublishThreadThreadLastPostAttachment).toString():
-        PublishThreadThreadLastPostAttachment.fromJson,
+    (PublishThreadThreadAuthorGroup).toString(): PublishThreadThreadAuthorGroup
+        .fromJson,
+    (PublishThreadThreadAuthorMedals)
+        .toString(): PublishThreadThreadAuthorMedals.fromJson,
+    (PublishThreadThreadTopicTag).toString(): PublishThreadThreadTopicTag
+        .fromJson,
+    (PublishThreadThreadFirstPost).toString(): PublishThreadThreadFirstPost
+        .fromJson,
+    (PublishThreadThreadFirstPostAuthor)
+        .toString(): PublishThreadThreadFirstPostAuthor.fromJson,
+    (PublishThreadThreadFirstPostAuthorGroup)
+        .toString(): PublishThreadThreadFirstPostAuthorGroup.fromJson,
+    (PublishThreadThreadFirstPostAuthorMedals)
+        .toString(): PublishThreadThreadFirstPostAuthorMedals.fromJson,
+    (PublishThreadThreadFirstPostAttachment)
+        .toString(): PublishThreadThreadFirstPostAttachment.fromJson,
+    (PublishThreadThreadLastPost).toString(): PublishThreadThreadLastPost
+        .fromJson,
+    (PublishThreadThreadLastPostAuthor)
+        .toString(): PublishThreadThreadLastPostAuthor.fromJson,
+    (PublishThreadThreadLastPostAuthorGroup)
+        .toString(): PublishThreadThreadLastPostAuthorGroup.fromJson,
+    (PublishThreadThreadLastPostAuthorMedals)
+        .toString(): PublishThreadThreadLastPostAuthorMedals.fromJson,
+    (PublishThreadThreadLastPostAttachment)
+        .toString(): PublishThreadThreadLastPostAttachment.fromJson,
     (PublishThreadPost).toString(): PublishThreadPost.fromJson,
     (PublishThreadPostAuthor).toString(): PublishThreadPostAuthor.fromJson,
-    (PublishThreadPostAuthorGroup).toString():
-        PublishThreadPostAuthorGroup.fromJson,
-    (PublishThreadPostAuthorMedals).toString():
-        PublishThreadPostAuthorMedals.fromJson,
-    (PublishThreadPostAttachment).toString():
-        PublishThreadPostAttachment.fromJson,
+    (PublishThreadPostAuthorGroup).toString(): PublishThreadPostAuthorGroup
+        .fromJson,
+    (PublishThreadPostAuthorMedals).toString(): PublishThreadPostAuthorMedals
+        .fromJson,
+    (PublishThreadPostAttachment).toString(): PublishThreadPostAttachment
+        .fromJson,
     (PublishThreadCoinScore).toString(): PublishThreadCoinScore.fromJson,
     (RecordListEntity).toString(): RecordListEntity.fromJson,
     (RecordListData).toString(): RecordListData.fromJson,
     (RecordListDataItems).toString(): RecordListDataItems.fromJson,
-    (RecordListDataItemsJobRecord).toString():
-        RecordListDataItemsJobRecord.fromJson,
+    (RecordListDataItemsJobRecord).toString(): RecordListDataItemsJobRecord
+        .fromJson,
     (SecondConfigEntity).toString(): SecondConfigEntity.fromJson,
     (SecondConfigConfigInfo).toString(): SecondConfigConfigInfo.fromJson,
-    (SecondConfigConfigInfoAppPortalInfo).toString():
-        SecondConfigConfigInfoAppPortalInfo.fromJson,
-    (SecondConfigConfigInfoMiniAppPortalInfo).toString():
-        SecondConfigConfigInfoMiniAppPortalInfo.fromJson,
-    (SecondConfigConfigInfoFilterpfInfo).toString():
-        SecondConfigConfigInfoFilterpfInfo.fromJson,
-    (SecondConfigConfigInfoPicPositionInfo).toString():
-        SecondConfigConfigInfoPicPositionInfo.fromJson,
-    (SecondConfigConfigInfoReMerchantInfo).toString():
-        SecondConfigConfigInfoReMerchantInfo.fromJson,
-    (SecondConfigConfigInfoPicTurnList).toString():
-        SecondConfigConfigInfoPicTurnList.fromJson,
-    (SecondConfigConfigInfoPicTurnListAuthor).toString():
-        SecondConfigConfigInfoPicTurnListAuthor.fromJson,
-    (SecondConfigConfigInfoPicTurnListThread).toString():
-        SecondConfigConfigInfoPicTurnListThread.fromJson,
-    (SecondConfigConfigInfoPicTurnListThreadAuthor).toString():
-        SecondConfigConfigInfoPicTurnListThreadAuthor.fromJson,
+    (SecondConfigConfigInfoAppPortalInfo)
+        .toString(): SecondConfigConfigInfoAppPortalInfo.fromJson,
+    (SecondConfigConfigInfoMiniAppPortalInfo)
+        .toString(): SecondConfigConfigInfoMiniAppPortalInfo.fromJson,
+    (SecondConfigConfigInfoFilterpfInfo)
+        .toString(): SecondConfigConfigInfoFilterpfInfo.fromJson,
+    (SecondConfigConfigInfoPicPositionInfo)
+        .toString(): SecondConfigConfigInfoPicPositionInfo.fromJson,
+    (SecondConfigConfigInfoReMerchantInfo)
+        .toString(): SecondConfigConfigInfoReMerchantInfo.fromJson,
+    (SecondConfigConfigInfoPicTurnList)
+        .toString(): SecondConfigConfigInfoPicTurnList.fromJson,
+    (SecondConfigConfigInfoPicTurnListAuthor)
+        .toString(): SecondConfigConfigInfoPicTurnListAuthor.fromJson,
+    (SecondConfigConfigInfoPicTurnListThread)
+        .toString(): SecondConfigConfigInfoPicTurnListThread.fromJson,
+    (SecondConfigConfigInfoPicTurnListThreadAuthor)
+        .toString(): SecondConfigConfigInfoPicTurnListThreadAuthor.fromJson,
     (SystemTimeEntity).toString(): SystemTimeEntity.fromJson,
     (ThreadPageEntity).toString(): ThreadPageEntity.fromJson,
     (ThreadPageForumInfo).toString(): ThreadPageForumInfo.fromJson,
-    (ThreadPageForumInfoRecursionForumList).toString():
-        ThreadPageForumInfoRecursionForumList.fromJson,
-    (ThreadPageForumInfoCircleCategory).toString():
-        ThreadPageForumInfoCircleCategory.fromJson,
+    (ThreadPageForumInfoRecursionForumList)
+        .toString(): ThreadPageForumInfoRecursionForumList.fromJson,
+    (ThreadPageForumInfoCircleCategory)
+        .toString(): ThreadPageForumInfoCircleCategory.fromJson,
     (ThreadPageThreadList).toString(): ThreadPageThreadList.fromJson,
-    (ThreadPageThreadListFirstPost).toString():
-        ThreadPageThreadListFirstPost.fromJson,
+    (ThreadPageThreadListFirstPost).toString(): ThreadPageThreadListFirstPost
+        .fromJson,
     (TokenEntity).toString(): TokenEntity.fromJson,
     (UserCommentListEntity).toString(): UserCommentListEntity.fromJson,
     (UserCommentListComments).toString(): UserCommentListComments.fromJson,
-    (UserCommentListCommentsBoardInfo).toString():
-        UserCommentListCommentsBoardInfo.fromJson,
-    (UserCommentListCommentsBoardInfoPicUrlsList).toString():
-        UserCommentListCommentsBoardInfoPicUrlsList.fromJson,
-    (UserSecondRecomThreadEntity).toString():
-        UserSecondRecomThreadEntity.fromJson,
-    (UserSecondRecomThreadRecomThreadList).toString():
-        UserSecondRecomThreadRecomThreadList.fromJson,
-    (UserSecondRecomThreadRecomThreadListAuthor).toString():
-        UserSecondRecomThreadRecomThreadListAuthor.fromJson,
-    (UserSecondRecomThreadRecomThreadListRecommendListTag).toString():
-        UserSecondRecomThreadRecomThreadListRecommendListTag.fromJson,
-    (UserSecondRecomThreadRecomThreadListZanInfo).toString():
-        UserSecondRecomThreadRecomThreadListZanInfo.fromJson,
+    (UserCommentListCommentsBoardInfo)
+        .toString(): UserCommentListCommentsBoardInfo.fromJson,
+    (UserCommentListCommentsBoardInfoPicUrlsList)
+        .toString(): UserCommentListCommentsBoardInfoPicUrlsList.fromJson,
+    (UserSecondRecomThreadEntity).toString(): UserSecondRecomThreadEntity
+        .fromJson,
+    (UserSecondRecomThreadRecomThreadList)
+        .toString(): UserSecondRecomThreadRecomThreadList.fromJson,
+    (UserSecondRecomThreadRecomThreadListAuthor)
+        .toString(): UserSecondRecomThreadRecomThreadListAuthor.fromJson,
+    (UserSecondRecomThreadRecomThreadListRecommendListTag)
+        .toString(): UserSecondRecomThreadRecomThreadListRecommendListTag
+        .fromJson,
+    (UserSecondRecomThreadRecomThreadListZanInfo)
+        .toString(): UserSecondRecomThreadRecomThreadListZanInfo.fromJson,
     (UserThreadEntity).toString(): UserThreadEntity.fromJson,
     (UserThreadMyThreadList).toString(): UserThreadMyThreadList.fromJson,
-    (UserThreadMyThreadListAuthor).toString():
-        UserThreadMyThreadListAuthor.fromJson,
-    (UserThreadMyThreadListZanInfo).toString():
-        UserThreadMyThreadListZanInfo.fromJson,
+    (UserThreadMyThreadListAuthor).toString(): UserThreadMyThreadListAuthor
+        .fromJson,
+    (UserThreadMyThreadListZanInfo).toString(): UserThreadMyThreadListZanInfo
+        .fromJson,
     (ExtraEntity).toString(): ExtraEntity.fromJson,
   };
 

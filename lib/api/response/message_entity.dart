@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_study/api/response/common/medal_entity.dart';
+import 'package:flutter_study/api/response/msg_group_entity.dart';
+import 'package:flutter_study/api/response/common/user_entity.dart';
 import 'package:flutter_study/generated/json/base/json_field.dart';
 import 'package:flutter_study/generated/json/message_entity.g.dart';
 
@@ -61,7 +62,8 @@ class MessageMsgList {
 
 @JsonSerializable()
 class MessageMsgListDialogInfo {
-  late MessageMsgListLastContentFromUser user;
+  UserEntity? user;
+  MsgGroupEntity? group;
   @JSONField(name: 'shield_status')
   late String shieldStatus;
   late bool disturb;
@@ -90,7 +92,7 @@ class MessageMsgListLastContent {
   @JSONField(name: 'content_id')
   late String contentId;
   @JSONField(name: 'from_user')
-  late MessageMsgListLastContentFromUser fromUser;
+  late UserEntity fromUser;
   late String content;
   @JSONField(name: 'content_obj')
   late MessageMsgListLastContentContentObj contentObj;
@@ -109,74 +111,6 @@ class MessageMsgListLastContent {
       $MessageMsgListLastContentFromJson(json);
 
   Map<String, dynamic> toJson() => $MessageMsgListLastContentToJson(this);
-
-  @override
-  String toString() {
-    return jsonEncode(this);
-  }
-}
-
-@JsonSerializable()
-class MessageMsgListLastContentFromUser {
-  late String uid;
-  @JSONField(name: 'user_name')
-  late String userName;
-  late String status;
-  late String sign;
-  late String warning;
-  late String avatar;
-  late String verify;
-  @JSONField(name: 'high_verify')
-  late String highVerify;
-  @JSONField(name: 'honour_verify')
-  late String honourVerify;
-  @JSONField(name: 'verify_new')
-  late String verifyNew;
-  @JSONField(name: 'verify_desc')
-  late String verifyDesc;
-  late String gender;
-  @JSONField(name: 'honour_desc')
-  late String honourDesc;
-  @JSONField(name: 'high_desc')
-  late String highDesc;
-  @JSONField(name: 'board_perm')
-  late String boardPerm;
-  late String gid;
-  @JSONField(name: 'group_rank')
-  late String groupRank;
-  @JSONField(name: 'group_name')
-  late String groupName;
-  @JSONField(name: 'is_ten_year')
-  late bool isTenYear;
-  @JSONField(name: 'shi_jia_shang_jia')
-  late bool shiJiaShangJia;
-  @JSONField(name: 'shi_jia_shang_jia_desc')
-  late String shiJiaShangJiaDesc;
-  late List<MedalEntity> medals;
-  @JSONField(name: 'pendant_id')
-  late String pendantId;
-  late String cityname;
-  @JSONField(name: 'original_avatar')
-  late String originalAvatar;
-  @JSONField(name: 'small_avatar')
-  late String smallAvatar;
-  late String latitude;
-  late String longitude;
-  @JSONField(name: 'total_zan_count')
-  late String totalZanCount;
-  @JSONField(name: 'total_fans_count')
-  late String totalFansCount;
-  @JSONField(name: 'total_fav_count')
-  late String totalFavCount;
-
-  MessageMsgListLastContentFromUser();
-
-  factory MessageMsgListLastContentFromUser.fromJson(
-    Map<String, dynamic> json,
-  ) => $MessageMsgListLastContentFromUserFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      $MessageMsgListLastContentFromUserToJson(this);
 
   @override
   String toString() {

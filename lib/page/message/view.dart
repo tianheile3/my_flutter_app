@@ -56,15 +56,15 @@ class MessagePage extends StatelessWidget {
                     case 1:
                       return _buildPrivateMessage(item);
                     case 2:
-                      return _buildGroupChat();
+                      return _buildGroupChat(item);
                     case 3:
                     case 4:
                     case 5:
                     case 6:
                     case 13:
-                      return _buildNotice();
+                      return _buildNotice(item);
                     default:
-                      return _buildOther();
+                      return _buildOther(item);
                   }
                 },
                 // 分隔线构建器（新增）
@@ -145,13 +145,13 @@ class MessagePage extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          item.dialogInfo.user.userName,
+                          item.dialogInfo.user!.userName,
                           style: TextStyle(
                             color: CustomColors.textDark,
                             fontSize: 16,
                           ),
                         ),
-                        if (item.dialogInfo.user.gid == "10")
+                        if (item.dialogInfo.user!.gid == "10")
                           Image.asset(
                             "assets/images/chaoban.png",
                             width: 28,
@@ -189,15 +189,102 @@ class MessagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildGroupChat() {
-    return Container(height: itemHeight, color: Colors.yellow);
+  Widget _buildGroupChat(MessageMsgList item) {
+    return Container(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
+      height: itemHeight,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            children: [
+              CircleAvatar(
+                child: Image.asset(
+                  "assets/images/group_chat.png",
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+              if (item.newCount > 0)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: item.newCount > 9 ? 5.0 : 5.0, // 两位数增加水平内边距
+                      vertical: 3.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(
+                        item.newCount > 9 ? 10.0 : 12.0,
+                      ),
+                    ),
+                    child: Text(
+                      item.newCount > 99 ? "99+" : item.newCount.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        height: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(width: 15),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: logic.contentWidth,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      item.dialogInfo.group!.name,
+                      style: TextStyle(
+                        color: CustomColors.textDark,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      DateTools.getChatTime(
+                        item.lastContent.createdAt.isEmpty
+                            ? item.createdAt
+                            : item.lastContent.createdAt,
+                      ),
+                      style: TextStyle(
+                        color: CustomColors.textDark,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: logic.contentWidth,
+                child: Text(
+                  logic.getContent(item),
+                  style: TextStyle(color: CustomColors.textLight, fontSize: 13),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _buildNotice() {
+  Widget _buildNotice(MessageMsgList item) {
     return Container(height: itemHeight, color: Colors.green);
   }
 
-  Widget _buildOther() {
+  Widget _buildOther(MessageMsgList item) {
     return Container(height: itemHeight, color: Colors.blue);
   }
 }

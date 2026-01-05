@@ -75,7 +75,7 @@ class MessageLogic extends BaseController {
   }
 
   String getShowAvatar(MessageMsgList item) {
-    var avatar = item.dialogInfo.user.avatar;
+    var avatar = item.dialogInfo.user!.avatar;
     if (avatar.isNotEmpty && !avatar.contains("https")) {
       return "${Constants.BASE_AVATAR}$avatar";
     }
