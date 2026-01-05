@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_study/common/some_publish.dart';
+import 'package:flutter_study/page/message/view.dart';
 import 'package:flutter_study/page/mine_tab/view.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +9,8 @@ import '../home_tab/view.dart';
 
 class MainHomeLogic extends BaseController {
   final RxInt selectedIndex = 0.obs;
-  final List<Widget?> tabPages = List<Widget?>.filled(3, null);
+  static const total = 4;
+  final List<Widget?> tabPages = List<Widget?>.filled(total, null);
 
   void onTabTapped(int index) {
     selectedIndex.value = index;
@@ -25,6 +27,8 @@ class MainHomeLogic extends BaseController {
       case 1:
         return CategoryTabPage();
       case 2:
+        return MessagePage();
+      case 3:
         return MineTabPage();
       default:
         return const SizedBox();
@@ -41,6 +45,11 @@ class MainHomeLogic extends BaseController {
       icon: Icon(Icons.category_outlined),
       activeIcon: Icon(Icons.category),
       label: "分类",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.message_outlined),
+      activeIcon: Icon(Icons.message),
+      label: "消息",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.person_outlined),
