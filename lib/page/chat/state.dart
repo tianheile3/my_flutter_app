@@ -1,5 +1,11 @@
+import 'package:get/get.dart';
+
 class ChatState {
-  ChatState() {
-    ///Initialize variables
-  }
+  late String chatName;
+  late String toUid;
+  late String dialogId;
+
+  final RxList<dynamic> items = [].obs;
+
+  ChatState();
 }

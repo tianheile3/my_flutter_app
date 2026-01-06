@@ -2,6 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter_study/api/response/message_entity.dart';
 import 'package:flutter_study/common/constants.dart';
 import 'package:flutter_study/common/some_publish.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:get/get.dart';
 
 class MessageLogic extends BaseController {
@@ -203,5 +204,16 @@ class MessageLogic extends BaseController {
     list.add(name);
     list.add(content);
     return list;
+  }
+
+  void toChat(MessageMsgList item) {
+    Get.toNamed(
+      MyRouteConfig.chat,
+      arguments: {
+        "chatName": item.dialogInfo.user?.userName,
+        "toUid": item.dialogInfo.user?.uid,
+        "dialogId": item.dialogInfo.dialogId,
+      },
+    );
   }
 }

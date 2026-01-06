@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_study/api/response/message_entity.dart';
 import 'package:flutter_study/common/custom_colors.dart';
 import 'package:flutter_study/common/some_publish.dart';
-import 'package:flutter_study/route_config.dart';
 import 'package:flutter_study/utils/date_tools.dart';
 import 'package:get/get.dart';
 
@@ -86,7 +85,7 @@ class MessagePage extends StatelessWidget {
   Widget _buildPrivateMessage(MessageMsgList item) {
     return InkWell(
       onTap: () {
-        Get.toNamed(MyRouteConfig.chat);
+        logic.toChat(item);
       },
       child: Container(
         padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
