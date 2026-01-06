@@ -89,48 +89,7 @@ class MessagePage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Stack(
-            children: [
-              ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: logic.getShowAvatar(item),
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Icon(Icons.image, size: 40),
-                  errorWidget: (context, url, error) =>
-                      Icon(Icons.image, size: 40),
-                  memCacheWidth: 80,
-                  memCacheHeight: 80,
-                ),
-              ),
-              if (item.newCount > 0)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: item.newCount > 9 ? 5.0 : 5.0, // 两位数增加水平内边距
-                      vertical: 3.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(
-                        item.newCount > 9 ? 10.0 : 12.0,
-                      ),
-                    ),
-                    child: Text(
-                      item.newCount > 99 ? "99+" : item.newCount.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 9,
-                        height: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
+          _buildAvatar(logic.getShowAvatar(item), item.newCount, true),
           SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,48 +149,14 @@ class MessagePage extends StatelessWidget {
   }
 
   Widget _buildGroupChat(MessageMsgList item) {
+    var detail = logic.getDetail(item);
     return Container(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
       height: itemHeight,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Stack(
-            children: [
-              CircleAvatar(
-                child: Image.asset(
-                  "assets/images/group_chat.png",
-                  width: 40,
-                  height: 40,
-                ),
-              ),
-              if (item.newCount > 0)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: item.newCount > 9 ? 5.0 : 5.0, // 两位数增加水平内边距
-                      vertical: 3.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(
-                        item.newCount > 9 ? 10.0 : 12.0,
-                      ),
-                    ),
-                    child: Text(
-                      item.newCount > 99 ? "99+" : item.newCount.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 9,
-                        height: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
+          _buildAvatar(detail[0], item.newCount, false),
           SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +169,7 @@ class MessagePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      item.dialogInfo.group!.name,
+                      detail[1],
                       style: TextStyle(
                         color: CustomColors.textDark,
                         fontSize: 16,
@@ -267,7 +192,7 @@ class MessagePage extends StatelessWidget {
               SizedBox(
                 width: logic.contentWidth,
                 child: Text(
-                  logic.getContent(item),
+                  detail[2],
                   style: TextStyle(color: CustomColors.textLight, fontSize: 13),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -281,10 +206,127 @@ class MessagePage extends StatelessWidget {
   }
 
   Widget _buildNotice(MessageMsgList item) {
-    return Container(height: itemHeight, color: Colors.green);
+    var detail = logic.getDetail(item);
+    return Container(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
+      height: itemHeight,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                _buildAvatar(detail[0], item.newCount, false),
+                SizedBox(width: 15),
+                Text(
+                  detail[1],
+                  style: TextStyle(color: CustomColors.textDark, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.arrow_forward_ios, size: 15),
+        ],
+      ),
+    );
   }
 
   Widget _buildOther(MessageMsgList item) {
-    return Container(height: itemHeight, color: Colors.blue);
+    var detail = logic.getDetail(item);
+    return Container(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
+      height: itemHeight,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildAvatar(detail[0], item.newCount, false),
+          SizedBox(width: 15),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: logic.contentWidth,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      detail[1],
+                      style: TextStyle(
+                        color: CustomColors.textDark,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      DateTools.getChatTime(
+                        item.dialogInfo.dialogType == 8
+                            ? item.createdAt
+                            : (item.lastContent.createdAt.isEmpty
+                                  ? item.createdAt
+                                  : item.lastContent.createdAt),
+                      ),
+                      style: TextStyle(
+                        color: CustomColors.textDark,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: logic.contentWidth,
+                child: Text(
+                  detail[2],
+                  style: TextStyle(color: CustomColors.textLight, fontSize: 13),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAvatar(String avatar, int newCount, bool isPM) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        if (isPM)
+          ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: avatar,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Icon(Icons.image, size: 40),
+              errorWidget: (context, url, error) => Icon(Icons.image, size: 40),
+              memCacheWidth: 80,
+              memCacheHeight: 80,
+            ),
+          )
+        else
+          Image.asset(avatar, width: 40, height: 40),
+        if (newCount > 0)
+          Positioned(
+            right: -1.0,
+            top: -1.0,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 1.0),
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                border: Border.all(color: Colors.white, width: 1.0),
+                borderRadius: BorderRadius.circular(newCount > 9 ? 10.0 : 12.0),
+              ),
+              child: Text(
+                newCount > 99 ? "99+" : newCount.toString(),
+                style: TextStyle(color: Colors.white, fontSize: 9, height: 1.0),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

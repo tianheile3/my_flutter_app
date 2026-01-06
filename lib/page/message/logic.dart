@@ -81,4 +81,72 @@ class MessageLogic extends BaseController {
     }
     return avatar;
   }
+
+  List<String> getDetail(MessageMsgList item) {
+    List<String> list = [];
+    String image = "";
+    String name = "";
+    String content = "";
+    switch (item.dialogInfo.dialogType) {
+      case 2:
+        image = "assets/images/qunliao1.png";
+        name = item.dialogInfo.group!.name;
+        content = getContent(item);
+        break;
+      case 3:
+        image = "assets/images/huitie1.png";
+        name = "回复";
+        break;
+      case 4:
+        image = "assets/images/dianzan1.png";
+        name = "赞和收藏";
+        break;
+      case 5:
+        image = "assets/images/aitewo1.png";
+        name = "提到我";
+        break;
+      case 6:
+        image = "assets/images/tixing1.png";
+        name = "系统消息";
+        break;
+      case 7:
+        image = "assets/images/xunzhang1.png";
+        name = "勋章小助手";
+        content = item.lastContent.contentObj.ext?.content ?? "";
+        break;
+      case 8:
+        image = "assets/images/jinriredian1.png";
+        name = "今日热点";
+        content = item.summery;
+        break;
+      case 9:
+        image = "assets/images/chuangzuo1.png";
+        name = "创作者小助手";
+        content = item.lastContent.content;
+        break;
+      case 10:
+        image = "assets/images/xindong1.png";
+        name = "心动与来访";
+        content = item.lastContent.content;
+        break;
+      case 11:
+        image = "assets/images/qianbao1.png";
+        name = "钱包通知";
+        content = item.lastContent.contentObj.ext?.remark ?? "";
+        break;
+      case 12:
+        image = "assets/images/qianbao2.png";
+        name = "红包审核管理";
+        content = item.lastContent.contentObj.ext?.content ?? "";
+        break;
+      case 13:
+        image = "assets/images/guanzhu1.png";
+        name = "新增关注";
+        break;
+    }
+    list.add(image);
+    list.add(name);
+    list.add(content);
+    return list;
+  }
 }

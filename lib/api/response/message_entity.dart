@@ -120,7 +120,7 @@ class MessageMsgListLastContent {
 
 @JsonSerializable()
 class MessageMsgListLastContentContentObj {
-  late MessageMsgListLastContentContentObjExt ext;
+  late MessageMsgListLastContentContentObjExt? ext;
   late String content;
 
   MessageMsgListLastContentContentObj();
@@ -153,6 +153,7 @@ class MessageMsgListLastContentContentObjExt {
   late String cityName;
   late String authorUid;
   late String isBoard;
+  late String remark;
 
   MessageMsgListLastContentContentObjExt();
 
