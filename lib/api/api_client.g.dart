@@ -546,6 +546,47 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<DialogEntity?> getDialogList({
+    required String dialogId,
+    String? nextDate,
+    int limit = 10,
+    bool isBefore = true,
+    bool decode = true,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'dialogId': dialogId,
+      r'nextDate': nextDate,
+      r'limit': limit,
+      r'isBefore': isBefore,
+      r'decode': decode,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<DialogEntity>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/msg/getDialogList',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : DialogEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<TokenEntity?> login(FormData data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

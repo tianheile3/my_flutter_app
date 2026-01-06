@@ -1,4 +1,5 @@
 // 全局状态管理类（单例）
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalState {
@@ -80,13 +81,15 @@ class GlobalState {
     }
   }
 
-  // 清除本地存储
+  // 获取本地存储
   Future<void> getLocalStorage() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('token');
     _userId = prefs.getInt('userId');
     _cityName = prefs.getString('cityName');
     _systemTimeDiff = prefs.getInt("systemTimeDiff");
+
+    getDeviceParams();
   }
 
   // 清除本地存储
@@ -95,5 +98,13 @@ class GlobalState {
     prefs.remove('token');
     prefs.remove('userId');
     prefs.remove('cityName');
+  }
+
+  double screenWidth = 0.0;
+  double statusBarHeight = 0.0;
+
+  void getDeviceParams() {
+    screenWidth = Get.mediaQuery.size.width;
+    statusBarHeight = Get.mediaQuery.padding.top;
   }
 }

@@ -4,10 +4,12 @@ import 'package:flutter_study/api/response/msg_group_entity.dart';
 
 import 'package:flutter_study/api/response/common/user_entity.dart';
 
+
 MessageEntity $MessageEntityFromJson(Map<String, dynamic> json) {
   final MessageEntity messageEntity = MessageEntity();
-  final List<MessageMsgList>? msgList = (json['msg_list'] as List<dynamic>?)
-      ?.map((e) => jsonConvert.convert<MessageMsgList>(e) as MessageMsgList)
+  final List<MsgList>? msgList = (json['msg_list'] as List<dynamic>?)
+      ?.map(
+          (e) => jsonConvert.convert<MsgList>(e) as MsgList)
       .toList();
   if (msgList != null) {
     messageEntity.msgList = msgList;
@@ -27,22 +29,25 @@ Map<String, dynamic> $MessageEntityToJson(MessageEntity entity) {
 }
 
 extension MessageEntityExtension on MessageEntity {
-  MessageEntity copyWith({List<MessageMsgList>? msgList, bool? moreNew}) {
+  MessageEntity copyWith({
+    List<MsgList>? msgList,
+    bool? moreNew,
+  }) {
     return MessageEntity()
       ..msgList = msgList ?? this.msgList
       ..moreNew = moreNew ?? this.moreNew;
   }
 }
 
-MessageMsgList $MessageMsgListFromJson(Map<String, dynamic> json) {
-  final MessageMsgList messageMsgList = MessageMsgList();
-  final MessageMsgListDialogInfo? dialogInfo = jsonConvert
-      .convert<MessageMsgListDialogInfo>(json['dialog_info']);
+MsgList $MessageMsgListFromJson(Map<String, dynamic> json) {
+  final MsgList messageMsgList = MsgList();
+  final DialogInfo? dialogInfo = jsonConvert.convert<
+      DialogInfo>(json['dialog_info']);
   if (dialogInfo != null) {
     messageMsgList.dialogInfo = dialogInfo;
   }
-  final MessageMsgListLastContent? lastContent = jsonConvert
-      .convert<MessageMsgListLastContent>(json['last_content']);
+  final LastContent? lastContent = jsonConvert.convert<
+      LastContent>(json['last_content']);
   if (lastContent != null) {
     messageMsgList.lastContent = lastContent;
   }
@@ -71,8 +76,7 @@ MessageMsgList $MessageMsgListFromJson(Map<String, dynamic> json) {
     messageMsgList.bid = bid;
   }
   final String? filterConfigSet = jsonConvert.convert<String>(
-    json['filter_config_set'],
-  );
+      json['filter_config_set']);
   if (filterConfigSet != null) {
     messageMsgList.filterConfigSet = filterConfigSet;
   }
@@ -83,7 +87,7 @@ MessageMsgList $MessageMsgListFromJson(Map<String, dynamic> json) {
   return messageMsgList;
 }
 
-Map<String, dynamic> $MessageMsgListToJson(MessageMsgList entity) {
+Map<String, dynamic> $MessageMsgListToJson(MsgList entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['dialog_info'] = entity.dialogInfo.toJson();
   data['last_content'] = entity.lastContent.toJson();
@@ -98,10 +102,10 @@ Map<String, dynamic> $MessageMsgListToJson(MessageMsgList entity) {
   return data;
 }
 
-extension MessageMsgListExtension on MessageMsgList {
-  MessageMsgList copyWith({
-    MessageMsgListDialogInfo? dialogInfo,
-    MessageMsgListLastContent? lastContent,
+extension MessageMsgListExtension on MsgList {
+  MsgList copyWith({
+    DialogInfo? dialogInfo,
+    LastContent? lastContent,
     int? newCount,
     String? shieldCount,
     String? createdAt,
@@ -111,7 +115,7 @@ extension MessageMsgListExtension on MessageMsgList {
     String? filterConfigSet,
     int? stick,
   }) {
-    return MessageMsgList()
+    return MsgList()
       ..dialogInfo = dialogInfo ?? this.dialogInfo
       ..lastContent = lastContent ?? this.lastContent
       ..newCount = newCount ?? this.newCount
@@ -125,24 +129,20 @@ extension MessageMsgListExtension on MessageMsgList {
   }
 }
 
-MessageMsgListDialogInfo $MessageMsgListDialogInfoFromJson(
-  Map<String, dynamic> json,
-) {
-  final MessageMsgListDialogInfo messageMsgListDialogInfo =
-      MessageMsgListDialogInfo();
+DialogInfo $MessageMsgListDialogInfoFromJson(
+    Map<String, dynamic> json) {
+  final DialogInfo messageMsgListDialogInfo = DialogInfo();
   final UserEntity? user = jsonConvert.convert<UserEntity>(json['user']);
   if (user != null) {
     messageMsgListDialogInfo.user = user;
   }
   final MsgGroupEntity? group = jsonConvert.convert<MsgGroupEntity>(
-    json['group'],
-  );
+      json['group']);
   if (group != null) {
     messageMsgListDialogInfo.group = group;
   }
   final String? shieldStatus = jsonConvert.convert<String>(
-    json['shield_status'],
-  );
+      json['shield_status']);
   if (shieldStatus != null) {
     messageMsgListDialogInfo.shieldStatus = shieldStatus;
   }
@@ -166,8 +166,7 @@ MessageMsgListDialogInfo $MessageMsgListDialogInfoFromJson(
 }
 
 Map<String, dynamic> $MessageMsgListDialogInfoToJson(
-  MessageMsgListDialogInfo entity,
-) {
+    DialogInfo entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['user'] = entity.user?.toJson();
   data['group'] = entity.group?.toJson();
@@ -179,8 +178,8 @@ Map<String, dynamic> $MessageMsgListDialogInfoToJson(
   return data;
 }
 
-extension MessageMsgListDialogInfoExtension on MessageMsgListDialogInfo {
-  MessageMsgListDialogInfo copyWith({
+extension MessageMsgListDialogInfoExtension on DialogInfo {
+  DialogInfo copyWith({
     UserEntity? user,
     MsgGroupEntity? group,
     String? shieldStatus,
@@ -189,7 +188,7 @@ extension MessageMsgListDialogInfoExtension on MessageMsgListDialogInfo {
     int? dialogType,
     String? dangerUser,
   }) {
-    return MessageMsgListDialogInfo()
+    return DialogInfo()
       ..user = user ?? this.user
       ..group = group ?? this.group
       ..shieldStatus = shieldStatus ?? this.shieldStatus
@@ -200,18 +199,15 @@ extension MessageMsgListDialogInfoExtension on MessageMsgListDialogInfo {
   }
 }
 
-MessageMsgListLastContent $MessageMsgListLastContentFromJson(
-  Map<String, dynamic> json,
-) {
-  final MessageMsgListLastContent messageMsgListLastContent =
-      MessageMsgListLastContent();
+LastContent $MessageMsgListLastContentFromJson(
+    Map<String, dynamic> json) {
+  final LastContent messageMsgListLastContent = LastContent();
   final String? contentId = jsonConvert.convert<String>(json['content_id']);
   if (contentId != null) {
     messageMsgListLastContent.contentId = contentId;
   }
   final UserEntity? fromUser = jsonConvert.convert<UserEntity>(
-    json['from_user'],
-  );
+      json['from_user']);
   if (fromUser != null) {
     messageMsgListLastContent.fromUser = fromUser;
   }
@@ -219,8 +215,8 @@ MessageMsgListLastContent $MessageMsgListLastContentFromJson(
   if (content != null) {
     messageMsgListLastContent.content = content;
   }
-  final MessageMsgListLastContentContentObj? contentObj = jsonConvert
-      .convert<MessageMsgListLastContentContentObj>(json['content_obj']);
+  final ContentObj? contentObj = jsonConvert.convert<
+      ContentObj>(json['content_obj']);
   if (contentObj != null) {
     messageMsgListLastContent.contentObj = contentObj;
   }
@@ -232,9 +228,8 @@ MessageMsgListLastContent $MessageMsgListLastContentFromJson(
   if (createdAt != null) {
     messageMsgListLastContent.createdAt = createdAt;
   }
-  final List<dynamic>? urls = (json['urls'] as List<dynamic>?)
-      ?.map((e) => e)
-      .toList();
+  final List<dynamic>? urls = (json['urls'] as List<dynamic>?)?.map(
+          (e) => e).toList();
   if (urls != null) {
     messageMsgListLastContent.urls = urls;
   }
@@ -243,8 +238,7 @@ MessageMsgListLastContent $MessageMsgListLastContentFromJson(
     messageMsgListLastContent.fromUid = fromUid;
   }
   final String? fromUsername = jsonConvert.convert<String>(
-    json['from_username'],
-  );
+      json['from_username']);
   if (fromUsername != null) {
     messageMsgListLastContent.fromUsername = fromUsername;
   }
@@ -252,8 +246,7 @@ MessageMsgListLastContent $MessageMsgListLastContentFromJson(
 }
 
 Map<String, dynamic> $MessageMsgListLastContentToJson(
-  MessageMsgListLastContent entity,
-) {
+    LastContent entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['content_id'] = entity.contentId;
   data['from_user'] = entity.fromUser.toJson();
@@ -267,19 +260,19 @@ Map<String, dynamic> $MessageMsgListLastContentToJson(
   return data;
 }
 
-extension MessageMsgListLastContentExtension on MessageMsgListLastContent {
-  MessageMsgListLastContent copyWith({
+extension MessageMsgListLastContentExtension on LastContent {
+  LastContent copyWith({
     String? contentId,
     UserEntity? fromUser,
     String? content,
-    MessageMsgListLastContentContentObj? contentObj,
+    ContentObj? contentObj,
     String? status,
     String? createdAt,
     List<dynamic>? urls,
     String? fromUid,
     String? fromUsername,
   }) {
-    return MessageMsgListLastContent()
+    return LastContent()
       ..contentId = contentId ?? this.contentId
       ..fromUser = fromUser ?? this.fromUser
       ..content = content ?? this.content
@@ -292,12 +285,11 @@ extension MessageMsgListLastContentExtension on MessageMsgListLastContent {
   }
 }
 
-MessageMsgListLastContentContentObj
-$MessageMsgListLastContentContentObjFromJson(Map<String, dynamic> json) {
-  final MessageMsgListLastContentContentObj
-  messageMsgListLastContentContentObj = MessageMsgListLastContentContentObj();
-  final MessageMsgListLastContentContentObjExt? ext = jsonConvert
-      .convert<MessageMsgListLastContentContentObjExt>(json['ext']);
+ContentObj $MessageMsgListLastContentContentObjFromJson(
+    Map<String, dynamic> json) {
+  final ContentObj messageMsgListLastContentContentObj = ContentObj();
+  final ContentObjExt? ext = jsonConvert.convert<
+      ContentObjExt>(json['ext']);
   if (ext != null) {
     messageMsgListLastContentContentObj.ext = ext;
   }
@@ -309,31 +301,27 @@ $MessageMsgListLastContentContentObjFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> $MessageMsgListLastContentContentObjToJson(
-  MessageMsgListLastContentContentObj entity,
-) {
+    ContentObj entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['ext'] = entity.ext?.toJson();
   data['content'] = entity.content;
   return data;
 }
 
-extension MessageMsgListLastContentContentObjExtension
-    on MessageMsgListLastContentContentObj {
-  MessageMsgListLastContentContentObj copyWith({
-    MessageMsgListLastContentContentObjExt? ext,
+extension MessageMsgListLastContentContentObjExtension on ContentObj {
+  ContentObj copyWith({
+    ContentObjExt? ext,
     String? content,
   }) {
-    return MessageMsgListLastContentContentObj()
+    return ContentObj()
       ..ext = ext ?? this.ext
       ..content = content ?? this.content;
   }
 }
 
-MessageMsgListLastContentContentObjExt
-$MessageMsgListLastContentContentObjExtFromJson(Map<String, dynamic> json) {
-  final MessageMsgListLastContentContentObjExt
-  messageMsgListLastContentContentObjExt =
-      MessageMsgListLastContentContentObjExt();
+ContentObjExt $MessageMsgListLastContentContentObjExtFromJson(
+    Map<String, dynamic> json) {
+  final ContentObjExt messageMsgListLastContentContentObjExt = ContentObjExt();
   final String? fid = jsonConvert.convert<String>(json['fid']);
   if (fid != null) {
     messageMsgListLastContentContentObjExt.fid = fid;
@@ -347,8 +335,7 @@ $MessageMsgListLastContentContentObjExtFromJson(Map<String, dynamic> json) {
     messageMsgListLastContentContentObjExt.subject = subject;
   }
   final String? replyUserName = jsonConvert.convert<String>(
-    json['replyUserName'],
-  );
+      json['replyUserName']);
   if (replyUserName != null) {
     messageMsgListLastContentContentObjExt.replyUserName = replyUserName;
   }
@@ -357,8 +344,7 @@ $MessageMsgListLastContentContentObjExtFromJson(Map<String, dynamic> json) {
     messageMsgListLastContentContentObjExt.parentPid = parentPid;
   }
   final String? quotePostMessage = jsonConvert.convert<String>(
-    json['quotePostMessage'],
-  );
+      json['quotePostMessage']);
   if (quotePostMessage != null) {
     messageMsgListLastContentContentObjExt.quotePostMessage = quotePostMessage;
   }
@@ -398,8 +384,7 @@ $MessageMsgListLastContentContentObjExtFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> $MessageMsgListLastContentContentObjExtToJson(
-  MessageMsgListLastContentContentObjExt entity,
-) {
+    ContentObjExt entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
   data['fid'] = entity.fid;
   data['replyUid'] = entity.replyUid;
@@ -418,9 +403,8 @@ Map<String, dynamic> $MessageMsgListLastContentContentObjExtToJson(
   return data;
 }
 
-extension MessageMsgListLastContentContentObjExtExtension
-    on MessageMsgListLastContentContentObjExt {
-  MessageMsgListLastContentContentObjExt copyWith({
+extension MessageMsgListLastContentContentObjExtExtension on ContentObjExt {
+  ContentObjExt copyWith({
     String? fid,
     String? replyUid,
     String? subject,
@@ -436,7 +420,7 @@ extension MessageMsgListLastContentContentObjExtExtension
     String? isBoard,
     String? remark,
   }) {
-    return MessageMsgListLastContentContentObjExt()
+    return ContentObjExt()
       ..fid = fid ?? this.fid
       ..replyUid = replyUid ?? this.replyUid
       ..subject = subject ?? this.subject

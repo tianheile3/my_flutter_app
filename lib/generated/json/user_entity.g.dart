@@ -3,7 +3,7 @@ import 'package:flutter_study/api/response/common/user_entity.dart';
 
 UserEntity $UserEntityFromJson(Map<String, dynamic> json) {
   final UserEntity userEntity = UserEntity();
-  final String? uid = jsonConvert.convert<String>(json['uid']);
+  final int? uid = jsonConvert.convert<int>(json['uid']);
   if (uid != null) {
     userEntity.uid = uid;
   }
@@ -176,7 +176,7 @@ Map<String, dynamic> $UserEntityToJson(UserEntity entity) {
 
 extension UserEntityExtension on UserEntity {
   UserEntity copyWith({
-    String? uid,
+    int? uid,
     String? userName,
     String? status,
     String? sign,

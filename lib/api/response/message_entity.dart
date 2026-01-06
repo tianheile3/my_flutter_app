@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_study/api/response/msg_group_entity.dart';
 import 'package:flutter_study/api/response/common/user_entity.dart';
+import 'package:flutter_study/api/response/msg_group_entity.dart';
 import 'package:flutter_study/generated/json/base/json_field.dart';
 import 'package:flutter_study/generated/json/message_entity.g.dart';
 
@@ -10,7 +10,7 @@ export 'package:flutter_study/generated/json/message_entity.g.dart';
 @JsonSerializable()
 class MessageEntity {
   @JSONField(name: 'msg_list')
-  late List<MessageMsgList> msgList;
+  late List<MsgList> msgList;
   @JSONField(name: 'more_new')
   late bool moreNew;
 
@@ -28,11 +28,11 @@ class MessageEntity {
 }
 
 @JsonSerializable()
-class MessageMsgList {
+class MsgList {
   @JSONField(name: 'dialog_info')
-  late MessageMsgListDialogInfo dialogInfo;
+  late DialogInfo dialogInfo;
   @JSONField(name: 'last_content')
-  late MessageMsgListLastContent lastContent;
+  late LastContent lastContent;
   @JSONField(name: 'new_count')
   late int newCount;
   @JSONField(name: 'shield_count')
@@ -47,9 +47,9 @@ class MessageMsgList {
   late String filterConfigSet;
   late int stick;
 
-  MessageMsgList();
+  MsgList();
 
-  factory MessageMsgList.fromJson(Map<String, dynamic> json) =>
+  factory MsgList.fromJson(Map<String, dynamic> json) =>
       $MessageMsgListFromJson(json);
 
   Map<String, dynamic> toJson() => $MessageMsgListToJson(this);
@@ -61,7 +61,7 @@ class MessageMsgList {
 }
 
 @JsonSerializable()
-class MessageMsgListDialogInfo {
+class DialogInfo {
   UserEntity? user;
   MsgGroupEntity? group;
   @JSONField(name: 'shield_status')
@@ -74,9 +74,9 @@ class MessageMsgListDialogInfo {
   @JSONField(name: 'danger_user')
   late String dangerUser;
 
-  MessageMsgListDialogInfo();
+  DialogInfo();
 
-  factory MessageMsgListDialogInfo.fromJson(Map<String, dynamic> json) =>
+  factory DialogInfo.fromJson(Map<String, dynamic> json) =>
       $MessageMsgListDialogInfoFromJson(json);
 
   Map<String, dynamic> toJson() => $MessageMsgListDialogInfoToJson(this);
@@ -88,14 +88,14 @@ class MessageMsgListDialogInfo {
 }
 
 @JsonSerializable()
-class MessageMsgListLastContent {
+class LastContent {
   @JSONField(name: 'content_id')
   late String contentId;
   @JSONField(name: 'from_user')
   late UserEntity fromUser;
   late String content;
   @JSONField(name: 'content_obj')
-  late MessageMsgListLastContentContentObj contentObj;
+  late ContentObj contentObj;
   late String status;
   @JSONField(name: 'created_at')
   late String createdAt;
@@ -105,9 +105,9 @@ class MessageMsgListLastContent {
   @JSONField(name: 'from_username')
   late String fromUsername;
 
-  MessageMsgListLastContent();
+  LastContent();
 
-  factory MessageMsgListLastContent.fromJson(Map<String, dynamic> json) =>
+  factory LastContent.fromJson(Map<String, dynamic> json) =>
       $MessageMsgListLastContentFromJson(json);
 
   Map<String, dynamic> toJson() => $MessageMsgListLastContentToJson(this);
@@ -119,15 +119,14 @@ class MessageMsgListLastContent {
 }
 
 @JsonSerializable()
-class MessageMsgListLastContentContentObj {
-  late MessageMsgListLastContentContentObjExt? ext;
+class ContentObj {
+  late ContentObjExt? ext;
   late String content;
 
-  MessageMsgListLastContentContentObj();
+  ContentObj();
 
-  factory MessageMsgListLastContentContentObj.fromJson(
-    Map<String, dynamic> json,
-  ) => $MessageMsgListLastContentContentObjFromJson(json);
+  factory ContentObj.fromJson(Map<String, dynamic> json) =>
+      $MessageMsgListLastContentContentObjFromJson(json);
 
   Map<String, dynamic> toJson() =>
       $MessageMsgListLastContentContentObjToJson(this);
@@ -139,7 +138,7 @@ class MessageMsgListLastContentContentObj {
 }
 
 @JsonSerializable()
-class MessageMsgListLastContentContentObjExt {
+class ContentObjExt {
   late String fid;
   late String replyUid;
   late String subject;
@@ -155,11 +154,10 @@ class MessageMsgListLastContentContentObjExt {
   late String isBoard;
   late String remark;
 
-  MessageMsgListLastContentContentObjExt();
+  ContentObjExt();
 
-  factory MessageMsgListLastContentContentObjExt.fromJson(
-    Map<String, dynamic> json,
-  ) => $MessageMsgListLastContentContentObjExtFromJson(json);
+  factory ContentObjExt.fromJson(Map<String, dynamic> json) =>
+      $MessageMsgListLastContentContentObjExtFromJson(json);
 
   Map<String, dynamic> toJson() =>
       $MessageMsgListLastContentContentObjExtToJson(this);

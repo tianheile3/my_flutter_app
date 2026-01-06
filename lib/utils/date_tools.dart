@@ -111,4 +111,46 @@ class DateTools {
       return false;
     }
   }
+
+  static String getChatSendTime(String time) {
+    // 1. 定义输入格式（假设输入是 "yyyy-MM-dd HH:mm" 或类似）
+    final inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+
+    try {
+      final date = inputFormat.parse(time);
+
+      // 2. 获取当前时间（东八区，即北京时间）
+      final now = DateTime.now();
+      final beijingTime = now.toUtc().add(
+        const Duration(hours: 8),
+      ); // 手动转为 GMT+8
+
+      final year = beijingTime.year;
+      final month = beijingTime.month; // Dart 中 month 是 1～12
+      final day = beijingTime.day;
+
+      final inputYear = date.year;
+      final inputMonth = date.month;
+      final inputDay = date.day;
+
+      // 3. 判断是否合法（这里简化：只要能解析就认为合法）
+      // 如果你有额外的合法性校验（如非空、格式等），可在此加
+
+      if (inputYear == year) {
+        if (inputMonth == month && inputDay == day) {
+          // 今天 → 只显示时分
+          return DateFormat('HH:mm').format(date);
+        } else {
+          // 今年但不是今天 → 显示月日
+          return DateFormat('MM-dd').format(date);
+        }
+      } else {
+        // 往年 → 显示完整日期
+        return DateFormat('yyyy-MM-dd').format(date);
+      }
+    } catch (e) {
+      // 解析失败，返回原字符串（与 Java 逻辑一致）
+      return time;
+    }
+  }
 }

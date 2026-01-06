@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_study/api/response/current_user_info_entity.dart';
+import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:flutter_study/api/response/encrypt_key_entity.dart';
 import 'package:flutter_study/api/response/fav_board_and_forum_entity.dart';
 import 'package:flutter_study/api/response/file_upload_entity.dart';
@@ -120,6 +121,15 @@ abstract class ApiClient {
     @Query("limit") int limit = 30,
     @Query("nextNew") required bool nextNew,
     @Query("nextDate") String? nextDate,
+  });
+
+  @GET("/api/msg/getDialogList")
+  Future<DialogEntity?> getDialogList({
+    @Query("dialogId") required String dialogId,
+    @Query("nextDate") String? nextDate,
+    @Query("limit") int limit = 10,
+    @Query("isBefore") bool isBefore = true,
+    @Query("decode") bool decode = true,
   });
 
   //-----------------------------------以下post----------------------------------

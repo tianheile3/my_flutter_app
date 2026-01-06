@@ -1,11 +1,15 @@
+import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:get/get.dart';
 
 class ChatState {
   late String chatName;
-  late String toUid;
+  late int toUid;
   late String dialogId;
 
-  final RxList<dynamic> items = [].obs;
+  String? nextDate;
+  bool hasMore = true;
+
+  final RxList<DialogContentList> items = RxList<DialogContentList>();
 
   ChatState();
 }

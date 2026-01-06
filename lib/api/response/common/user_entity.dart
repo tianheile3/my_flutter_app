@@ -5,7 +5,7 @@ export 'package:flutter_study/generated/json/user_entity.g.dart';
 
 @JsonSerializable()
 class UserEntity {
-	late String uid;
+	late int uid;
 	@JSONField(name: 'user_name')
 	late String userName;
 	late String status;

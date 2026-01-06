@@ -82,7 +82,7 @@ class MessagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildPrivateMessage(MessageMsgList item) {
+  Widget _buildPrivateMessage(MsgList item) {
     return InkWell(
       onTap: () {
         logic.toChat(item);
@@ -155,7 +155,7 @@ class MessagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildGroupChat(MessageMsgList item) {
+  Widget _buildGroupChat(MsgList item) {
     var detail = logic.getDetail(item);
     return Container(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
@@ -216,7 +216,7 @@ class MessagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildNotice(MessageMsgList item) {
+  Widget _buildNotice(MsgList item) {
     var detail = logic.getDetail(item);
     return Container(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
@@ -242,7 +242,7 @@ class MessagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildOther(MessageMsgList item) {
+  Widget _buildOther(MsgList item) {
     var detail = logic.getDetail(item);
     return Container(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),

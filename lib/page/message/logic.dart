@@ -17,7 +17,7 @@ class MessageLogic extends BaseController {
   String? nextDate;
   bool nextNew = true;
   final int limit = 30;
-  final RxList<MessageMsgList> items = <MessageMsgList>[].obs;
+  final RxList<MsgList> items = <MsgList>[].obs;
 
   @override
   void onInit() {
@@ -80,7 +80,7 @@ class MessageLogic extends BaseController {
     }
   }
 
-  List<MessageMsgList> sortList(List<MessageMsgList> list, bool isRefresh) {
+  List<MsgList> sortList(List<MsgList> list, bool isRefresh) {
     if (list.isEmpty) {
       return [];
     }
@@ -93,7 +93,7 @@ class MessageLogic extends BaseController {
       (item) => item.stick <= 1 && item.dialogInfo.dialogType != 8,
     );
 
-    var sortList = <MessageMsgList>[];
+    var sortList = <MsgList>[];
     sortList.addAll(typeRegular);
     if (isRefresh) {
       sortList.add(hot);
@@ -121,7 +121,7 @@ class MessageLogic extends BaseController {
     }
   }
 
-  String getContent(MessageMsgList item) {
+  String getContent(MsgList item) {
     if (item.lastContent.content.startsWith("{") &&
         item.lastContent.content.endsWith("}") &&
         item.lastContent.content.contains("picUrl")) {
@@ -130,7 +130,7 @@ class MessageLogic extends BaseController {
     return item.lastContent.content;
   }
 
-  String getShowAvatar(MessageMsgList item) {
+  String getShowAvatar(MsgList item) {
     var avatar = item.dialogInfo.user!.avatar;
     if (avatar.isNotEmpty && !avatar.contains("https")) {
       return "${Constants.BASE_AVATAR}$avatar";
@@ -138,7 +138,7 @@ class MessageLogic extends BaseController {
     return avatar;
   }
 
-  List<String> getDetail(MessageMsgList item) {
+  List<String> getDetail(MsgList item) {
     List<String> list = [];
     String image = "";
     String name = "";
@@ -206,7 +206,7 @@ class MessageLogic extends BaseController {
     return list;
   }
 
-  void toChat(MessageMsgList item) {
+  void toChat(MsgList item) {
     Get.toNamed(
       MyRouteConfig.chat,
       arguments: {
