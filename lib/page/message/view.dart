@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_study/api/response/message_entity.dart';
 import 'package:flutter_study/common/custom_colors.dart';
 import 'package:flutter_study/common/some_publish.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:flutter_study/utils/date_tools.dart';
 import 'package:get/get.dart';
 
@@ -83,67 +84,74 @@ class MessagePage extends StatelessWidget {
   }
 
   Widget _buildPrivateMessage(MessageMsgList item) {
-    return Container(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
-      height: itemHeight,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildAvatar(logic.getShowAvatar(item), item.newCount, true),
-          SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: logic.contentWidth,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          item.dialogInfo.user!.userName,
-                          style: TextStyle(
-                            color: CustomColors.textDark,
-                            fontSize: 16,
+    return InkWell(
+      onTap: () {
+        Get.toNamed(MyRouteConfig.chat);
+      },
+      child: Container(
+        padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 8),
+        height: itemHeight,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildAvatar(logic.getShowAvatar(item), item.newCount, true),
+            SizedBox(width: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: logic.contentWidth,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            item.dialogInfo.user!.userName,
+                            style: TextStyle(
+                              color: CustomColors.textDark,
+                              fontSize: 16,
+                            ),
                           ),
+                          if (item.dialogInfo.user!.gid == "10")
+                            Image.asset(
+                              "assets/images/chaoban.png",
+                              width: 28,
+                              height: 14,
+                            ),
+                        ],
+                      ),
+                      Text(
+                        DateTools.getChatTime(
+                          item.lastContent.createdAt.isEmpty
+                              ? item.createdAt
+                              : item.lastContent.createdAt,
                         ),
-                        if (item.dialogInfo.user!.gid == "10")
-                          Image.asset(
-                            "assets/images/chaoban.png",
-                            width: 28,
-                            height: 14,
-                          ),
-                      ],
-                    ),
-                    Text(
-                      DateTools.getChatTime(
-                        item.lastContent.createdAt.isEmpty
-                            ? item.createdAt
-                            : item.lastContent.createdAt,
+                        style: TextStyle(
+                          color: CustomColors.textDark,
+                          fontSize: 13,
+                        ),
                       ),
-                      style: TextStyle(
-                        color: CustomColors.textDark,
-                        fontSize: 13,
-                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: logic.contentWidth,
+                  child: Text(
+                    logic.getContent(item),
+                    style: TextStyle(
+                      color: CustomColors.textLight,
+                      fontSize: 13,
                     ),
-                  ],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: logic.contentWidth,
-                child: Text(
-                  logic.getContent(item),
-                  style: TextStyle(color: CustomColors.textLight, fontSize: 13),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -164,15 +172,19 @@ class MessagePage extends StatelessWidget {
               SizedBox(
                 width: logic.contentWidth,
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      detail[1],
-                      style: TextStyle(
-                        color: CustomColors.textDark,
-                        fontSize: 16,
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        detail[1],
+                        style: TextStyle(
+                          color: CustomColors.textDark,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(
@@ -247,7 +259,6 @@ class MessagePage extends StatelessWidget {
               SizedBox(
                 width: logic.contentWidth,
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

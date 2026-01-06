@@ -14,6 +14,7 @@ class MessageLogic extends BaseController {
   double contentWidth = 0.0;
 
   String? nextDate;
+  bool nextNew = true;
   final int limit = 30;
   final RxList<MessageMsgList> items = <MessageMsgList>[].obs;
 
@@ -31,16 +32,26 @@ class MessageLogic extends BaseController {
   }
 
   Future<void> onRefresh() async {
+    nextDate = null;
+    nextNew = true;
     items.clear();
     loadState.value = LoadState.refreshing;
     try {
-      final res = await api.getList(limit: limit, nextNew: true);
+      final res = await api.getList(
+        limit: limit,
+        nextNew: nextNew,
+        nextDate: nextDate,
+      );
       if (res == null) {
         loadState.value = LoadState.failed;
         controller.finishRefresh(IndicatorResult.fail);
         return;
       }
-      items.addAll(res.msgList);
+      nextNew = res.moreNew;
+
+      items.addAll(sortList(res.msgList, true));
+
+      setFinishState(res, true);
       loadState.value = LoadState.success;
     } catch (e) {
       errorMessage.value = '加载失败: $e';
@@ -49,7 +60,51 @@ class MessageLogic extends BaseController {
     }
   }
 
-  Future<void> onLoadMore() async {}
+  Future<void> onLoadMore() async {
+    try {
+      final res = await api.getList(
+        limit: limit,
+        nextNew: nextNew,
+        nextDate: nextDate,
+      );
+      if (res == null) {
+        controller.finishLoad(IndicatorResult.fail);
+        return;
+      }
+      items.addAll(sortList(res.msgList, false));
+      setFinishState(res, false);
+    } catch (e) {
+      logger.d("加载失败$e");
+      controller.finishLoad(IndicatorResult.fail);
+    }
+  }
+
+  List<MessageMsgList> sortList(List<MessageMsgList> list, bool isRefresh) {
+    if (list.isEmpty) {
+      return [];
+    }
+    var hot = list.firstWhereOrNull((item) => item.dialogInfo.dialogType == 8);
+    if (hot == null) {
+      return list;
+    }
+    var typeRegular = list.where((item) => item.stick > 1);
+    var typeNormal = list.where(
+      (item) => item.stick <= 1 && item.dialogInfo.dialogType != 8,
+    );
+
+    var sortList = <MessageMsgList>[];
+    sortList.addAll(typeRegular);
+    if (isRefresh) {
+      sortList.add(hot);
+    }
+    sortList.addAll(typeNormal);
+
+    nextDate = sortList[sortList.length - 1].createdAt;
+    if ((nextDate?.isEmpty ?? false) && sortList.length > 1) {
+      nextDate = sortList[sortList.length - 2].createdAt;
+    }
+    return sortList;
+  }
 
   void setFinishState(MessageEntity res, bool isRefresh) {
     bool noMore = res.msgList.length < limit;

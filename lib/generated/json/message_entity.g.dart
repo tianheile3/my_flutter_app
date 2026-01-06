@@ -76,7 +76,7 @@ MessageMsgList $MessageMsgListFromJson(Map<String, dynamic> json) {
   if (filterConfigSet != null) {
     messageMsgList.filterConfigSet = filterConfigSet;
   }
-  final String? stick = jsonConvert.convert<String>(json['stick']);
+  final int? stick = jsonConvert.convert<int>(json['stick']);
   if (stick != null) {
     messageMsgList.stick = stick;
   }
@@ -109,7 +109,7 @@ extension MessageMsgListExtension on MessageMsgList {
     String? summery,
     String? bid,
     String? filterConfigSet,
-    String? stick,
+    int? stick,
   }) {
     return MessageMsgList()
       ..dialogInfo = dialogInfo ?? this.dialogInfo

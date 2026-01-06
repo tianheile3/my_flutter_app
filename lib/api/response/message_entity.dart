@@ -45,7 +45,7 @@ class MessageMsgList {
   late String bid;
   @JSONField(name: 'filter_config_set')
   late String filterConfigSet;
-  late String stick;
+  late int stick;
 
   MessageMsgList();
 
