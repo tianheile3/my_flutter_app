@@ -71,6 +71,7 @@ class ChatPage extends StatelessWidget with LoggerMixin {
                       reverse: true,
                       padding: const EdgeInsets.all(16),
                       itemCount: state.items.length,
+                      shrinkWrap: true,
                       itemBuilder: (context, index) {
                         final message = state.items[index];
                         DialogContentList? previousMessage;
