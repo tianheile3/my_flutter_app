@@ -2,6 +2,7 @@ import 'package:flutter_study/main.dart';
 import 'package:flutter_study/page/chat/view.dart';
 import 'package:flutter_study/page/forum/view.dart';
 import 'package:flutter_study/page/gather/view.dart';
+import 'package:flutter_study/page/image_detail/view.dart';
 import 'package:flutter_study/page/login/view.dart';
 import 'package:flutter_study/page/main_home/view.dart';
 import 'package:flutter_study/page/post_thread/view.dart';
@@ -39,6 +40,9 @@ class MyRouteConfig {
   //私信
   static const String chat = "/chat";
 
+  //图片预览
+  static const String imageDetail = "/imageDetail";
+
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MyApp()),
     GetPage(name: login, page: () => LoginPage()),
@@ -49,5 +53,6 @@ class MyRouteConfig {
     GetPage(name: postThread, page: () => PostThreadPage()),
     GetPage(name: forum, page: () => ForumPage()),
     GetPage(name: chat, page: () => ChatPage()),
+    GetPage(name: imageDetail, page: () => ImageDetailPage()),
   ];
 }

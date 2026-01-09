@@ -42,6 +42,26 @@ class TestPage extends StatelessWidget {
               child: const Text("上传"),
             ),
             SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // 测试图片预览
+                Get.toNamed(
+                  "/imageDetail",
+                  arguments: {
+                    'imageUrls': [
+                      'https://picsum.photos/1000/1000',
+                      'https://picsum.photos/1001/1000',
+                      'https://picsum.photos/1002/1000',
+                      'https://picsum.photos/1003/1000',
+                      'https://picsum.photos/1004/1000',
+                    ],
+                    'initialIndex': 0,
+                  },
+                );
+              },
+              child: const Text("测试图片预览"),
+            ),
+            SizedBox(height: 20),
             Obx(() {
               return GridView.builder(
                 shrinkWrap: true,

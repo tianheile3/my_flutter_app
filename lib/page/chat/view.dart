@@ -168,27 +168,7 @@ class ChatPage extends StatelessWidget with LoggerMixin {
                         ),
                       ],
                     ),
-                    child: message.type == MessageType.text
-                        ? Text(
-                            message.content,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: message.isSent
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
-                              imageUrl: logic.getPic(message.content),
-                              width: 200,
-                              height: 150,
-                              fit: BoxFit.cover,
-                              memCacheWidth: 200,
-                              memCacheHeight: 150,
-                            ),
-                          ),
+                    child: _buildMessageContent(message),
                   ),
                   const SizedBox(height: 4),
                   if (message.isSent)
@@ -216,6 +196,37 @@ class ChatPage extends StatelessWidget with LoggerMixin {
         ],
       ),
     );
+  }
+
+  Widget _buildMessageContent(DialogContentList message) {
+    switch (message.type) {
+      case MessageType.text:
+        return Text(
+          message.content,
+          style: TextStyle(
+            fontSize: 16,
+            color: message.isSent ? Colors.white : Colors.black,
+          ),
+        );
+      case MessageType.image:
+        var url = logic.getPic(message.content);
+        return InkWell(
+          onTap: () {
+            logic.checkImage(url);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: url,
+              width: 200,
+              height: 150,
+              fit: BoxFit.cover,
+              memCacheWidth: 200,
+              memCacheHeight: 150,
+            ),
+          ),
+        );
+    }
   }
 }
 

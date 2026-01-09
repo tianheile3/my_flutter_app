@@ -6,6 +6,7 @@ import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:flutter_study/common/constants.dart';
 import 'package:flutter_study/common/global_state.dart';
 import 'package:flutter_study/common/some_publish.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:get/get.dart';
 
 import 'state.dart';
@@ -140,6 +141,16 @@ class ChatLogic extends BaseController {
       }
     }
     return shouldShowTime;
+  }
+
+  void checkImage(String url) {
+    Get.toNamed(
+      MyRouteConfig.imageDetail,
+      arguments: {
+        "imageUrls": [url],
+        "index": 0,
+      },
+    );
   }
 
   Future<void> sendMessage(String content, MessageType type) async {}
