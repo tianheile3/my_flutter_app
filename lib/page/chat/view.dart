@@ -65,14 +65,12 @@ class ChatPage extends StatelessWidget with LoggerMixin {
                     return const Center(child: Text("暂无消息"));
                   }
                   return EasyRefresh(
-                    onRefresh: state.enableRefresh.value
-                        ? logic.onRefresh
-                        : null,
+                    onLoad: logic.onLoadMore,
                     controller: logic.controller,
                     child: ListView.builder(
+                      reverse: true,
                       padding: const EdgeInsets.all(16),
                       itemCount: state.items.length,
-                      controller: logic.scrollController,
                       itemBuilder: (context, index) {
                         final message = state.items[index];
                         DialogContentList? previousMessage;
@@ -96,15 +94,7 @@ class ChatPage extends StatelessWidget with LoggerMixin {
     DialogContentList message,
     DialogContentList? previousMessage,
   ) {
-    bool shouldShowTime = true;
-    if (previousMessage != null) {
-      final timeDifference = DateTime.parse(
-        message.createdAt,
-      ).difference(DateTime.parse(previousMessage.createdAt));
-      if (timeDifference.inMinutes < 10) {
-        shouldShowTime = false;
-      }
-    }
+    bool shouldShowTime = logic.shouldShowTime(message, previousMessage);
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Column(

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:flutter_study/common/constants.dart';
 import 'package:flutter_study/common/global_state.dart';
@@ -14,10 +13,8 @@ class ChatLogic extends BaseController {
   final ChatState state = ChatState();
 
   final EasyRefreshController controller = EasyRefreshController(
-    controlFinishRefresh: true,
     controlFinishLoad: true,
   );
-  final ScrollController scrollController = ScrollController();
 
   final Rx<LoadState> loadState = LoadState.refreshing.obs;
 
@@ -35,21 +32,17 @@ class ChatLogic extends BaseController {
   @override
   void onClose() {
     controller.dispose();
-    scrollController.dispose();
     super.onClose();
   }
 
   Future<void> onRefresh() async {
     try {
-      bool isFirst = state.items.isEmpty;
       final res = await api.getDialogList(
         dialogId: state.dialogId,
-        nextDate: state.nextDate,
         limit: state.limit,
       );
       if (res == null) {
         loadState.value = LoadState.failed;
-        controller.finishRefresh(IndicatorResult.fail);
         return;
       }
       var temp = <DialogContentList>[];
@@ -58,35 +51,45 @@ class ChatLogic extends BaseController {
         item.type = getType(item.content);
         temp.add(item);
       }
-      state.items.insertAll(0, temp);
+      state.items.addAll(temp.reversed);
+      if (temp.length < state.limit || res.nextDate == null) {
+        controller.finishLoad(IndicatorResult.noMore);
+      }
       state.nextDate = res.nextDate;
-      if (temp.length < state.limit) {
-        state.enableRefresh.value = false;
-      }
       loadState.value = LoadState.success;
-      controller.finishRefresh(IndicatorResult.success);
-      if (isFirst) {
-        scrollToBottom();
-      }
     } catch (e) {
       errorMessage.value = '加载失败: $e';
       loadState.value = LoadState.failed;
-      controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
-  // 滚动到底部
-  void scrollToBottom() {
-    // 关键修改：延迟到下一帧执行滚动
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 100),
-          curve: Curves.easeOut,
-        );
+  Future<void> onLoadMore() async {
+    try {
+      final res = await api.getDialogList(
+        dialogId: state.dialogId,
+        nextDate: state.nextDate,
+        limit: state.limit,
+      );
+      if (res == null) {
+        controller.finishLoad(IndicatorResult.fail);
+        return;
       }
-    });
+      var temp = <DialogContentList>[];
+      for (var item in res.contentList) {
+        item.isSent = item.fromUser.uid == GlobalState.instance.userId;
+        item.type = getType(item.content);
+        temp.add(item);
+      }
+      state.items.addAll(temp);
+      state.nextDate = res.nextDate;
+      if (temp.length < state.limit) {
+        controller.finishLoad(IndicatorResult.noMore);
+      } else {
+        controller.finishLoad(IndicatorResult.success);
+      }
+    } catch (e) {
+      controller.finishLoad(IndicatorResult.fail);
+    }
   }
 
   String getShowAvatar(String avatar) {
@@ -116,6 +119,22 @@ class ChatLogic extends BaseController {
       return MessageType.image;
     }
     return MessageType.text;
+  }
+
+  bool shouldShowTime(
+    DialogContentList message,
+    DialogContentList? previousMessage,
+  ) {
+    bool shouldShowTime = true;
+    if (previousMessage != null) {
+      final timeDifference = DateTime.parse(
+        message.createdAt,
+      ).difference(DateTime.parse(previousMessage.createdAt));
+      if (timeDifference.inMinutes.abs() < 10) {
+        shouldShowTime = false;
+      }
+    }
+    return shouldShowTime;
   }
 
   Future<void> sendMessage(String content, MessageType type) async {}

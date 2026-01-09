@@ -9,7 +9,6 @@ class ChatState {
 
   String? nextDate;
   bool hasMore = true;
-  RxBool enableRefresh = true.obs;
 
   final RxList<DialogContentList> items = RxList<DialogContentList>();
 
