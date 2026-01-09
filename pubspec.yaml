@@ -33,6 +33,7 @@ dependencies:
   get: ^4.7.3 # getX
   dotted_border: ^3.1.0 # 虚线边框等
   video_compress: ^3.1.4 # 视频相关 获取缩略图，视频信息，压缩等
+  flutter_launcher_icons: ^0.14.4 # 生成app icon
 
 dev_dependencies:
   flutter_test:
@@ -46,3 +47,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/icon/
+
+flutter_launcher_icons:
+  android: true  # 生成安卓图标
+  image_path: "assets/icon/icon.png"  # 你的原始图标路径（1024x1024）
