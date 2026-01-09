@@ -117,7 +117,7 @@ class ChatPage extends StatelessWidget with LoggerMixin {
             mainAxisAlignment: message.isSent
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!message.isSent) ...[
                 ClipOval(
