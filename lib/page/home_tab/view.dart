@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 
 import '../../api/response/second_config_entity.dart';
 import '../../api/response/user_second_recom_thread_entity.dart';
+import '../../common/custom_colors.dart';
 import '../../common/some_publish.dart';
 import '../../models/home_item.dart';
 import '../../utils/common_utils.dart';
-import '../../common/custom_colors.dart';
 import '../../utils/date_tools.dart';
 import 'logic.dart';
 
@@ -149,20 +149,25 @@ class HomeTabPage extends StatelessWidget {
         childAspectRatio: 1,
       ),
       itemBuilder: (context, index) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: CachedNetworkImage(
-            imageUrl: images[index],
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Icon(Icons.image, size: 25),
-            errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
-            // 根据网格大小设置缓存尺寸
-            memCacheWidth:
-                ((logic.screenWidth - 40 - logic.imageGridSpacing * 2) / 3)
-                    .toInt(),
-            memCacheHeight:
-                ((logic.screenWidth - 40 - logic.imageGridSpacing * 2) / 3)
-                    .toInt(),
+        return InkWell(
+          onTap: () {
+            logic.viewImage(images, index);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: images[index],
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Icon(Icons.image, size: 25),
+              errorWidget: (context, url, error) => Icon(Icons.image, size: 25),
+              // 根据网格大小设置缓存尺寸
+              memCacheWidth:
+                  ((logic.screenWidth - 40 - logic.imageGridSpacing * 2) / 3)
+                      .toInt(),
+              memCacheHeight:
+                  ((logic.screenWidth - 40 - logic.imageGridSpacing * 2) / 3)
+                      .toInt(),
+            ),
           ),
         );
       },

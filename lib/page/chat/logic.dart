@@ -143,7 +143,7 @@ class ChatLogic extends BaseController {
     return shouldShowTime;
   }
 
-  void checkImage(String url) {
+  void viewImage(String url) {
     Get.toNamed(
       MyRouteConfig.imageDetail,
       arguments: {

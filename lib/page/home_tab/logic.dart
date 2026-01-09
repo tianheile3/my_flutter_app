@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter_study/route_config.dart';
 import 'package:get/get.dart';
 
 import '../../api/response/second_config_entity.dart';
@@ -148,6 +149,13 @@ class HomeTabLogic extends BaseController {
       logger.e('加载失败: $e');
       controller.finishLoad(IndicatorResult.fail);
     }
+  }
+
+  void viewImage(List<String> images, int index) {
+    Get.toNamed(
+      MyRouteConfig.imageDetail,
+      arguments: {"imageUrls": images, "index": index},
+    );
   }
 
   @override

@@ -212,7 +212,7 @@ class ChatPage extends StatelessWidget with LoggerMixin {
         var url = logic.getPic(message.content);
         return InkWell(
           onTap: () {
-            logic.checkImage(url);
+            logic.viewImage(url);
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
