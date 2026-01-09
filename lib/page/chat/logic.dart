@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:flutter_study/common/constants.dart';
 import 'package:flutter_study/common/global_state.dart';
@@ -16,6 +17,8 @@ class ChatLogic extends BaseController {
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
+  final ScrollController scrollController = ScrollController();
+
   final Rx<LoadState> loadState = LoadState.refreshing.obs;
 
   @override
@@ -32,17 +35,17 @@ class ChatLogic extends BaseController {
   @override
   void onClose() {
     controller.dispose();
+    scrollController.dispose();
     super.onClose();
   }
 
   Future<void> onRefresh() async {
-    if (!state.hasMore) {
-      return;
-    }
     try {
+      bool isFirst = state.items.isEmpty;
       final res = await api.getDialogList(
         dialogId: state.dialogId,
         nextDate: state.nextDate,
+        limit: state.limit,
       );
       if (res == null) {
         loadState.value = LoadState.failed;
@@ -57,14 +60,33 @@ class ChatLogic extends BaseController {
       }
       state.items.insertAll(0, temp);
       state.nextDate = res.nextDate;
-
+      if (temp.length < state.limit) {
+        state.enableRefresh.value = false;
+      }
       loadState.value = LoadState.success;
       controller.finishRefresh(IndicatorResult.success);
+      if (isFirst) {
+        scrollToBottom();
+      }
     } catch (e) {
       errorMessage.value = '加载失败: $e';
       loadState.value = LoadState.failed;
       controller.finishRefresh(IndicatorResult.fail);
     }
+  }
+
+  // 滚动到底部
+  void scrollToBottom() {
+    // 关键修改：延迟到下一帧执行滚动
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   String getShowAvatar(String avatar) {

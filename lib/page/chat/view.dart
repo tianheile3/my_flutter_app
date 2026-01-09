@@ -3,6 +3,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:flutter_study/common/global_state.dart';
+import 'package:flutter_study/common/logger_mixin.dart';
 import 'package:flutter_study/common/some_publish.dart';
 import 'package:flutter_study/utils/date_tools.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,7 @@ import 'package:get/get.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatelessWidget with LoggerMixin {
   ChatPage({super.key});
 
   final ChatLogic logic = Get.put(ChatLogic());
@@ -64,11 +65,14 @@ class ChatPage extends StatelessWidget {
                     return const Center(child: Text("暂无消息"));
                   }
                   return EasyRefresh(
-                    onRefresh: logic.onRefresh,
+                    onRefresh: state.enableRefresh.value
+                        ? logic.onRefresh
+                        : null,
                     controller: logic.controller,
                     child: ListView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: state.items.length,
+                      controller: logic.scrollController,
                       itemBuilder: (context, index) {
                         final message = state.items[index];
                         DialogContentList? previousMessage;

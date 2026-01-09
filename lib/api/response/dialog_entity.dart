@@ -14,7 +14,7 @@ class DialogEntity {
   @JSONField(name: 'content_list')
   late List<DialogContentList> contentList;
   @JSONField(name: 'next_date')
-  late String nextDate;
+  String? nextDate;
 
   DialogEntity();
 
