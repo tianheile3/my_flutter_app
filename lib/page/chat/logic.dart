@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_study/api/response/dialog_entity.dart';
 import 'package:flutter_study/common/constants.dart';
 import 'package:flutter_study/common/global_state.dart';
@@ -52,11 +53,13 @@ class ChatLogic extends BaseController {
         temp.add(item);
       }
       state.items.addAll(temp.reversed);
-      if (temp.length < state.limit || res.nextDate == null) {
-        controller.finishLoad(IndicatorResult.noMore);
-      }
       state.nextDate = res.nextDate;
       loadState.value = LoadState.success;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (temp.length < state.limit || res.nextDate == null) {
+          controller.finishLoad(IndicatorResult.noMore);
+        }
+      });
     } catch (e) {
       errorMessage.value = '加载失败: $e';
       loadState.value = LoadState.failed;
@@ -82,11 +85,13 @@ class ChatLogic extends BaseController {
       }
       state.items.addAll(temp);
       state.nextDate = res.nextDate;
-      if (temp.length < state.limit) {
-        controller.finishLoad(IndicatorResult.noMore);
-      } else {
-        controller.finishLoad(IndicatorResult.success);
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (temp.length < state.limit) {
+          controller.finishLoad(IndicatorResult.noMore);
+        } else {
+          controller.finishLoad(IndicatorResult.success);
+        }
+      });
     } catch (e) {
       controller.finishLoad(IndicatorResult.fail);
     }
